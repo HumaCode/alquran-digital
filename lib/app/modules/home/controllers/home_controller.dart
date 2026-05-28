@@ -16,6 +16,10 @@ class HomeController extends GetxController {
   final isMoreLoading = false.obs;
   final showScrollToTop = false.obs;
   final scrollController = ScrollController();
+  
+  // Search states
+  final searchQuery = ''.obs;
+  final searchController = TextEditingController();
 
   List<DataSurah> _allSurahs = [];
   int _loadedCount = 0;
@@ -31,6 +35,7 @@ class HomeController extends GetxController {
   @override
   void onClose() {
     scrollController.dispose();
+    searchController.dispose();
     super.onClose();
   }
 
@@ -38,9 +43,9 @@ class HomeController extends GetxController {
     // Show back to top button if scrolled past 300px
     showScrollToTop.value = scrollController.position.pixels > 300;
 
-    // Load more when scrolled near bottom
+    // Load more when scrolled near bottom (only if not searching)
     if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - 200) {
-      if (!isMoreLoading.value && surahs.length < _allSurahs.length) {
+      if (searchQuery.value.trim().isEmpty && !isMoreLoading.value && surahs.length < _allSurahs.length) {
         _loadMore();
       }
     }
@@ -71,6 +76,28 @@ class HomeController extends GetxController {
       duration: const Duration(milliseconds: 800),
       curve: Curves.easeInOutCubic,
     );
+  }
+
+  void onSearchChanged(String query) {
+    searchQuery.value = query;
+    if (query.trim().isEmpty) {
+      surahs.clear();
+      _loadedCount = 0;
+      loadNextPage();
+    } else {
+      final normalizedQuery = query.toLowerCase();
+      final filtered = _allSurahs.where((s) {
+        return s.namaLatin.toLowerCase().contains(normalizedQuery) ||
+            s.nama.toLowerCase().contains(normalizedQuery) ||
+            s.arti.toLowerCase().contains(normalizedQuery);
+      }).toList();
+      surahs.assignAll(filtered);
+    }
+  }
+
+  void clearSearch() {
+    searchController.clear();
+    onSearchChanged('');
   }
 
   Future<void> fetchSurahs() async {

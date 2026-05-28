@@ -256,6 +256,9 @@ class _HomeViewState extends State<HomeView>
                           onTap: () {
                             setState(() {
                               _activeTab = index;
+                              if (_activeTab != 0) {
+                                _homeController.clearSearch();
+                              }
                             });
                           },
                           child: AnimatedContainer(
@@ -287,6 +290,50 @@ class _HomeViewState extends State<HomeView>
                 ),
               ),
             ),
+
+            // ── Search Bar ───────────────────────────────────────────────
+            if (_activeTab == 0)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: _bg2.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(
+                        color: _goldDim.withValues(alpha: 0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: Obx(() => TextField(
+                      controller: _homeController.searchController,
+                      onChanged: (val) => _homeController.onSearchChanged(val),
+                      style: R.textStyle.medium(color: _goldLight).copyWith(
+                        fontFamily: 'Poppins',
+                        fontSize: 14,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Cari surah...',
+                        hintStyle: R.textStyle.medium(
+                          color: _textSoft.withValues(alpha: 0.4),
+                        ).copyWith(fontFamily: 'Poppins', fontSize: 14),
+                        prefixIcon: Icon(Icons.search_rounded, color: _goldDim, size: 20),
+                        suffixIcon: _homeController.searchQuery.isNotEmpty
+                            ? IconButton(
+                                icon: Icon(Icons.clear_rounded, color: _goldDim, size: 20),
+                                onPressed: () => _homeController.clearSearch(),
+                              )
+                            : null,
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 14,
+                        ),
+                      ),
+                    )),
+                  ),
+                ),
+              ),
 
             // ── Tab Content ──────────────────────────────────────────────
             if (_activeTab == 0) ...[

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../constants/r.dart';
 import 'package:alquran_digital/app/routes/app_pages.dart';
-import '../widgets/surah_item.dart';
+import '../../../data/models/surah_model.dart';
+import '../controllers/home_controller.dart';
 import '../widgets/surah_tile.dart';
 import '../widgets/home_pattern_painter.dart';
 
@@ -24,6 +25,8 @@ class _HomeViewState extends State<HomeView>
   static final Color _emeraldDark = R.color.emeraldDark;
   static final Color _emeraldMedium = R.color.emeraldMedium;
 
+  final HomeController _homeController = Get.find<HomeController>();
+
   late AnimationController _controller;
   late Animation<double> _fadeAnim;
 
@@ -31,18 +34,18 @@ class _HomeViewState extends State<HomeView>
   final Set<int> _bookmarks = {1, 36, 67};
   final List<String> _tabs = ['Daftar Surah', 'Terakhir', 'Bookmark'];
 
-  final List<SurahItem> _surahs = [
-    const SurahItem(1, 'Al-Fatihah', 'الفاتحة', 7, 'Makkiyah'),
-    const SurahItem(2, 'Al-Baqarah', 'البقرة', 286, 'Madaniyah'),
-    const SurahItem(3, 'Ali \'Imran', 'آل عمران', 200, 'Madaniyah'),
-    const SurahItem(4, 'An-Nisa\'', 'النساء', 176, 'Madaniyah'),
-    const SurahItem(5, 'Al-Maidah', 'المائدة', 120, 'Madaniyah'),
-    const SurahItem(36, 'Ya-Sin', 'يس', 83, 'Makkiyah'),
-    const SurahItem(55, 'Ar-Rahman', 'الرحمن', 78, 'Madaniyah'),
-    const SurahItem(67, 'Al-Mulk', 'الملك', 30, 'Makkiyah'),
-    const SurahItem(112, 'Al-Ikhlas', 'الإخلاص', 4, 'Makkiyah'),
-    const SurahItem(113, 'Al-Falaq', 'الفلق', 5, 'Makkiyah'),
-    const SurahItem(114, 'An-Nas', 'الناس', 6, 'Makkiyah'),
+  final List<DataSurah> _mockSurahs = [
+    DataSurah(nomor: 1, nama: 'الفاتحة', namaLatin: 'Al-Fatihah', jumlahAyat: 7, tempatTurun: 'Mekah', arti: 'Pembukaan', deskripsi: '', audioFull: {}),
+    DataSurah(nomor: 2, nama: 'البقرة', namaLatin: 'Al-Baqarah', jumlahAyat: 286, tempatTurun: 'Madinah', arti: 'Sapi Betina', deskripsi: '', audioFull: {}),
+    DataSurah(nomor: 3, nama: 'آل عمران', namaLatin: 'Ali \'Imran', jumlahAyat: 200, tempatTurun: 'Madinah', arti: 'Keluarga Imran', deskripsi: '', audioFull: {}),
+    DataSurah(nomor: 4, nama: 'النساء', namaLatin: 'An-Nisa\'', jumlahAyat: 176, tempatTurun: 'Madinah', arti: 'Wanita', deskripsi: '', audioFull: {}),
+    DataSurah(nomor: 5, nama: 'المائدة', namaLatin: 'Al-Maidah', jumlahAyat: 120, tempatTurun: 'Madinah', arti: 'Hidangan', deskripsi: '', audioFull: {}),
+    DataSurah(nomor: 36, nama: 'يس', namaLatin: 'Ya-Sin', jumlahAyat: 83, tempatTurun: 'Mekah', arti: 'Ya Sin', deskripsi: '', audioFull: {}),
+    DataSurah(nomor: 55, nama: 'الرحمن', namaLatin: 'Ar-Rahman', jumlahAyat: 78, tempatTurun: 'Madinah', arti: 'Yang Maha Pemurah', deskripsi: '', audioFull: {}),
+    DataSurah(nomor: 67, nama: 'الملك', namaLatin: 'Al-Mulk', jumlahAyat: 30, tempatTurun: 'Mekah', arti: 'Kerajaan', deskripsi: '', audioFull: {}),
+    DataSurah(nomor: 112, nama: 'الإخلاص', namaLatin: 'Al-Ikhlas', jumlahAyat: 4, tempatTurun: 'Mekah', arti: 'Kemurnian Keesaan Allah', deskripsi: '', audioFull: {}),
+    DataSurah(nomor: 113, nama: 'الفلق', namaLatin: 'Al-Falaq', jumlahAyat: 5, tempatTurun: 'Mekah', arti: 'Waktu Subuh', deskripsi: '', audioFull: {}),
+    DataSurah(nomor: 114, nama: 'الناس', namaLatin: 'An-Nas', jumlahAyat: 6, tempatTurun: 'Mekah', arti: 'Manusia', deskripsi: '', audioFull: {}),
   ];
 
   @override
@@ -286,37 +289,100 @@ class _HomeViewState extends State<HomeView>
 
             // ── Tab Content ──────────────────────────────────────────────
             if (_activeTab == 0) ...[
-              // Daftar Surah
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, i) => SurahTile(
-                    item: _surahs[i],
-                    gold: _gold,
-                    goldLight: _goldLight,
-                    goldDim: _goldDim,
-                    textSoft: _textSoft,
-                    isBookmarked: _bookmarks.contains(_surahs[i].number),
-                    onBookmarkTapped: () {
-                      setState(() {
-                        if (_bookmarks.contains(_surahs[i].number)) {
-                          _bookmarks.remove(_surahs[i].number);
-                        } else {
-                          _bookmarks.add(_surahs[i].number);
-                        }
-                      });
-                    },
+              // Daftar Surah (Dynamic from API)
+              Obx(() {
+                if (_homeController.isLoading.value) {
+                  return const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 60),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                if (_homeController.errorMessage.isNotEmpty) {
+                  return SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 48),
+                          const SizedBox(height: 12),
+                          Text(
+                            _homeController.errorMessage.value,
+                            textAlign: TextAlign.center,
+                            style: R.textStyle.medium(color: Colors.white),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton.icon(
+                            onPressed: () => _homeController.fetchSurahs(),
+                            icon: const Icon(Icons.refresh_rounded),
+                            label: const Text('Coba Lagi'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: _gold,
+                              foregroundColor: _bg,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
+                final surahList = _homeController.surahs;
+                if (surahList.isEmpty) {
+                  return const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 40),
+                      child: Center(
+                        child: Text(
+                          'Tidak ada surah ditemukan',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, i) => SurahTile(
+                      item: surahList[i],
+                      gold: _gold,
+                      goldLight: _goldLight,
+                      goldDim: _goldDim,
+                      textSoft: _textSoft,
+                      isBookmarked: _bookmarks.contains(surahList[i].nomor),
+                      onBookmarkTapped: () {
+                        setState(() {
+                          if (_bookmarks.contains(surahList[i].nomor)) {
+                            _bookmarks.remove(surahList[i].nomor);
+                          } else {
+                            _bookmarks.add(surahList[i].nomor);
+                          }
+                        });
+                      },
+                    ),
+                    childCount: surahList.length,
                   ),
-                  childCount: _surahs.length,
-                ),
-              ),
+                );
+              }),
             ] else if (_activeTab == 1) ...[
               // Terakhir Dibaca (History)
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, i) {
                     final history = [
-                      const SurahItem(2, 'Al-Baqarah', 'البقرة', 286, 'Madaniyah'),
-                      const SurahItem(1, 'Al-Fatihah', 'الفاتحة', 7, 'Makkiyah'),
+                      DataSurah(nomor: 2, nama: 'البقرة', namaLatin: 'Al-Baqarah', jumlahAyat: 286, tempatTurun: 'Madinah', arti: 'Sapi Betina', deskripsi: '', audioFull: {}),
+                      DataSurah(nomor: 1, nama: 'الفاتحة', namaLatin: 'Al-Fatihah', jumlahAyat: 7, tempatTurun: 'Mekah', arti: 'Pembukaan', deskripsi: '', audioFull: {}),
                     ];
                     final lastAyat = [255, 7];
                     final item = history[i];
@@ -326,8 +392,8 @@ class _HomeViewState extends State<HomeView>
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(14),
-                          color: R.color.bg2.withOpacity(0.6),
-                          border: Border.all(color: _goldDim.withOpacity(0.12), width: 1),
+                          color: R.color.bg2.withValues(alpha: 0.6),
+                          border: Border.all(color: _goldDim.withValues(alpha: 0.12), width: 1),
                         ),
                         child: Row(
                           children: [
@@ -337,14 +403,14 @@ class _HomeViewState extends State<HomeView>
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: _goldDim.withOpacity(0.15),
+                                color: _goldDim.withValues(alpha: 0.15),
                               ),
                               child: Text(
                                 '${i + 1}',
                                 style: R.textStyle.small(
                                   color: _goldLight,
                                   fontWeight: FontWeight.w700,
-                                ).copyWith(fontSize: 11),
+                                ).copyWith(fontSize: 11, fontFamily: 'Poppins'),
                               ),
                             ),
                             const SizedBox(width: 14),
@@ -353,29 +419,29 @@ class _HomeViewState extends State<HomeView>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    item.latin,
+                                    item.namaLatin,
                                     style: R.textStyle.medium(
                                       fontWeight: FontWeight.w600,
                                       color: _textSoft,
-                                    ).copyWith(fontSize: 15),
+                                    ).copyWith(fontSize: 15, fontFamily: 'Poppins'),
                                   ),
                                   const SizedBox(height: 2),
                                   Text(
                                     'Terakhir dibaca: Ayat ${lastAyat[i]}',
                                     style: R.textStyle.small(
-                                      color: _textSoft.withOpacity(0.4),
-                                    ),
+                                      color: _textSoft.withValues(alpha: 0.4),
+                                    ).copyWith(fontFamily: 'Poppins'),
                                   ),
                                 ],
                               ),
                             ),
                             Text(
-                              item.arabic,
+                              item.nama,
                               style: R.textStyle.large(
                                 color: _goldLight,
                                 fontWeight: FontWeight.w500,
                               ).copyWith(
-                                fontFamily: 'serif',
+                                fontFamily: 'Poppins',
                                 fontSize: 18,
                               ),
                             ),
@@ -389,10 +455,14 @@ class _HomeViewState extends State<HomeView>
               ),
             ] else ...[
               // Bookmarks
-              (() {
-                final bookmarkedList = _surahs
-                    .where((s) => _bookmarks.contains(s.number))
+              Obx(() {
+                final listToUse = _homeController.surahs.isNotEmpty 
+                    ? _homeController.surahs 
+                    : _mockSurahs;
+                final bookmarkedList = listToUse
+                    .where((s) => _bookmarks.contains(s.nomor))
                     .toList();
+
                 if (bookmarkedList.isEmpty) {
                   return SliverToBoxAdapter(
                     child: Padding(
@@ -402,7 +472,7 @@ class _HomeViewState extends State<HomeView>
                           Icon(
                             Icons.bookmark_outline_rounded,
                             size: 48,
-                            color: _goldDim.withOpacity(0.4),
+                            color: _goldDim.withValues(alpha: 0.4),
                           ),
                           const SizedBox(height: 12),
                           Text(
@@ -416,7 +486,7 @@ class _HomeViewState extends State<HomeView>
                           Text(
                             'Ketuk ikon bookmark untuk menandai surah favorit.',
                             style: R.textStyle.small(
-                              color: _textSoft.withOpacity(0.4),
+                              color: _textSoft.withValues(alpha: 0.4),
                             ),
                           ),
                         ],
@@ -437,7 +507,7 @@ class _HomeViewState extends State<HomeView>
                         isBookmarked: true,
                         onBookmarkTapped: () {
                           setState(() {
-                            _bookmarks.remove(item.number);
+                            _bookmarks.remove(item.nomor);
                           });
                         },
                       );
@@ -445,7 +515,7 @@ class _HomeViewState extends State<HomeView>
                     childCount: bookmarkedList.length,
                   ),
                 );
-              })(),
+              }),
             ],
 
             const SliverToBoxAdapter(child: SizedBox(height: 40)),

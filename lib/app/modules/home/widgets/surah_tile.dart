@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../../app/constants/r.dart';
-import 'surah_item.dart';
+import '../../../data/models/surah_model.dart';
 import 'diamond_number_painter.dart';
 
 class SurahTile extends StatelessWidget {
-  final SurahItem item;
+  final DataSurah item;
   final Color gold, goldLight, goldDim, textSoft;
   final bool isBookmarked;
   final VoidCallback? onBookmarkTapped;
@@ -29,14 +29,14 @@ class SurahTile extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(14),
           onTap: () {},
-          splashColor: gold.withOpacity(0.08),
-          highlightColor: gold.withOpacity(0.04),
+          splashColor: gold.withValues(alpha: 0.08),
+          highlightColor: gold.withValues(alpha: 0.04),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(14),
-              color: R.color.bg2.withOpacity(0.6),
-              border: Border.all(color: goldDim.withOpacity(0.12), width: 1),
+              color: R.color.bg2.withValues(alpha: 0.6),
+              border: Border.all(color: goldDim.withValues(alpha: 0.12), width: 1),
             ),
             child: Row(
               children: [
@@ -48,7 +48,7 @@ class SurahTile extends StatelessWidget {
                   child: CustomPaint(
                     size: const Size(40, 40),
                     painter: DiamondNumberPainter(
-                      number: item.number,
+                      number: item.nomor,
                       color: goldDim,
                       textColor: goldLight,
                     ),
@@ -61,19 +61,22 @@ class SurahTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        item.latin,
+                        item.namaLatin,
                         style: R.textStyle.medium(
                           fontWeight: FontWeight.w600,
                           color: textSoft,
                         ).copyWith(
                           fontSize: 15,
+                          fontFamily: 'Poppins',
                         ),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        '${item.verses} Ayat • ${item.type}',
+                        '${item.jumlahAyat} Ayat • ${item.tempatTurun}',
                         style: R.textStyle.small(
-                          color: textSoft.withOpacity(0.4),
+                          color: textSoft.withValues(alpha: 0.4),
+                        ).copyWith(
+                          fontFamily: 'Poppins',
                         ),
                       ),
                     ],
@@ -84,12 +87,12 @@ class SurahTile extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      item.arabic,
+                      item.nama,
                       style: R.textStyle.large(
                         color: goldLight,
                         fontWeight: FontWeight.w500,
                       ).copyWith(
-                        fontFamily: 'serif',
+                        fontFamily: 'Poppins',
                         fontSize: 18,
                       ),
                     ),
@@ -98,7 +101,7 @@ class SurahTile extends StatelessWidget {
                       IconButton(
                         icon: Icon(
                           isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded,
-                          color: isBookmarked ? gold : goldDim.withOpacity(0.6),
+                          color: isBookmarked ? gold : goldDim.withValues(alpha: 0.6),
                           size: 20,
                         ),
                         onPressed: onBookmarkTapped,

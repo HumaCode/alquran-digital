@@ -34,20 +34,6 @@ class _HomeViewState extends State<HomeView>
   final Set<int> _bookmarks = {1, 36, 67};
   final List<String> _tabs = [R.string.tabDaftarSurat, R.string.tabTerakhirDibaca, R.string.tabBookmark];
 
-  final List<DataSurah> _mockSurahs = [
-    DataSurah(nomor: 1, nama: 'الفاتحة', namaLatin: 'Al-Fatihah', jumlahAyat: 7, tempatTurun: 'Mekah', arti: 'Pembukaan', deskripsi: '', audioFull: {}),
-    DataSurah(nomor: 2, nama: 'البقرة', namaLatin: 'Al-Baqarah', jumlahAyat: 286, tempatTurun: 'Madinah', arti: 'Sapi Betina', deskripsi: '', audioFull: {}),
-    DataSurah(nomor: 3, nama: 'آل عمران', namaLatin: 'Ali \'Imran', jumlahAyat: 200, tempatTurun: 'Madinah', arti: 'Keluarga Imran', deskripsi: '', audioFull: {}),
-    DataSurah(nomor: 4, nama: 'النساء', namaLatin: 'An-Nisa\'', jumlahAyat: 176, tempatTurun: 'Madinah', arti: 'Wanita', deskripsi: '', audioFull: {}),
-    DataSurah(nomor: 5, nama: 'المائدة', namaLatin: 'Al-Maidah', jumlahAyat: 120, tempatTurun: 'Madinah', arti: 'Hidangan', deskripsi: '', audioFull: {}),
-    DataSurah(nomor: 36, nama: 'يس', namaLatin: 'Ya-Sin', jumlahAyat: 83, tempatTurun: 'Mekah', arti: 'Ya Sin', deskripsi: '', audioFull: {}),
-    DataSurah(nomor: 55, nama: 'الرحمن', namaLatin: 'Ar-Rahman', jumlahAyat: 78, tempatTurun: 'Madinah', arti: 'Yang Maha Pemurah', deskripsi: '', audioFull: {}),
-    DataSurah(nomor: 67, nama: 'الملك', namaLatin: 'Al-Mulk', jumlahAyat: 30, tempatTurun: 'Mekah', arti: 'Kerajaan', deskripsi: '', audioFull: {}),
-    DataSurah(nomor: 112, nama: 'الإخلاص', namaLatin: 'Al-Ikhlas', jumlahAyat: 4, tempatTurun: 'Mekah', arti: 'Kemurnian Keesaan Allah', deskripsi: '', audioFull: {}),
-    DataSurah(nomor: 113, nama: 'الفلق', namaLatin: 'Al-Falaq', jumlahAyat: 5, tempatTurun: 'Mekah', arti: 'Waktu Subuh', deskripsi: '', audioFull: {}),
-    DataSurah(nomor: 114, nama: 'الناس', namaLatin: 'An-Nas', jumlahAyat: 6, tempatTurun: 'Mekah', arti: 'Manusia', deskripsi: '', audioFull: {}),
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -511,9 +497,7 @@ class _HomeViewState extends State<HomeView>
             ] else ...[
               // Bookmarks
               Obx(() {
-                final listToUse = _homeController.surahs.isNotEmpty 
-                    ? _homeController.surahs 
-                    : _mockSurahs;
+                final listToUse = _homeController.allSurahs;
                 final bookmarkedList = listToUse
                     .where((s) => _bookmarks.contains(s.nomor))
                     .toList();

@@ -22,6 +22,7 @@ class HomeController extends GetxController {
   final searchController = TextEditingController();
 
   List<DataSurah> _allSurahs = [];
+  List<DataSurah> get allSurahs => _allSurahs;
   int _loadedCount = 0;
   static const int _pageSize = 10;
 

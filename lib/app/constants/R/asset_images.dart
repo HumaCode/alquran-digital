@@ -1,0 +1,3 @@
+class AssetsImage {
+  const AssetsImage();
+}

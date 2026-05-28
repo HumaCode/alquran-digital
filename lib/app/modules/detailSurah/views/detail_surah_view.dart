@@ -6,6 +6,7 @@ import '../../../../app/constants/r.dart';
 import '../../../data/models/detail_surah_model.dart';
 import '../../home/widgets/diamond_number_painter.dart';
 import '../controllers/detail_surah_controller.dart';
+import 'package:alquran_digital/app/components/widgets/widgets.dart';
 
 class DetailSurahView extends GetView<DetailSurahController> {
   const DetailSurahView({super.key});
@@ -45,9 +46,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
       body: Obx(() {
         if (controller.isLoading.value) {
           return Center(
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(_gold),
-            ),
+            child: CustomLoader(size: 60),
           );
         }
 
@@ -239,14 +238,10 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                   Clipboard.setData(ClipboardData(
                                     text: '${ayat.teksArab}\n${ayat.teksLatin}\n${ayat.teksIndonesia}',
                                   ));
-                                  Get.snackbar(
-                                    R.string.copied,
-                                    'Ayat ${ayat.nomorAyat} ${R.string.copySuccess.toLowerCase()}',
-                                    backgroundColor: _emeraldDark.withValues(alpha: 0.9),
-                                    colorText: _textSoft,
-                                    snackPosition: SnackPosition.BOTTOM,
-                                    margin: const EdgeInsets.all(20),
-                                    duration: const Duration(seconds: 2),
+                                  CustomToast.show(
+                                    context,
+                                    message: 'Ayat ${ayat.nomorAyat} ${R.string.copySuccess.toLowerCase()}',
+                                    type: ToastType.success,
                                   );
                                 },
                               ),
@@ -260,13 +255,10 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                         '${ayat.teksArab}\n\n'
                                         'Artinya: "${ayat.teksIndonesia}"',
                                   ));
-                                  Get.snackbar(
-                                    R.string.share,
-                                    R.string.shareText,
-                                    backgroundColor: _emeraldDark.withValues(alpha: 0.9),
-                                    colorText: _textSoft,
-                                    snackPosition: SnackPosition.BOTTOM,
-                                    margin: const EdgeInsets.all(20),
+                                  CustomToast.show(
+                                    context,
+                                    message: R.string.shareText,
+                                    type: ToastType.success,
                                   );
                                 },
                               ),

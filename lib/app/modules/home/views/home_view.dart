@@ -6,6 +6,7 @@ import '../../../data/models/surah_model.dart';
 import '../controllers/home_controller.dart';
 import '../widgets/surah_tile.dart';
 import '../widgets/home_pattern_painter.dart';
+import 'package:alquran_digital/app/components/widgets/widgets.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -325,13 +326,11 @@ class _HomeViewState extends State<HomeView>
               // Daftar Surah (Dynamic from API)
               Obx(() {
                 if (_homeController.isLoading.value) {
-                  return const SliverToBoxAdapter(
+                  return SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 60),
+                      padding: const EdgeInsets.symmetric(vertical: 60),
                       child: Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
-                        ),
+                        child: CustomLoader(size: 50),
                       ),
                     ),
                   );
@@ -566,9 +565,7 @@ class _HomeViewState extends State<HomeView>
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     child: Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(_gold),
-                      ),
+                      child: CustomLoader(size: 40),
                     ),
                   );
                 }
@@ -728,15 +725,12 @@ class _HomeViewState extends State<HomeView>
                       subtitle: 'Waktu sholat 5 waktu akurat',
                       onTap: () {
                         Navigator.pop(context);
-                        Get.snackbar(
-                          'Jadwal Sholat',
-                          'Fitur Jadwal Sholat akan segera hadir!',
-                          backgroundColor: _bg2,
-                          colorText: _textSoft,
-                          borderColor: _goldDim.withOpacity(0.3),
-                          borderWidth: 1,
-                          snackPosition: SnackPosition.BOTTOM,
-                          margin: const EdgeInsets.all(16),
+                        CustomAlert.show(
+                          context,
+                          title: 'Jadwal Sholat',
+                          message: 'Fitur Jadwal Sholat akan segera hadir!',
+                          confirmText: 'OK',
+                          icon: Icons.access_time_rounded,
                         );
                       },
                     ),
@@ -747,15 +741,12 @@ class _HomeViewState extends State<HomeView>
                       subtitle: 'Panduan waktu imsak & buka',
                       onTap: () {
                         Navigator.pop(context);
-                        Get.snackbar(
-                          'Jadwal Imsakiyah',
-                          'Fitur Jadwal Imsakiyah akan segera hadir!',
-                          backgroundColor: _bg2,
-                          colorText: _textSoft,
-                          borderColor: _goldDim.withOpacity(0.3),
-                          borderWidth: 1,
-                          snackPosition: SnackPosition.BOTTOM,
-                          margin: const EdgeInsets.all(16),
+                        CustomAlert.show(
+                          context,
+                          title: 'Jadwal Imsakiyah',
+                          message: 'Fitur Jadwal Imsakiyah akan segera hadir!',
+                          confirmText: 'OK',
+                          icon: Icons.nights_stay_rounded,
                         );
                       },
                     ),
@@ -766,15 +757,12 @@ class _HomeViewState extends State<HomeView>
                       subtitle: 'Kompas penunjuk arah Ka\'bah',
                       onTap: () {
                         Navigator.pop(context);
-                        Get.snackbar(
-                          'Arah Kiblat',
-                          'Fitur Arah Kiblat akan segera hadir!',
-                          backgroundColor: _bg2,
-                          colorText: _textSoft,
-                          borderColor: _goldDim.withOpacity(0.3),
-                          borderWidth: 1,
-                          snackPosition: SnackPosition.BOTTOM,
-                          margin: const EdgeInsets.all(16),
+                        CustomAlert.show(
+                          context,
+                          title: 'Arah Kiblat',
+                          message: 'Fitur Arah Kiblat akan segera hadir!',
+                          confirmText: 'OK',
+                          icon: Icons.compass_calibration_rounded,
                         );
                       },
                     ),

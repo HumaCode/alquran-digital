@@ -72,6 +72,7 @@ class _HomeViewState extends State<HomeView>
         backgroundColor: _bg,
         drawer: _buildDrawer(context),
         body: CustomScrollView(
+          controller: _homeController.scrollController,
           slivers: [
             // ── App Bar ──────────────────────────────────────────────────
             SliverAppBar(
@@ -529,9 +530,75 @@ class _HomeViewState extends State<HomeView>
               }),
             ],
 
+            SliverToBoxAdapter(
+              child: Obx(() {
+                if (_homeController.isMoreLoading.value) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(_gold),
+                      ),
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              }),
+            ),
+            
+            SliverToBoxAdapter(
+              child: Obx(() {
+                if (_homeController.showScrollToTop.value) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 40),
+                    child: Center(
+                      child: TextButton.icon(
+                        onPressed: () => _homeController.scrollToTop(),
+                        icon: Icon(Icons.arrow_upward_rounded, color: _gold),
+                        label: Text(
+                          'Kembali ke Atas',
+                          style: R.textStyle.medium(
+                            color: _goldLight,
+                            fontWeight: FontWeight.w600,
+                          ).copyWith(fontFamily: 'Poppins'),
+                        ),
+                        style: TextButton.styleFrom(
+                          backgroundColor: _bg2,
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            side: BorderSide(color: _goldDim.withValues(alpha: 0.3)),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              }),
+            ),
+            
             const SliverToBoxAdapter(child: SizedBox(height: 40)),
           ],
         ),
+        floatingActionButton: Obx(() {
+          return AnimatedSlide(
+            duration: const Duration(milliseconds: 300),
+            offset: _homeController.showScrollToTop.value ? Offset.zero : const Offset(0, 2),
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 300),
+              opacity: _homeController.showScrollToTop.value ? 1.0 : 0.0,
+              child: FloatingActionButton(
+                onPressed: () => _homeController.scrollToTop(),
+                backgroundColor: _gold,
+                foregroundColor: _bg,
+                shape: const CircleBorder(),
+                elevation: 4,
+                child: const Icon(Icons.keyboard_double_arrow_up_rounded, size: 28),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }

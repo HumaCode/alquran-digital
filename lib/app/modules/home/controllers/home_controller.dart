@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import '../../../data/models/surah_model.dart';
 import '../../../data/repositories/surah_repository.dart';
@@ -11,10 +12,65 @@ class HomeController extends GetxController {
   final surahs = <DataSurah>[].obs;
   final errorMessage = ''.obs;
 
+  // Pagination & Scroll states
+  final isMoreLoading = false.obs;
+  final showScrollToTop = false.obs;
+  final scrollController = ScrollController();
+
+  List<DataSurah> _allSurahs = [];
+  int _loadedCount = 0;
+  static const int _pageSize = 10;
+
   @override
   void onInit() {
     super.onInit();
+    scrollController.addListener(_onScroll);
     fetchSurahs();
+  }
+
+  @override
+  void onClose() {
+    scrollController.dispose();
+    super.onClose();
+  }
+
+  void _onScroll() {
+    // Show back to top button if scrolled past 300px
+    showScrollToTop.value = scrollController.position.pixels > 300;
+
+    // Load more when scrolled near bottom
+    if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - 200) {
+      if (!isMoreLoading.value && surahs.length < _allSurahs.length) {
+        _loadMore();
+      }
+    }
+  }
+
+  Future<void> _loadMore() async {
+    isMoreLoading.value = true;
+    await Future.delayed(const Duration(milliseconds: 200));
+    loadNextPage();
+    isMoreLoading.value = false;
+  }
+
+  void loadNextPage() {
+    if (_loadedCount >= _allSurahs.length) return;
+
+    final nextBatchSize = (_allSurahs.length - _loadedCount) < _pageSize
+        ? (_allSurahs.length - _loadedCount)
+        : _pageSize;
+
+    final nextBatch = _allSurahs.sublist(_loadedCount, _loadedCount + nextBatchSize);
+    surahs.addAll(nextBatch);
+    _loadedCount += nextBatchSize;
+  }
+
+  void scrollToTop() {
+    scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 800),
+      curve: Curves.easeInOutCubic,
+    );
   }
 
   Future<void> fetchSurahs() async {
@@ -22,7 +78,10 @@ class HomeController extends GetxController {
     errorMessage.value = '';
     try {
       final data = await _repository.getSurahs();
-      surahs.assignAll(data);
+      _allSurahs = data;
+      surahs.clear();
+      _loadedCount = 0;
+      loadNextPage();
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {

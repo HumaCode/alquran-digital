@@ -98,6 +98,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
         final detail = detailResponse.data;
 
         return ListView(
+          controller: controller.scrollController,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           children: [
             // ── Surah Card Header ──────────────────────────────────────────
@@ -188,12 +189,12 @@ class DetailSurahView extends GetView<DetailSurahController> {
             const SizedBox(height: 32),
 
             // ── Ayat List ──────────────────────────────────────────────────
-            ListView.builder(
+            Obx(() => ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: detail.ayat.length,
+              itemCount: controller.visibleAyat.length,
               itemBuilder: (context, index) {
-                final ayat = detail.ayat[index];
+                final ayat = controller.visibleAyat[index];
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 24),
                   child: Container(
@@ -322,7 +323,23 @@ class DetailSurahView extends GetView<DetailSurahController> {
                   ),
                 );
               },
-            ),
+            )),
+            
+            // Loading Indicator for Pagination
+            Obx(() {
+              if (controller.isMoreLoading.value) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(_gold),
+                    ),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            }),
+            
             const SizedBox(height: 24),
 
             // ── Next & Previous Buttons ────────────────────────────────────

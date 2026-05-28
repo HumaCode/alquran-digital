@@ -1,3 +1,4 @@
+import '../models/detail_surah_model.dart';
 import '../models/surah_model.dart';
 import '../providers/surah_provider.dart';
 
@@ -18,6 +19,21 @@ class SurahRepository {
       return surahResponse.data;
     } else {
       throw Exception('Data surah kosong');
+    }
+  }
+
+  Future<DetailSurah> getDetailSurah(int nomor) async {
+    final response = await _provider.fetchDetailSurah(nomor);
+    if (response.status.hasError) {
+      throw Exception('Gagal memuat detail surah: ${response.statusText}');
+    }
+
+    final data = response.body;
+    if (data != null) {
+      final detailResponse = DetailSurahResponse.fromJson(data as Map<String, dynamic>);
+      return detailResponse.data;
+    } else {
+      throw Exception('Data detail surah kosong');
     }
   }
 }

@@ -370,6 +370,9 @@ class _HomeViewState extends State<HomeView>
                           }
                         });
                       },
+                      onTap: () {
+                        Get.toNamed(Routes.DETAIL_SURAH, arguments: surahList[i].nomor);
+                      },
                     ),
                     childCount: surahList.length,
                   ),
@@ -388,64 +391,69 @@ class _HomeViewState extends State<HomeView>
                     final item = history[i];
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(14),
-                          color: R.color.bg2.withValues(alpha: 0.6),
-                          border: Border.all(color: _goldDim.withValues(alpha: 0.12), width: 1),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: _goldDim.withValues(alpha: 0.15),
+                      child: GestureDetector(
+                        onTap: () {
+                          Get.toNamed(Routes.DETAIL_SURAH, arguments: item.nomor);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            color: R.color.bg2.withValues(alpha: 0.6),
+                            border: Border.all(color: _goldDim.withValues(alpha: 0.12), width: 1),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: _goldDim.withValues(alpha: 0.15),
+                                ),
+                                child: Text(
+                                  '${i + 1}',
+                                  style: R.textStyle.small(
+                                    color: _goldLight,
+                                    fontWeight: FontWeight.w700,
+                                  ).copyWith(fontSize: 11, fontFamily: 'Poppins'),
+                                ),
                               ),
-                              child: Text(
-                                '${i + 1}',
-                                style: R.textStyle.small(
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item.namaLatin,
+                                      style: R.textStyle.medium(
+                                        fontWeight: FontWeight.w600,
+                                        color: _textSoft,
+                                      ).copyWith(fontSize: 15, fontFamily: 'Poppins'),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      'Terakhir dibaca: Ayat ${lastAyat[i]}',
+                                      style: R.textStyle.small(
+                                        color: _textSoft.withValues(alpha: 0.4),
+                                      ).copyWith(fontFamily: 'Poppins'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                item.nama,
+                                style: R.textStyle.large(
                                   color: _goldLight,
-                                  fontWeight: FontWeight.w700,
-                                ).copyWith(fontSize: 11, fontFamily: 'Poppins'),
+                                  fontWeight: FontWeight.w500,
+                                ).copyWith(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 18,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item.namaLatin,
-                                    style: R.textStyle.medium(
-                                      fontWeight: FontWeight.w600,
-                                      color: _textSoft,
-                                    ).copyWith(fontSize: 15, fontFamily: 'Poppins'),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    'Terakhir dibaca: Ayat ${lastAyat[i]}',
-                                    style: R.textStyle.small(
-                                      color: _textSoft.withValues(alpha: 0.4),
-                                    ).copyWith(fontFamily: 'Poppins'),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              item.nama,
-                              style: R.textStyle.large(
-                                color: _goldLight,
-                                fontWeight: FontWeight.w500,
-                              ).copyWith(
-                                fontFamily: 'Poppins',
-                                fontSize: 18,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -509,6 +517,9 @@ class _HomeViewState extends State<HomeView>
                           setState(() {
                             _bookmarks.remove(item.nomor);
                           });
+                        },
+                        onTap: () {
+                          Get.toNamed(Routes.DETAIL_SURAH, arguments: item.nomor);
                         },
                       );
                     },

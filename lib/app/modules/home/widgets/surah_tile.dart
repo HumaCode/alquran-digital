@@ -8,6 +8,7 @@ class SurahTile extends StatelessWidget {
   final Color gold, goldLight, goldDim, textSoft;
   final bool isBookmarked;
   final VoidCallback? onBookmarkTapped;
+  final VoidCallback? onTap;
 
   const SurahTile({
     super.key,
@@ -18,6 +19,7 @@ class SurahTile extends StatelessWidget {
     required this.textSoft,
     this.isBookmarked = false,
     this.onBookmarkTapped,
+    this.onTap,
   });
 
   @override
@@ -28,7 +30,7 @@ class SurahTile extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(14),
-          onTap: () {},
+          onTap: onTap,
           splashColor: gold.withValues(alpha: 0.08),
           highlightColor: gold.withValues(alpha: 0.04),
           child: Container(

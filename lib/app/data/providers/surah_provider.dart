@@ -9,4 +9,6 @@ class SurahProvider extends GetConnect {
   }
 
   Future<Response> fetchSurahs() => get(ApiUrl.getAllSurah);
+
+  Future<Response> fetchDetailSurah(int nomor) => get('${ApiUrl.getDetailSurah}/$nomor');
 }

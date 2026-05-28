@@ -32,7 +32,7 @@ class _HomeViewState extends State<HomeView>
 
   int _activeTab = 0;
   final Set<int> _bookmarks = {1, 36, 67};
-  final List<String> _tabs = ['Daftar Surah', 'Terakhir', 'Bookmark'];
+  final List<String> _tabs = [R.string.tabDaftarSurat, R.string.tabTerakhirDibaca, R.string.tabBookmark];
 
   final List<DataSurah> _mockSurahs = [
     DataSurah(nomor: 1, nama: 'الفاتحة', namaLatin: 'Al-Fatihah', jumlahAyat: 7, tempatTurun: 'Mekah', arti: 'Pembukaan', deskripsi: '', audioFull: {}),
@@ -309,14 +309,13 @@ class _HomeViewState extends State<HomeView>
                       controller: _homeController.searchController,
                       onChanged: (val) => _homeController.onSearchChanged(val),
                       style: R.textStyle.medium(color: _goldLight).copyWith(
-                        fontFamily: 'Poppins',
                         fontSize: 14,
                       ),
                       decoration: InputDecoration(
-                        hintText: 'Cari surah...',
+                        hintText: R.string.searchHint,
                         hintStyle: R.textStyle.medium(
                           color: _textSoft.withValues(alpha: 0.4),
-                        ).copyWith(fontFamily: 'Poppins', fontSize: 14),
+                        ).copyWith(fontSize: 14),
                         prefixIcon: Icon(Icons.search_rounded, color: _goldDim, size: 20),
                         suffixIcon: _homeController.searchQuery.isNotEmpty
                             ? IconButton(
@@ -370,7 +369,7 @@ class _HomeViewState extends State<HomeView>
                           ElevatedButton.icon(
                             onPressed: () => _homeController.fetchSurahs(),
                             icon: const Icon(Icons.refresh_rounded),
-                            label: const Text('Coba Lagi'),
+                            label: Text(R.string.tryAgain),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: _gold,
                               foregroundColor: _bg,
@@ -387,13 +386,13 @@ class _HomeViewState extends State<HomeView>
 
                 final surahList = _homeController.surahs;
                 if (surahList.isEmpty) {
-                  return const SliverToBoxAdapter(
+                  return SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 40),
+                      padding: const EdgeInsets.symmetric(vertical: 40),
                       child: Center(
                         child: Text(
-                          'Tidak ada surah ditemukan',
-                          style: TextStyle(color: Colors.white),
+                          R.string.noSurahFound,
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ),
                     ),
@@ -603,11 +602,11 @@ class _HomeViewState extends State<HomeView>
                         onPressed: () => _homeController.scrollToTop(),
                         icon: Icon(Icons.arrow_upward_rounded, color: _gold),
                         label: Text(
-                          'Kembali ke Atas',
+                          R.string.backToTop,
                           style: R.textStyle.medium(
                             color: _goldLight,
                             fontWeight: FontWeight.w600,
-                          ).copyWith(fontFamily: 'Poppins'),
+                          ),
                         ),
                         style: TextButton.styleFrom(
                           backgroundColor: _bg2,

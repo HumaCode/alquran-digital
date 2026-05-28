@@ -31,13 +31,13 @@ class DetailSurahView extends GetView<DetailSurahController> {
           onPressed: () => Get.back(),
         ),
         title: Obx(() {
-          final title = controller.detailSurah.value?.data.namaLatin ?? 'Memuat...';
+          final title = controller.detailSurah.value?.data.namaLatin ?? R.string.loading;
           return Text(
             title,
             style: R.textStyle.large(
               color: _goldLight,
               fontWeight: FontWeight.bold,
-            ).copyWith(fontFamily: 'Poppins', fontSize: 20),
+            ).copyWith(fontSize: 20),
           );
         }),
         centerTitle: true,
@@ -63,13 +63,13 @@ class DetailSurahView extends GetView<DetailSurahController> {
                   Text(
                     controller.errorMessage.value,
                     textAlign: TextAlign.center,
-                    style: R.textStyle.medium(color: _textSoft).copyWith(fontFamily: 'Poppins'),
+                    style: R.textStyle.medium(color: _textSoft),
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton.icon(
                     onPressed: () => controller.fetchDetailSurah(),
                     icon: const Icon(Icons.refresh_rounded),
-                    label: const Text('Coba Lagi'),
+                    label: Text(R.string.tryAgain),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _gold,
                       foregroundColor: _bg,
@@ -89,8 +89,8 @@ class DetailSurahView extends GetView<DetailSurahController> {
         if (detailResponse == null) {
           return Center(
             child: Text(
-              'Detail Surah tidak ditemukan',
-              style: R.textStyle.medium(color: _textSoft).copyWith(fontFamily: 'Poppins'),
+              R.string.detailSurahNotFound,
+              style: R.textStyle.medium(color: _textSoft),
             ),
           );
         }
@@ -131,14 +131,14 @@ class DetailSurahView extends GetView<DetailSurahController> {
                     style: R.textStyle.large(
                       color: _goldLight,
                       fontWeight: FontWeight.bold,
-                    ).copyWith(fontFamily: 'Poppins', fontSize: 24),
+                    ).copyWith(fontSize: 24),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     detail.arti,
                     style: R.textStyle.medium(
                       color: _textSoft.withValues(alpha: 0.7),
-                    ).copyWith(fontFamily: 'Poppins', fontSize: 14),
+                    ).copyWith(fontSize: 14),
                   ),
                   const SizedBox(height: 12),
                   Divider(
@@ -154,7 +154,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                         style: R.textStyle.small(
                           color: _goldLight,
                           fontWeight: FontWeight.w600,
-                        ).copyWith(fontFamily: 'Poppins', letterSpacing: 1.5, fontSize: 12),
+                        ).copyWith(letterSpacing: 1.5, fontSize: 12),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -165,7 +165,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                         style: R.textStyle.small(
                           color: _goldLight,
                           fontWeight: FontWeight.w600,
-                        ).copyWith(fontFamily: 'Poppins', letterSpacing: 1.5, fontSize: 12),
+                        ).copyWith(letterSpacing: 1.5, fontSize: 12),
                       ),
                     ],
                   ),
@@ -173,12 +173,11 @@ class DetailSurahView extends GetView<DetailSurahController> {
                   // Beautiful Bismillah (except for Al-Fatihah which has it as verse 1 and At-Tawbah which does not have it)
                   if (detail.nomor != 1 && detail.nomor != 9)
                     Text(
-                      'بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ',
+                      R.string.bismillah,
                       textAlign: TextAlign.center,
                       style: R.textStyle.large(
                         color: _goldLight,
                       ).copyWith(
-                        fontFamily: 'Poppins',
                         fontSize: 24,
                         letterSpacing: 1,
                       ),
@@ -241,8 +240,8 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                     text: '${ayat.teksArab}\n${ayat.teksLatin}\n${ayat.teksIndonesia}',
                                   ));
                                   Get.snackbar(
-                                    'Disalin',
-                                    'Ayat ${ayat.nomorAyat} berhasil disalin',
+                                    R.string.copied,
+                                    'Ayat ${ayat.nomorAyat} ${R.string.copySuccess.toLowerCase()}',
                                     backgroundColor: _emeraldDark.withValues(alpha: 0.9),
                                     colorText: _textSoft,
                                     snackPosition: SnackPosition.BOTTOM,
@@ -262,8 +261,8 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                         'Artinya: "${ayat.teksIndonesia}"',
                                   ));
                                   Get.snackbar(
-                                    'Bagikan',
-                                    'Teks ayat disalin untuk dibagikan',
+                                    R.string.share,
+                                    R.string.shareText,
                                     backgroundColor: _emeraldDark.withValues(alpha: 0.9),
                                     colorText: _textSoft,
                                     snackPosition: SnackPosition.BOTTOM,

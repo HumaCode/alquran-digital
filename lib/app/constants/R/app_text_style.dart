@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class AppTextStyle {
   const AppTextStyle();
 
+  static const String fontFamily = 'Poppins';
+
   // Font Sizes
   static const double sizeSmall = 12.0;
   static const double sizeMedium = 14.0;
@@ -22,6 +24,7 @@ class AppTextStyle {
         fontStyle: fontStyle,
         decoration: decoration,
         color: color,
+        fontFamily: fontFamily,
       );
 
   TextStyle medium({
@@ -36,6 +39,7 @@ class AppTextStyle {
         fontStyle: fontStyle,
         decoration: decoration,
         color: color,
+        fontFamily: fontFamily,
       );
 
   TextStyle large({
@@ -50,6 +54,7 @@ class AppTextStyle {
         fontStyle: fontStyle,
         decoration: decoration,
         color: color,
+        fontFamily: fontFamily,
       );
 
   TextStyle extraLarge({
@@ -64,6 +69,7 @@ class AppTextStyle {
         fontStyle: fontStyle,
         decoration: decoration,
         color: color,
+        fontFamily: fontFamily,
       );
 
   // Pre-configured Small Styles

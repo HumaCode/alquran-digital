@@ -425,7 +425,7 @@ class _DoaViewState extends State<DoaView> with TickerProviderStateMixin {
                       colors: [_C.goldDim, _C.goldLight],
                     ).createShader(b),
                     child: Text(
-                      'Kumpulan Doa',
+                      R.string.prayerTitle,
                       style: R.textStyle.extraLargeBold.copyWith(
                         color: Colors.white,
                         letterSpacing: 0.5,
@@ -433,7 +433,7 @@ class _DoaViewState extends State<DoaView> with TickerProviderStateMixin {
                     ),
                   ),
                   Text(
-                    '${semuaDoa.length} doa tersedia',
+                    '${semuaDoa.length} ${R.string.prayerCount}',
                     style: R.textStyle.small(color: _C.textMuted),
                   ),
                 ],
@@ -516,7 +516,7 @@ class _DoaViewState extends State<DoaView> with TickerProviderStateMixin {
                 onTap: () => setState(() => _searchActive = true),
                 onEditingComplete: () => setState(() => _searchActive = false),
                 decoration: InputDecoration(
-                  hintText: 'Cari doa...',
+                  hintText: R.string.prayerSearchHint,
                   hintStyle: R.textStyle.medium(color: _C.textMuted),
                   border: InputBorder.none,
                   isDense: true,
@@ -1059,7 +1059,6 @@ class _DoaDetailScreenState extends State<DoaDetailScreen>
                         doa.arab,
                         textAlign: TextAlign.right,
                         style: R.textStyle.extraLargeNormal.copyWith(
-                          fontFamily: 'Poppins',
                           color: _C.goldLight,
                           height: 2.0,
                           shadows: [
@@ -1205,7 +1204,7 @@ class _DoaDetailScreenState extends State<DoaDetailScreen>
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            _copied ? 'Tersalin!' : 'Salin Doa',
+                            _copied ? R.string.copied : R.string.copyPrayer,
                             style: R.textStyle.mediumBold.copyWith(
                               color: const Color(0xFF0A1A12),
                               letterSpacing: 0.5,

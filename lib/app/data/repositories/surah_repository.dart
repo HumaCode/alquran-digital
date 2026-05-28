@@ -30,8 +30,7 @@ class SurahRepository {
 
     final data = response.body;
     if (data != null) {
-      final detailResponse = DetailSurahResponse.fromJson(data as Map<String, dynamic>);
-      return detailResponse.data;
+      return DetailSurah.fromJson(data as Map<String, dynamic>);
     } else {
       throw Exception('Data detail surah kosong');
     }

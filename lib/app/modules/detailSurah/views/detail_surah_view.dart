@@ -31,7 +31,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
           onPressed: () => Get.back(),
         ),
         title: Obx(() {
-          final title = controller.detailSurah.value?.namaLatin ?? 'Memuat...';
+          final title = controller.detailSurah.value?.data.namaLatin ?? 'Memuat...';
           return Text(
             title,
             style: R.textStyle.large(
@@ -85,8 +85,8 @@ class DetailSurahView extends GetView<DetailSurahController> {
           );
         }
 
-        final detail = controller.detailSurah.value;
-        if (detail == null) {
+        final detailResponse = controller.detailSurah.value;
+        if (detailResponse == null) {
           return Center(
             child: Text(
               'Detail Surah tidak ditemukan',
@@ -94,6 +94,8 @@ class DetailSurahView extends GetView<DetailSurahController> {
             ),
           );
         }
+
+        final detail = detailResponse.data;
 
         return ListView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),

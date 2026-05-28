@@ -1,37 +1,41 @@
-class DetailSurahResponse {
-  final int code;
-  final String message;
-  final DetailSurah data;
+class DetailSurah {
+  int code;
+  String message;
+  Data data;
 
-  DetailSurahResponse({
-    required this.code,
-    required this.message,
-    required this.data,
-  });
+  DetailSurah({required this.code, required this.message, required this.data});
 
-  factory DetailSurahResponse.fromJson(Map<String, dynamic> json) {
-    return DetailSurahResponse(
+  factory DetailSurah.fromJson(Map<String, dynamic> json) {
+    return DetailSurah(
       code: json['code'] as int,
       message: json['message'] as String,
-      data: DetailSurah.fromJson(json['data'] as Map<String, dynamic>),
+      data: Data.fromJson(json['data'] as Map<String, dynamic>),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'code': code,
+      'message': message,
+      'data': data.toJson(),
+    };
   }
 }
 
-class DetailSurah {
-  final int nomor;
-  final String nama;
-  final String namaLatin;
-  final int jumlahAyat;
-  final String tempatTurun;
-  final String arti;
-  final String deskripsi;
-  final Map<String, String> audioFull;
-  final List<Ayat> ayat;
-  final NavigationSurah? suratSelanjutnya;
-  final NavigationSurah? suratSebelumnya;
+class Data {
+  int nomor;
+  String nama;
+  String namaLatin;
+  int jumlahAyat;
+  String tempatTurun;
+  String arti;
+  String deskripsi;
+  Map<String, String> audioFull;
+  List<Ayat> ayat;
+  SuratSelanjutnya? suratSelanjutnya; // Bisa bernilai false di JSON, diparse ke null jika bukan Map
+  SuratSebelumnya? suratSebelumnya;   // Bisa bernilai false di JSON, diparse ke null jika bukan Map
 
-  DetailSurah({
+  Data({
     required this.nomor,
     required this.nama,
     required this.namaLatin,
@@ -41,12 +45,12 @@ class DetailSurah {
     required this.deskripsi,
     required this.audioFull,
     required this.ayat,
-    this.suratSelanjutnya,
-    this.suratSebelumnya,
+    required this.suratSelanjutnya,
+    required this.suratSebelumnya,
   });
 
-  factory DetailSurah.fromJson(Map<String, dynamic> json) {
-    return DetailSurah(
+  factory Data.fromJson(Map<String, dynamic> json) {
+    return Data(
       nomor: json['nomor'] as int,
       nama: json['nama'] as String,
       namaLatin: json['namaLatin'] as String,
@@ -59,21 +63,37 @@ class DetailSurah {
           .map((e) => Ayat.fromJson(e as Map<String, dynamic>))
           .toList(),
       suratSelanjutnya: json['suratSelanjutnya'] is Map<String, dynamic>
-          ? NavigationSurah.fromJson(json['suratSelanjutnya'] as Map<String, dynamic>)
+          ? SuratSelanjutnya.fromJson(json['suratSelanjutnya'] as Map<String, dynamic>)
           : null,
       suratSebelumnya: json['suratSebelumnya'] is Map<String, dynamic>
-          ? NavigationSurah.fromJson(json['suratSebelumnya'] as Map<String, dynamic>)
+          ? SuratSebelumnya.fromJson(json['suratSebelumnya'] as Map<String, dynamic>)
           : null,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'nomor': nomor,
+      'nama': nama,
+      'namaLatin': namaLatin,
+      'jumlahAyat': jumlahAyat,
+      'tempatTurun': tempatTurun,
+      'arti': arti,
+      'deskripsi': deskripsi,
+      'audioFull': audioFull,
+      'ayat': ayat.map((e) => e.toJson()).toList(),
+      'suratSelanjutnya': suratSelanjutnya?.toJson(),
+      'suratSebelumnya': suratSebelumnya?.toJson(),
+    };
   }
 }
 
 class Ayat {
-  final int nomorAyat;
-  final String teksArab;
-  final String teksLatin;
-  final String teksIndonesia;
-  final Map<String, String> audio;
+  int nomorAyat;
+  String teksArab;
+  String teksLatin;
+  String teksIndonesia;
+  Map<String, String> audio;
 
   Ayat({
     required this.nomorAyat,
@@ -92,27 +112,78 @@ class Ayat {
       audio: Map<String, String>.from(json['audio'] as Map),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'nomorAyat': nomorAyat,
+      'teksArab': teksArab,
+      'teksLatin': teksLatin,
+      'teksIndonesia': teksIndonesia,
+      'audio': audio,
+    };
+  }
 }
 
-class NavigationSurah {
-  final int nomor;
-  final String nama;
-  final String namaLatin;
-  final int jumlahAyat;
+class SuratSelanjutnya {
+  int nomor;
+  String nama;
+  String namaLatin;
+  int jumlahAyat;
 
-  NavigationSurah({
+  SuratSelanjutnya({
     required this.nomor,
     required this.nama,
     required this.namaLatin,
     required this.jumlahAyat,
   });
 
-  factory NavigationSurah.fromJson(Map<String, dynamic> json) {
-    return NavigationSurah(
+  factory SuratSelanjutnya.fromJson(Map<String, dynamic> json) {
+    return SuratSelanjutnya(
       nomor: json['nomor'] as int,
       nama: json['nama'] as String,
       namaLatin: json['namaLatin'] as String,
       jumlahAyat: json['jumlahAyat'] as int,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'nomor': nomor,
+      'nama': nama,
+      'namaLatin': namaLatin,
+      'jumlahAyat': jumlahAyat,
+    };
+  }
+}
+
+class SuratSebelumnya {
+  int nomor;
+  String nama;
+  String namaLatin;
+  int jumlahAyat;
+
+  SuratSebelumnya({
+    required this.nomor,
+    required this.nama,
+    required this.namaLatin,
+    required this.jumlahAyat,
+  });
+
+  factory SuratSebelumnya.fromJson(Map<String, dynamic> json) {
+    return SuratSebelumnya(
+      nomor: json['nomor'] as int,
+      nama: json['nama'] as String,
+      namaLatin: json['namaLatin'] as String,
+      jumlahAyat: json['jumlahAyat'] as int,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'nomor': nomor,
+      'nama': nama,
+      'namaLatin': namaLatin,
+      'jumlahAyat': jumlahAyat,
+    };
   }
 }

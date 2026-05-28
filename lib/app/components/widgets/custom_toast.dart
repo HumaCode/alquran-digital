@@ -6,7 +6,7 @@ enum ToastType { success, info, error }
 
 class CustomToast {
   static OverlayEntry? _currentOverlay;
-  static Timer? _dismissTimer;
+  static _DynamicIslandToastWidgetState? _currentState;
 
   static void show(
     BuildContext context, {
@@ -14,45 +14,63 @@ class CustomToast {
     ToastType type = ToastType.success,
     Duration duration = const Duration(seconds: 3),
   }) {
-    // Dismiss existing toast if active
-    dismiss();
+    // If there is an existing toast, tell it to animate out immediately
+    if (_currentState != null && _currentState!.mounted) {
+      _currentState!.animateOutAndRemove(() {
+        _createNewToast(context, message, type, duration);
+      });
+    } else {
+      // Remove overlay if it exists but state is gone
+      dismiss();
+      _createNewToast(context, message, type, duration);
+    }
+  }
 
+  static void _createNewToast(
+    BuildContext context,
+    String message,
+    ToastType type,
+    Duration duration,
+  ) {
     final overlayState = Overlay.of(context);
-    
-    // Create new OverlayEntry
+
     _currentOverlay = OverlayEntry(
       builder: (context) => _DynamicIslandToastWidget(
         message: message,
         type: type,
-        onDismiss: () => dismiss(),
+        duration: duration,
+        onCreated: (state) {
+          _currentState = state;
+        },
+        onDismissComplete: () {
+          dismiss();
+        },
       ),
     );
 
     overlayState.insert(_currentOverlay!);
-
-    // Start auto-dismiss timer
-    _dismissTimer = Timer(duration, () {
-      dismiss();
-    });
   }
 
   static void dismiss() {
-    _dismissTimer?.cancel();
-    _dismissTimer = null;
     _currentOverlay?.remove();
     _currentOverlay = null;
+    _currentState = null;
   }
 }
 
 class _DynamicIslandToastWidget extends StatefulWidget {
   final String message;
   final ToastType type;
-  final VoidCallback onDismiss;
+  final Duration duration;
+  final Function(_DynamicIslandToastWidgetState) onCreated;
+  final VoidCallback onDismissComplete;
 
   const _DynamicIslandToastWidget({
     required this.message,
     required this.type,
-    required this.onDismiss,
+    required this.duration,
+    required this.onCreated,
+    required this.onDismissComplete,
   });
 
   @override
@@ -67,66 +85,82 @@ class _DynamicIslandToastWidgetState extends State<_DynamicIslandToastWidget>
   late Animation<double> _contentOpacity;
   late Animation<double> _borderRadius;
 
-  bool _isExpanded = false;
+  Timer? _displayTimer;
+  bool _isRemovedTriggered = false;
 
   @override
   void initState() {
     super.initState();
+    widget.onCreated(this);
+
     _animController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 550),
+      duration: const Duration(milliseconds: 350), // Snappy and fast transition
     );
 
-    // Initial notch-like properties morphing into full pill shape
-    _islandWidth = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 110.0, end: 120.0)
-            .chain(CurveTween(curve: Curves.easeOut)),
-        weight: 20.0,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 120.0, end: 320.0)
-            .chain(CurveTween(curve: Curves.easeOutBack)),
-        weight: 80.0,
-      ),
-    ]).animate(_animController);
-
-    _islandHeight = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 30.0, end: 25.0)
-            .chain(CurveTween(curve: Curves.easeOut)),
-        weight: 15.0,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 25.0, end: 54.0)
-            .chain(CurveTween(curve: Curves.easeOutBack)),
-        weight: 85.0,
-      ),
-    ]).animate(_animController);
-
-    _borderRadius = Tween<double>(begin: 15.0, end: 28.0).animate(
+    // Dynamic Island sizes
+    _islandWidth = Tween<double>(begin: 110.0, end: 320.0).animate(
       CurvedAnimation(
         parent: _animController,
-        curve: const Interval(0.2, 1.0, curve: Curves.easeOut),
+        curve: Curves.easeOutBack,
+        reverseCurve: Curves.easeInBack,
       ),
     );
 
-    _contentOpacity = CurvedAnimation(
-      parent: _animController,
-      curve: const Interval(0.6, 1.0, curve: Curves.easeIn),
+    _islandHeight = Tween<double>(begin: 30.0, end: 54.0).animate(
+      CurvedAnimation(
+        parent: _animController,
+        curve: Curves.easeOutBack,
+        reverseCurve: Curves.easeInBack,
+      ),
     );
 
-    // Run entry animation
-    Future.delayed(const Duration(milliseconds: 100), () {
+    _borderRadius = Tween<double>(begin: 15.0, end: 27.0).animate(
+      CurvedAnimation(
+        parent: _animController,
+        curve: Curves.easeOut,
+        reverseCurve: Curves.easeIn,
+      ),
+    );
+
+    _contentOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animController,
+        curve: const Interval(0.4, 1.0, curve: Curves.easeOut),
+        reverseCurve: const Interval(0.0, 0.4, curve: Curves.easeIn),
+      ),
+    );
+
+    // Start opening transition immediately on next frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        setState(() => _isExpanded = true);
-        _animController.forward();
+        _animController.forward().then((_) {
+          // Once opened, start the auto-dismiss timer
+          _displayTimer = Timer(widget.duration, () {
+            animateOutAndRemove(null);
+          });
+        });
+      }
+    });
+  }
+
+  // Animates the toast out and calls a callback (or dismiss helper)
+  void animateOutAndRemove(VoidCallback? onComplete) {
+    if (_isRemovedTriggered) return;
+    _isRemovedTriggered = true;
+
+    _displayTimer?.cancel();
+    _animController.reverse().then((_) {
+      widget.onDismissComplete();
+      if (onComplete != null) {
+        onComplete();
       }
     });
   }
 
   @override
   void dispose() {
+    _displayTimer?.cancel();
     _animController.dispose();
     super.dispose();
   }
@@ -168,53 +202,63 @@ class _DynamicIslandToastWidgetState extends State<_DynamicIslandToastWidget>
           child: AnimatedBuilder(
             animation: _animController,
             builder: (context, child) {
-              return Container(
-                width: _islandWidth.value,
-                height: _islandHeight.value,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF070E0B), // Deep notch-like pure dark
-                  borderRadius: BorderRadius.circular(_borderRadius.value),
-                  border: Border.all(
-                    color: _getColor().withValues(alpha: 0.35),
-                    width: 1.2,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: _getColor().withValues(alpha: 0.12),
-                      blurRadius: 16,
-                      offset: const Offset(0, 8),
+              // Fade entire toast container out at the very end of reverse animation
+              final double scale = 0.8 + (_animController.value * 0.2);
+              final double opacity = (_animController.value * 5.0).clamp(0.0, 1.0);
+
+              return Opacity(
+                opacity: opacity,
+                child: Transform.scale(
+                  scale: scale,
+                  child: Container(
+                    width: _islandWidth.value,
+                    height: _islandHeight.value,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF070E0B), // Deep notch pure dark
+                      borderRadius: BorderRadius.circular(_borderRadius.value),
+                      border: Border.all(
+                        color: _getColor().withValues(alpha: 0.35),
+                        width: 1.2,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: _getColor().withValues(alpha: 0.12),
+                          blurRadius: 16,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(_borderRadius.value),
-                  child: Center(
-                    child: FadeTransition(
-                      opacity: _contentOpacity,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            _getIcon(),
-                            color: _getColor(),
-                            size: 22,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              widget.message,
-                              style: R.textStyle.medium(
-                                color: R.color.textSoft,
-                                fontWeight: FontWeight.w600,
-                              ).copyWith(
-                                fontSize: 13,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(_borderRadius.value),
+                      child: Center(
+                        child: FadeTransition(
+                          opacity: _contentOpacity,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                _getIcon(),
+                                color: _getColor(),
+                                size: 22,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  widget.message,
+                                  style: R.textStyle.medium(
+                                    color: R.color.textSoft,
+                                    fontWeight: FontWeight.w600,
+                                  ).copyWith(
+                                    fontSize: 13,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),

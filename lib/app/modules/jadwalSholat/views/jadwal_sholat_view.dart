@@ -1465,64 +1465,102 @@ class _JadwalSholatBottomRow extends StatelessWidget {
     });
   }
 
-  Widget _buildImsakCard() {
-    final extras = [
-      {'label': 'Imsak', 'waktu': '04:18', 'icon': Icons.wb_twilight_rounded},
-      {'label': 'Syuruq', 'waktu': '05:45', 'icon': Icons.wb_sunny_rounded},
-      {'label': 'Dhuha', 'waktu': '06:10', 'icon': Icons.light_mode_rounded},
-      {'label': 'Tengah Malam', 'waktu': '23:31', 'icon': Icons.bedtime_rounded},
-    ];
+  String _hitungTengahMalam(String maghribStr, String subuhStr) {
+    try {
+      final maghribParts = maghribStr.split(':');
+      final subuhParts = subuhStr.split(':');
+      if (maghribParts.length < 2 || subuhParts.length < 2) return '--:--';
 
-    return Container(
-      height: 190,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        color: R.color.surfaceJadwal,
-        border: Border.all(color: R.color.goldDim.withOpacity(0.15)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            R.string.otherTimes,
-            style: TextStyle(
-              fontSize: 10,
-              color: R.color.textMutedJadwal,
-              letterSpacing: 2,
+      final mHour = int.parse(maghribParts[0]);
+      final mMin = int.parse(maghribParts[1]);
+      final sHour = int.parse(subuhParts[0]);
+      final sMin = int.parse(subuhParts[1]);
+
+      final maghribMinutes = mHour * 60 + mMin;
+      final subuhMinutes = (sHour + 24) * 60 + sMin;
+
+      final middleMinutes = (maghribMinutes + (subuhMinutes - maghribMinutes) / 2).round();
+      final finalMinutes = middleMinutes % 1440;
+
+      final hour = finalMinutes ~/ 60;
+      final minute = finalMinutes % 60;
+
+      return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+    } catch (e) {
+      return '--:--';
+    }
+  }
+
+  Widget _buildImsakCard() {
+    final controller = Get.find<JadwalSholatController>();
+
+    return Obx(() {
+      final today = controller.todayJadwal.value;
+      final String imsakWaktu = today?.imsak ?? '--:--';
+      final String syuruqWaktu = today?.terbit ?? '--:--';
+      final String dhuhaWaktu = today?.dhuha ?? '--:--';
+      final String tengahMalamWaktu = (today != null)
+          ? _hitungTengahMalam(today.maghrib, today.subuh)
+          : '--:--';
+
+      final extras = [
+        {'label': 'Imsak', 'waktu': imsakWaktu, 'icon': Icons.wb_twilight_rounded},
+        {'label': 'Syuruq', 'waktu': syuruqWaktu, 'icon': Icons.wb_sunny_rounded},
+        {'label': 'Dhuha', 'waktu': dhuhaWaktu, 'icon': Icons.light_mode_rounded},
+        {'label': 'Tengah Malam', 'waktu': tengahMalamWaktu, 'icon': Icons.bedtime_rounded},
+      ];
+
+      return Container(
+        height: 190,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          color: R.color.surfaceJadwal,
+          border: Border.all(color: R.color.goldDim.withOpacity(0.15)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              R.string.otherTimes,
+              style: TextStyle(
+                fontSize: 10,
+                color: R.color.textMutedJadwal,
+                letterSpacing: 2,
+              ),
             ),
-          ),
-          const SizedBox(height: 10),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: extras.map((e) {
-                return Row(
-                  children: [
-                    Icon(e['icon'] as IconData, color: R.color.goldDim, size: 14),
-                    const SizedBox(width: 8),
-                    Text(
-                      e['label'] as String,
-                      style: TextStyle(fontSize: 11, color: R.color.textMutedJadwal),
-                    ),
-                    const Spacer(),
-                    Text(
-                      e['waktu'] as String,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: R.color.goldLight,
-                        letterSpacing: 1,
+            const SizedBox(height: 10),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: extras.map((e) {
+                  return Row(
+                    children: [
+                      Icon(e['icon'] as IconData, color: R.color.goldDim, size: 14),
+                      const SizedBox(width: 8),
+                      Text(
+                        e['label'] as String,
+                        style: TextStyle(fontSize: 11, color: R.color.textMutedJadwal),
                       ),
-                    ),
-                  ],
-                );
-              }).toList(),
+                      const Spacer(),
+                      Text(
+                        e['waktu'] as String,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: R.color.goldLight,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    });
   }
 
   Widget _buildHadisCard() {

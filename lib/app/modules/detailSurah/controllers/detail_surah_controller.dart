@@ -25,6 +25,17 @@ class DetailSurahController extends GetxController {
   int? targetAyat;
   final lastReadAyatNomor = 0.obs;
 
+  // Qori Selection for verses
+  final selectedQori = '05'.obs; // Default to Misyari Rasyid Al-Afasy
+  final qoriList = const [
+    {'id': '01', 'name': 'Abdullah Al-Juhany'},
+    {'id': '02', 'name': 'Abdul Muhsin Al-Qasim'},
+    {'id': '03', 'name': 'Abdurrahman As-Sudais'},
+    {'id': '04', 'name': 'Ibrahim Al-Dossari'},
+    {'id': '05', 'name': 'Misyari Rasyid Al-Afasy'},
+    {'id': '06', 'name': 'Yasser Al-Dosari'},
+  ];
+
   // Pagination states
   final visibleAyat = <Ayat>[].obs;
   final isMoreLoading = false.obs;
@@ -176,11 +187,12 @@ class DetailSurahController extends GetxController {
       isPlayingFullSurah.value = false;
     }
 
-    final audioUrl = ayat.audio['05'];
+    final qoriName = qoriList.firstWhere((q) => q['id'] == selectedQori.value, orElse: () => {'name': 'Qari'})['name'];
+    final audioUrl = ayat.audio[selectedQori.value];
     if (audioUrl == null) {
       Get.snackbar(
         'Audio Tidak Tersedia',
-        'Audio Misyari Rasyid tidak tersedia untuk ayat ini.',
+        'Audio $qoriName tidak tersedia untuk ayat ini.',
         snackPosition: SnackPosition.BOTTOM,
       );
       return;
@@ -225,7 +237,7 @@ class DetailSurahController extends GetxController {
   Future<void> _playFullSurahAyat(int index) async {
     if (index >= _allAyat.length) return;
     final ayat = _allAyat[index];
-    final audioUrl = ayat.audio['05'];
+    final audioUrl = ayat.audio[selectedQori.value];
     if (audioUrl == null) {
       _currentFullSurahIndex++;
       if (_currentFullSurahIndex < _allAyat.length) {

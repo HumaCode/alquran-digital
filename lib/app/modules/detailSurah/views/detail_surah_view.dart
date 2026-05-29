@@ -834,6 +834,51 @@ class DetailSurahView extends GetView<DetailSurahController> {
                   controller.showTranslation.value = value;
                 },
               ),
+              
+              // Qori Selector for Verse Audio
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Pilih Qari Ayat',
+                      style: R.textStyle.small(color: _textSoft).copyWith(fontSize: 14),
+                    ),
+                    Obx(() {
+                      final currentQoriId = controller.selectedQori.value;
+                      return Theme(
+                        data: Theme.of(context).copyWith(
+                          canvasColor: _bg2,
+                        ),
+                        child: DropdownButton<String>(
+                          value: currentQoriId,
+                          icon: Icon(Icons.keyboard_arrow_down_rounded, color: _gold),
+                          underline: Container(),
+                          style: TextStyle(
+                            color: _goldLight,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            fontFamily: 'Poppins',
+                          ),
+                          items: controller.qoriList.map((qori) {
+                            return DropdownMenuItem<String>(
+                              value: qori['id'],
+                              child: Text(qori['name'] ?? ''),
+                            );
+                          }).toList(),
+                          onChanged: (val) {
+                            if (val != null) {
+                              controller.selectedQori.value = val;
+                            }
+                          },
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ),
               const SizedBox(height: 24),
             ],
           ),

@@ -1,10 +1,12 @@
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../../data/models/surah_model.dart';
 import '../../../data/repositories/surah_repository.dart';
 import '../../../data/providers/database_helper.dart';
+import '../../../components/widgets/custom_toast.dart';
 
 class MurotalController extends GetxController {
   final SurahRepository _repository;
@@ -19,7 +21,7 @@ class MurotalController extends GetxController {
   final searchQuery = ''.obs;
 
   final selectedSurah = Rxn<DataSurah>();
-  final selectedQori = '03'.obs; // Default to Mishary Rashid
+  final selectedQori = '05'.obs; // Default to Misyari Rasyid Al-Afasy
   final isPlaying = false.obs;
   
   final position = Duration.zero.obs;
@@ -32,13 +34,15 @@ class MurotalController extends GetxController {
   late final AudioPlayer _audioPlayer;
   final int _pageSize = 10;
   final hasMore = true.obs;
+  final repeatMode = 'off'.obs; // 'off', 'surah', 'juz', 'all'
 
   final qoriList = const [
     {'id': '01', 'name': 'Abdullah Al-Juhany'},
-    {'id': '02', 'name': 'Abdul Basit'},
-    {'id': '03', 'name': 'Misyari Rasyid Al-Afasi'},
-    {'id': '04', 'name': 'Hani ar-Rifai'},
-    {'id': '05', 'name': 'Abdurrahman as-Sudais'},
+    {'id': '02', 'name': 'Abdul Muhsin Al-Qasim'},
+    {'id': '03', 'name': 'Abdurrahman As-Sudais'},
+    {'id': '04', 'name': 'Ibrahim Al-Dossari'},
+    {'id': '05', 'name': 'Misyari Rasyid Al-Afasy'},
+    {'id': '06', 'name': 'Yasser Al-Dosari'},
   ];
 
   @override
@@ -57,7 +61,7 @@ class MurotalController extends GetxController {
       isPlaying.value = state == PlayerState.playing;
     });
     _audioPlayer.onPlayerComplete.listen((_) {
-      playNext();
+      playNext(isAuto: true);
     });
 
     loadSurahs();
@@ -320,15 +324,166 @@ class MurotalController extends GetxController {
     }
   }
 
-  void playNext() {
+  void cycleRepeatMode(BuildContext context) {
+    switch (repeatMode.value) {
+      case 'off':
+        repeatMode.value = 'surah';
+        CustomToast.show(
+          context,
+          message: 'Mengulang Surah yang sama',
+          type: ToastType.info,
+        );
+        break;
+      case 'surah':
+        repeatMode.value = 'juz';
+        CustomToast.show(
+          context,
+          message: 'Mengulang Surah dalam Juz yang sama',
+          type: ToastType.info,
+        );
+        break;
+      case 'juz':
+        repeatMode.value = 'all';
+        CustomToast.show(
+          context,
+          message: 'Mengulang Semua Surah (Juz 1 s/d 30)',
+          type: ToastType.info,
+        );
+        break;
+      case 'all':
+      default:
+        repeatMode.value = 'off';
+        CustomToast.show(
+          context,
+          message: 'Repeat Dinonaktifkan',
+          type: ToastType.info,
+        );
+        break;
+    }
+  }
+
+  int getStartingJuzForSurah(int surahNomor) {
+    if (surahNomor == 1 || surahNomor == 2) return 1;
+    if (surahNomor == 3) return 3;
+    if (surahNomor == 4) return 4;
+    if (surahNomor == 5) return 6;
+    if (surahNomor == 6) return 7;
+    if (surahNomor == 7) return 8;
+    if (surahNomor == 8) return 9;
+    if (surahNomor == 9) return 10;
+    if (surahNomor >= 10 && surahNomor <= 11) return 11;
+    if (surahNomor == 12) return 12;
+    if (surahNomor >= 13 && surahNomor <= 14) return 13;
+    if (surahNomor >= 15 && surahNomor <= 16) return 14;
+    if (surahNomor >= 17 && surahNomor <= 18) return 15;
+    if (surahNomor >= 19 && surahNomor <= 20) return 16;
+    if (surahNomor >= 21 && surahNomor <= 22) return 17;
+    if (surahNomor >= 23 && surahNomor <= 25) return 18;
+    if (surahNomor >= 26 && surahNomor <= 27) return 19;
+    if (surahNomor >= 28 && surahNomor <= 29) return 20;
+    if (surahNomor >= 30 && surahNomor <= 33) return 21;
+    if (surahNomor >= 34 && surahNomor <= 36) return 22;
+    if (surahNomor >= 37 && surahNomor <= 39) return 23;
+    if (surahNomor >= 40 && surahNomor <= 41) return 24;
+    if (surahNomor >= 42 && surahNomor <= 45) return 25;
+    if (surahNomor >= 46 && surahNomor <= 51) return 26;
+    if (surahNomor >= 52 && surahNomor <= 57) return 27;
+    if (surahNomor >= 58 && surahNomor <= 66) return 28;
+    if (surahNomor >= 67 && surahNomor <= 77) return 29;
+    return 30;
+  }
+
+  List<int> getSurahsForJuz(int juz) {
+    switch (juz) {
+      case 1: return [1, 2];
+      case 2: return [2];
+      case 3: return [2, 3];
+      case 4: return [3, 4];
+      case 5: return [4];
+      case 6: return [4, 5];
+      case 7: return [5, 6];
+      case 8: return [6, 7];
+      case 9: return [7, 8];
+      case 10: return [8, 9];
+      case 11: return [9, 10, 11];
+      case 12: return [11, 12];
+      case 13: return [12, 13, 14];
+      case 14: return [15, 16];
+      case 15: return [17, 18];
+      case 16: return [18, 19, 20];
+      case 17: return [21, 22];
+      case 18: return [23, 24, 25];
+      case 19: return [25, 26, 27];
+      case 20: return [27, 28, 29];
+      case 21: return [29, 30, 31, 32, 33];
+      case 22: return [33, 34, 35, 36];
+      case 23: return [36, 37, 38, 39];
+      case 24: return [39, 40, 41];
+      case 25: return [41, 42, 43, 44, 45];
+      case 26: return [46, 47, 48, 49, 50, 51];
+      case 27: return [51, 52, 53, 54, 55, 56, 57];
+      case 28: return [58, 59, 60, 61, 62, 63, 64, 65, 66];
+      case 29: return [67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77];
+      case 30: return List.generate(37, (index) => 78 + index);
+      default: return [];
+    }
+  }
+
+  void playNext({bool isAuto = false}) {
     final cur = selectedSurah.value;
     if (cur == null || surahList.isEmpty) return;
+
+    if (isAuto) {
+      if (repeatMode.value == 'surah') {
+        selectSurah(cur, autoPlay: true);
+        return;
+      } else if (repeatMode.value == 'juz') {
+        final currentJuz = getStartingJuzForSurah(cur.nomor);
+        final surahIds = getSurahsForJuz(currentJuz);
+        if (surahIds.isNotEmpty) {
+          final idxInJuz = surahIds.indexOf(cur.nomor);
+          if (idxInJuz != -1 && idxInJuz < surahIds.length - 1) {
+            final nextSurahNomor = surahIds[idxInJuz + 1];
+            DataSurah? nextSurah;
+            try {
+              nextSurah = surahList.firstWhere((s) => s.nomor == nextSurahNomor);
+            } catch (_) {}
+            if (nextSurah != null) {
+              selectSurah(nextSurah, autoPlay: true);
+              return;
+            }
+          } else {
+            final firstSurahNomor = surahIds.first;
+            DataSurah? firstSurah;
+            try {
+              firstSurah = surahList.firstWhere((s) => s.nomor == firstSurahNomor);
+            } catch (_) {}
+            if (firstSurah != null) {
+              selectSurah(firstSurah, autoPlay: true);
+              return;
+            }
+          }
+        }
+      } else if (repeatMode.value == 'all') {
+        final index = surahList.indexWhere((s) => s.nomor == cur.nomor);
+        if (index != -1 && index < surahList.length - 1) {
+          selectSurah(surahList[index + 1], autoPlay: true);
+        } else {
+          selectSurah(surahList.first, autoPlay: true);
+        }
+        return;
+      }
+    }
 
     final index = surahList.indexWhere((s) => s.nomor == cur.nomor);
     if (index != -1 && index < surahList.length - 1) {
       selectSurah(surahList[index + 1], autoPlay: true);
     } else {
-      selectSurah(surahList.first, autoPlay: true);
+      if (isAuto) {
+        stopAudio();
+      } else {
+        selectSurah(surahList.first, autoPlay: true);
+      }
     }
   }
 

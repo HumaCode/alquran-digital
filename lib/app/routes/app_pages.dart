@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/arahKiblat/bindings/arah_kiblat_binding.dart';
+import '../modules/arahKiblat/views/arah_kiblat_view.dart';
 import '../modules/detailSurah/bindings/detail_surah_binding.dart';
 import '../modules/detailSurah/views/detail_surah_view.dart';
 import '../modules/doa/bindings/doa_binding.dart';
@@ -56,6 +58,11 @@ class AppPages {
       name: _Paths.IMSAKIYAH,
       page: () => const ImsakiyahView(),
       binding: ImsakiyahBinding(),
+    ),
+    GetPage(
+      name: _Paths.ARAH_KIBLAT,
+      page: () => const ArahKiblatView(),
+      binding: ArahKiblatBinding(),
     ),
   ];
 }

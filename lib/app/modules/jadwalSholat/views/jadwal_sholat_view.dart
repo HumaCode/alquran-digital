@@ -1313,7 +1313,12 @@ class _JadwalSholatBottomRow extends StatelessWidget {
           Row(
             children: [
               // Card Kompas Arah Kiblat
-              Expanded(child: _buildQiblaCard()),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => Get.toNamed(Routes.ARAH_KIBLAT),
+                  child: _buildQiblaCard(),
+                ),
+              ),
               const SizedBox(width: 10),
               // Card Waktu Tambahan (Imsak, Syuruq, dll)
               Expanded(

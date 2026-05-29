@@ -44,7 +44,8 @@ class DetailSurahView extends GetView<DetailSurahController> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.settings_rounded, color: _goldLight),
+            icon: Icon(Icons.tune_rounded, color: _goldLight),
+            tooltip: 'Pengaturan Tampilan',
             onPressed: () => _showSettingsBottomSheet(context),
           ),
         ],
@@ -399,9 +400,10 @@ class DetailSurahView extends GetView<DetailSurahController> {
                             height: 1.8,
                           ),
                         ),
-                        if (controller.showLatin.value) ...[
+                        if (controller.showLatin.value || controller.showTranslation.value) ...[
                           const SizedBox(height: 18),
-                          // Latin text
+                        ],
+                        if (controller.showLatin.value) ...[
                           Text(
                             ayat.teksLatin,
                             textAlign: TextAlign.left,
@@ -414,10 +416,11 @@ class DetailSurahView extends GetView<DetailSurahController> {
                               height: 1.4,
                             ),
                           ),
+                          if (controller.showTranslation.value) ...[
+                            const SizedBox(height: 10),
+                          ],
                         ],
                         if (controller.showTranslation.value) ...[
-                          SizedBox(height: controller.showLatin.value ? 10 : 18),
-                          // Translation (Indonesian)
                           Text(
                             ayat.teksIndonesia,
                             textAlign: TextAlign.left,
@@ -655,8 +658,8 @@ class DetailSurahView extends GetView<DetailSurahController> {
 
   void _showSettingsBottomSheet(BuildContext context) {
     Get.bottomSheet(
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      Obx(() => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
           color: _bg,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
@@ -665,158 +668,118 @@ class DetailSurahView extends GetView<DetailSurahController> {
             width: 1.5,
           ),
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Handle Bar
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: _goldDim.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Handle bar
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: _goldDim.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Header
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Pengaturan Tampilan',
+                  style: R.textStyle.medium(
+                    color: _goldLight,
+                    fontWeight: FontWeight.bold,
+                  ).copyWith(fontSize: 18),
+                ),
+                IconButton(
+                  icon: Icon(Icons.close_rounded, color: _goldDim),
+                  onPressed: () => Get.back(),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Divider(
+              color: _goldDim.withValues(alpha: 0.15),
+              thickness: 1,
+            ),
+            const SizedBox(height: 16),
+            
+            // Slider for Font Size
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Ukuran Font Arab',
+                  style: R.textStyle.small(color: _textSoft).copyWith(fontSize: 14),
+                ),
+                Text(
+                  '${controller.arabicFontSize.value.toInt()} px',
+                  style: TextStyle(
+                    color: _goldLight,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
                   ),
                 ),
+              ],
+            ),
+            SliderTheme(
+              data: SliderThemeData(
+                activeTrackColor: _gold,
+                inactiveTrackColor: _goldDim.withValues(alpha: 0.2),
+                thumbColor: _goldLight,
+                overlayColor: _goldLight.withValues(alpha: 0.2),
+                valueIndicatorColor: _emeraldDark,
+                valueIndicatorTextStyle: TextStyle(color: _goldLight),
               ),
-              const SizedBox(height: 16),
-              // Header
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.tune_rounded, color: _goldLight),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Pengaturan Tampilan',
-                        style: R.textStyle.medium(
-                          color: _goldLight,
-                          fontWeight: FontWeight.bold,
-                        ).copyWith(fontSize: 18),
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.close_rounded, color: _goldDim),
-                    onPressed: () => Get.back(),
-                  ),
-                ],
+              child: Slider(
+                value: controller.arabicFontSize.value,
+                min: 20.0,
+                max: 42.0,
+                divisions: 11,
+                label: '${controller.arabicFontSize.value.toInt()}px',
+                onChanged: (value) {
+                  controller.arabicFontSize.value = value;
+                },
               ),
-              const SizedBox(height: 8),
-              Divider(
-                color: _goldDim.withValues(alpha: 0.15),
-                thickness: 1,
+            ),
+            const SizedBox(height: 12),
+            
+            // Toggle Latin Text
+            SwitchListTile.adaptive(
+              title: Text(
+                'Tampilkan Latin',
+                style: R.textStyle.small(color: _textSoft).copyWith(fontSize: 14),
               ),
-              const SizedBox(height: 16),
-
-              // Font Size Slider
-              Text(
-                'Ukuran Huruf Arab',
-                style: R.textStyle.medium(
-                  color: _goldLight,
-                ).copyWith(fontSize: 14, fontWeight: FontWeight.w600),
+              activeColor: _gold,
+              activeTrackColor: _gold.withValues(alpha: 0.3),
+              inactiveThumbColor: _textSoft.withValues(alpha: 0.5),
+              inactiveTrackColor: _bg2.withValues(alpha: 0.5),
+              value: controller.showLatin.value,
+              onChanged: (value) {
+                controller.showLatin.value = value;
+              },
+            ),
+            
+            // Toggle Translation Text
+            SwitchListTile.adaptive(
+              title: Text(
+                'Tampilkan Terjemahan',
+                style: R.textStyle.small(color: _textSoft).copyWith(fontSize: 14),
               ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Text('A', style: TextStyle(color: _textSoft, fontSize: 16)),
-                  Expanded(
-                    child: Obx(() => Slider(
-                          value: controller.arabicFontSize.value,
-                          min: 20.0,
-                          max: 40.0,
-                          divisions: 10,
-                          activeColor: _gold,
-                          inactiveColor: _goldDim.withValues(alpha: 0.3),
-                          onChanged: (val) {
-                            controller.updateArabicFontSize(val);
-                          },
-                        )),
-                  ),
-                  Text('A', style: TextStyle(color: _textSoft, fontSize: 24, fontWeight: FontWeight.bold)),
-                  const SizedBox(width: 8),
-                  Obx(() => Text(
-                        '${controller.arabicFontSize.value.toInt()} px',
-                        style: TextStyle(color: _goldLight, fontSize: 13, fontWeight: FontWeight.w600),
-                      )),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // Toggle Latin
-              Obx(() => Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Latin / Transliterasi',
-                            style: R.textStyle.medium(
-                              color: _goldLight,
-                            ).copyWith(fontSize: 14, fontWeight: FontWeight.w600),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            'Menampilkan ejaan latin ayat',
-                            style: R.textStyle.small(
-                              color: _textSoft.withValues(alpha: 0.6),
-                            ).copyWith(fontSize: 11),
-                          ),
-                        ],
-                      ),
-                      Switch.adaptive(
-                        value: controller.showLatin.value,
-                        activeColor: _gold,
-                        activeTrackColor: _gold.withValues(alpha: 0.3),
-                        onChanged: (val) {
-                          controller.toggleShowLatin(val);
-                        },
-                      ),
-                    ],
-                  )),
-              const SizedBox(height: 16),
-
-              // Toggle Translation
-              Obx(() => Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Terjemahan (Arti)',
-                            style: R.textStyle.medium(
-                              color: _goldLight,
-                            ).copyWith(fontSize: 14, fontWeight: FontWeight.w600),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            'Menampilkan terjemahan bahasa Indonesia',
-                            style: R.textStyle.small(
-                              color: _textSoft.withValues(alpha: 0.6),
-                            ).copyWith(fontSize: 11),
-                          ),
-                        ],
-                      ),
-                      Switch.adaptive(
-                        value: controller.showTranslation.value,
-                        activeColor: _gold,
-                        activeTrackColor: _gold.withValues(alpha: 0.3),
-                        onChanged: (val) {
-                          controller.toggleShowTranslation(val);
-                        },
-                      ),
-                    ],
-                  )),
-              const SizedBox(height: 24),
-            ],
-          ),
+              activeColor: _gold,
+              activeTrackColor: _gold.withValues(alpha: 0.3),
+              inactiveThumbColor: _textSoft.withValues(alpha: 0.5),
+              inactiveTrackColor: _bg2.withValues(alpha: 0.5),
+              value: controller.showTranslation.value,
+              onChanged: (value) {
+                controller.showTranslation.value = value;
+              },
+            ),
+            const SizedBox(height: 24),
+          ],
         ),
-      ),
+      )),
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
     );

@@ -792,13 +792,7 @@ class _HomeViewState extends State<HomeView>
                       subtitle: 'Kompas penunjuk arah Ka\'bah',
                       onTap: () {
                         Navigator.pop(context);
-                        CustomAlert.show(
-                          context,
-                          title: 'Arah Kiblat',
-                          message: 'Fitur Arah Kiblat akan segera hadir!',
-                          confirmText: 'OK',
-                          icon: Icons.compass_calibration_rounded,
-                        );
+                        Get.toNamed(Routes.ARAH_KIBLAT);
                       },
                     ),
                   ],

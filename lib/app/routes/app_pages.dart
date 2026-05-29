@@ -12,6 +12,8 @@ import '../modules/imsakiyah/bindings/imsakiyah_binding.dart';
 import '../modules/imsakiyah/views/imsakiyah_view.dart';
 import '../modules/jadwalSholat/bindings/jadwal_sholat_binding.dart';
 import '../modules/jadwalSholat/views/jadwal_sholat_view.dart';
+import '../modules/murotal/bindings/murotal_binding.dart';
+import '../modules/murotal/views/murotal_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 
@@ -63,6 +65,11 @@ class AppPages {
       name: _Paths.ARAH_KIBLAT,
       page: () => const ArahKiblatView(),
       binding: ArahKiblatBinding(),
+    ),
+    GetPage(
+      name: _Paths.MUROTAL,
+      page: () => const MurotalView(),
+      binding: MurotalBinding(),
     ),
   ];
 }

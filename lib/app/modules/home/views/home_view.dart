@@ -795,6 +795,16 @@ class _HomeViewState extends State<HomeView>
                         Get.toNamed(Routes.ARAH_KIBLAT);
                       },
                     ),
+                    const SizedBox(height: 10),
+                    _buildDrawerItem(
+                      icon: Icons.library_music_rounded,
+                      title: 'Murotal Al-Quran',
+                      subtitle: 'Dengarkan murotal penuh 114 surah',
+                      onTap: () {
+                        Navigator.pop(context);
+                        Get.toNamed(Routes.MUROTAL);
+                      },
+                    ),
                   ],
                 ),
               ),

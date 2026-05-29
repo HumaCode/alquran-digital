@@ -426,45 +426,51 @@ class _ArahKiblatViewState extends State<ArahKiblatView>
         children: [
           Icon(Icons.explore_outlined, color: R.color.goldLight, size: 22),
           const SizedBox(width: 14),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Sudut & Koordinat GPS',
-                style: TextStyle(color: R.color.textMuted, fontSize: 10, letterSpacing: 0.5),
-              ),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Text(
-                    'Kiblat: ${controller.qiblaDirection.value.toStringAsFixed(1)}° N',
-                    style: TextStyle(color: R.color.textSoft, fontSize: 13, fontWeight: FontWeight.w600),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    width: 4,
-                    height: 4,
-                    decoration: BoxDecoration(shape: BoxShape.circle, color: R.color.textMuted),
-                  ),
-                  Text(
-                    'Lat: ${controller.currentLatitude.value.toStringAsFixed(4)}',
-                    style: TextStyle(color: R.color.textSoft, fontSize: 13, fontWeight: FontWeight.w600),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    width: 4,
-                    height: 4,
-                    decoration: BoxDecoration(shape: BoxShape.circle, color: R.color.textMuted),
-                  ),
-                  Text(
-                    'Lon: ${controller.currentLongitude.value.toStringAsFixed(4)}',
-                    style: TextStyle(color: R.color.textSoft, fontSize: 13, fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Sudut & Koordinat GPS',
+                  style: TextStyle(color: R.color.textMuted, fontSize: 10, letterSpacing: 0.5),
+                ),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 4,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Text(
+                      'Kiblat: ${controller.qiblaDirection.value.toStringAsFixed(1)}° N',
+                      style: TextStyle(color: R.color.textSoft, fontSize: 12.5, fontWeight: FontWeight.w600),
+                    ),
+                    _buildDotSeparator(),
+                    Text(
+                      'Lat: ${controller.currentLatitude.value.toStringAsFixed(4)}',
+                      style: TextStyle(color: R.color.textSoft, fontSize: 12.5, fontWeight: FontWeight.w600),
+                    ),
+                    _buildDotSeparator(),
+                    Text(
+                      'Lon: ${controller.currentLongitude.value.toStringAsFixed(4)}',
+                      style: TextStyle(color: R.color.textSoft, fontSize: 12.5, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDotSeparator() {
+    return Container(
+      width: 4,
+      height: 4,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: R.color.textMuted.withOpacity(0.5),
       ),
     );
   }

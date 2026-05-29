@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../data/models/imsakiyah_model.dart';
 import '../../../data/providers/database_helper.dart';
-import 'package:alquran-digital/app/components/widgets/widgets.dart';
+import 'package:alquran_digital/app/components/widgets/widgets.dart';
 import 'package:alquran_digital/app/constants/r.dart';
 import '../controllers/imsakiyah_controller.dart';
 

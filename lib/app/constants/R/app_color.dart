@@ -22,4 +22,16 @@ class AppColor {
 
   // detail surah
   // (Menggunakan warna global / home)
+
+  // jadwal sholat
+  final Color bgJadwal = const Color(0xFF090F0C);
+  final Color surfaceJadwal = const Color(0xFF0D1A12);
+  final Color surface2Jadwal = const Color(0xFF112018);
+  final Color surface3Jadwal = const Color(0xFF172A1E);
+  final Color goldFaint = const Color(0xFF3A2D10);
+  final Color teal = const Color(0xFF1B6B6B);
+  final Color textJadwal = const Color(0xFFD8E8D8);
+  final Color textMutedJadwal = const Color(0xFF5A7A5A);
+  final Color textDimJadwal = const Color(0xFF3A5A3A);
+  final Color sky = const Color(0xFF1565C0);
 }

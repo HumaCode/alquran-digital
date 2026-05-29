@@ -772,13 +772,7 @@ class _HomeViewState extends State<HomeView>
                       subtitle: 'Waktu sholat 5 waktu akurat',
                       onTap: () {
                         Navigator.pop(context);
-                        CustomAlert.show(
-                          context,
-                          title: 'Jadwal Sholat',
-                          message: 'Fitur Jadwal Sholat akan segera hadir!',
-                          confirmText: 'OK',
-                          icon: Icons.access_time_rounded,
-                        );
+                        Get.toNamed(Routes.JADWAL_SHOLAT);
                       },
                     ),
                     const SizedBox(height: 10),

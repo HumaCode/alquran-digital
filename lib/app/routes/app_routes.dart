@@ -7,6 +7,7 @@ abstract class Routes {
   static const SPLASH = _Paths.SPLASH;
   static const DOA = _Paths.DOA;
   static const DETAIL_SURAH = _Paths.DETAIL_SURAH;
+  static const JADWAL_SHOLAT = _Paths.JADWAL_SHOLAT;
 }
 
 abstract class _Paths {
@@ -15,4 +16,5 @@ abstract class _Paths {
   static const SPLASH = '/splash';
   static const DOA = '/doa';
   static const DETAIL_SURAH = '/detail-surah';
+  static const JADWAL_SHOLAT = '/jadwal-sholat';
 }

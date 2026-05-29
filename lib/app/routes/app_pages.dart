@@ -6,6 +6,8 @@ import '../modules/doa/bindings/doa_binding.dart';
 import '../modules/doa/views/doa_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/jadwalSholat/bindings/jadwal_sholat_binding.dart';
+import '../modules/jadwalSholat/views/jadwal_sholat_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 
@@ -42,6 +44,11 @@ class AppPages {
       binding: DetailSurahBinding(),
       transition: Transition.rightToLeftWithFade,
       transitionDuration: const Duration(milliseconds: 350),
+    ),
+    GetPage(
+      name: _Paths.JADWAL_SHOLAT,
+      page: () => const JadwalSholatView(),
+      binding: JadwalSholatBinding(),
     ),
   ];
 }

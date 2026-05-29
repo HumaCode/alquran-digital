@@ -3,219 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../constants/r.dart';
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MODEL
-// ─────────────────────────────────────────────────────────────────────────────
-class DoaModel {
-  final int id;
-  final String judul;
-  final String arab;
-  final String latin;
-  final String arti;
-  final String kategori;
-  final String sumber;
-  final String emoji;
-  bool isFavorit;
-
-  DoaModel({
-    required this.id,
-    required this.judul,
-    required this.arab,
-    required this.latin,
-    required this.arti,
-    required this.kategori,
-    required this.sumber,
-    required this.emoji,
-    this.isFavorit = false,
-  });
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// DATA
-// ─────────────────────────────────────────────────────────────────────────────
-final List<DoaModel> semuaDoa = [
-  DoaModel(
-    id: 1,
-    judul: 'Doa Sebelum Makan',
-    arab: 'اللَّهُمَّ بَارِكْ لَنَا فِيمَا رَزَقْتَنَا وَقِنَا عَذَابَ النَّارِ',
-    latin: "Allahumma baarik lanaa fiimaa razaqtanaa wa qinaa 'adzaaban naar",
-    arti: 'Ya Allah, berkahilah kami dalam rezeki yang Engkau berikan kepada kami dan peliharalah kami dari siksa api neraka.',
-    kategori: 'Harian',
-    sumber: 'HR. Ibnu Sunni',
-    emoji: '🍽️',
-  ),
-  DoaModel(
-    id: 2,
-    judul: 'Doa Setelah Makan',
-    arab: 'الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ',
-    latin: "Alhamdulillahilladzi ath'amanaa wa saqaanaa wa ja'alanaa muslimiin",
-    arti: 'Segala puji bagi Allah yang telah memberi kami makan, minum, dan menjadikan kami sebagai orang-orang Muslim.',
-    kategori: 'Harian',
-    sumber: 'HR. Abu Dawud',
-    emoji: '🙏',
-  ),
-  DoaModel(
-    id: 3,
-    judul: 'Doa Sebelum Tidur',
-    arab: 'بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا',
-    latin: 'Bismikallaahumma amuutu wa ahyaa',
-    arti: 'Dengan nama-Mu ya Allah, aku mati dan aku hidup.',
-    kategori: 'Harian',
-    sumber: 'HR. Bukhari',
-    emoji: '🌙',
-  ),
-  DoaModel(
-    id: 4,
-    judul: 'Doa Bangun Tidur',
-    arab: 'الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ',
-    latin: "Alhamdulillahilladzi ahyaanaa ba'da maa amaatanaa wa ilaihinnusyuur",
-    arti: 'Segala puji bagi Allah yang telah menghidupkan kami setelah mematikan kami, dan hanya kepada-Nya lah tempat kembali.',
-    kategori: 'Harian',
-    sumber: 'HR. Bukhari',
-    emoji: '🌅',
-  ),
-  DoaModel(
-    id: 5,
-    judul: 'Doa Masuk Rumah',
-    arab: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ الْمَوْلِجِ وَخَيْرَ الْمَخْرَجِ',
-    latin: 'Allaahumma innii as-aluka khoirol mawlaji wa khoirol makhroji',
-    arti: 'Ya Allah, sesungguhnya aku memohon kepada-Mu kebaikan tempat masuk dan kebaikan tempat keluar.',
-    kategori: 'Harian',
-    sumber: 'HR. Abu Dawud',
-    emoji: '🏠',
-  ),
-  DoaModel(
-    id: 6,
-    judul: 'Doa Keluar Rumah',
-    arab: 'بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ',
-    latin: "Bismillaahi tawakkaltu 'alallahi wa laa hawla wa laa quwwata illaa billaah",
-    arti: 'Dengan nama Allah, aku bertawakkal kepada Allah. Tiada daya dan kekuatan kecuali dengan pertolongan Allah.',
-    kategori: 'Harian',
-    sumber: 'HR. Abu Dawud & Tirmidzi',
-    emoji: '🚪',
-  ),
-  DoaModel(
-    id: 7,
-    judul: 'Doa Masuk Masjid',
-    arab: 'اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ',
-    latin: 'Allaahumaftah lii abwaaba rahmatik',
-    arti: 'Ya Allah, bukakanlah untukku pintu-pintu rahmat-Mu.',
-    kategori: 'Ibadah',
-    sumber: 'HR. Muslim',
-    emoji: '🕌',
-  ),
-  DoaModel(
-    id: 8,
-    judul: 'Doa Keluar Masjid',
-    arab: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ',
-    latin: 'Allaahumma innii as-aluka min fadhlika',
-    arti: 'Ya Allah, sesungguhnya aku memohon kepada-Mu dari karunia-Mu.',
-    kategori: 'Ibadah',
-    sumber: 'HR. Muslim',
-    emoji: '✨',
-  ),
-  DoaModel(
-    id: 9,
-    judul: 'Doa Sebelum Wudhu',
-    arab: 'بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ',
-    latin: 'Bismillaahirrahmaanirrahiim',
-    arti: 'Dengan menyebut nama Allah Yang Maha Pengasih lagi Maha Penyayang.',
-    kategori: 'Ibadah',
-    sumber: 'HR. Abu Dawud',
-    emoji: '💧',
-  ),
-  DoaModel(
-    id: 10,
-    judul: 'Doa Setelah Wudhu',
-    arab: 'أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ',
-    latin: "Asyhadu allaa ilaaha illallahu wahdahu laa syariika lahu wa asyhadu anna muhammadan 'abduhu wa rasuuluh",
-    arti: 'Aku bersaksi bahwa tiada Tuhan selain Allah, Yang Maha Esa, tiada sekutu bagi-Nya. Dan aku bersaksi bahwa Muhammad adalah hamba dan utusan-Nya.',
-    kategori: 'Ibadah',
-    sumber: 'HR. Muslim',
-    emoji: '🌊',
-  ),
-  DoaModel(
-    id: 11,
-    judul: 'Doa Naik Kendaraan',
-    arab: 'سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ',
-    latin: 'Subhaanalladzi sakhkhara lanaa haadzaa wa maa kunnaa lahu muqriniin wa innaa ilaa rabbinaa lamunqalibuun',
-    arti: 'Maha Suci Allah yang telah menundukkan semua ini bagi kami, padahal kami sebelumnya tidak mampu menguasainya. Dan sesungguhnya kami akan kembali kepada Tuhan kami.',
-    kategori: 'Perjalanan',
-    sumber: 'QS. Az-Zukhruf: 13-14',
-    emoji: '🚗',
-  ),
-  DoaModel(
-    id: 12,
-    judul: 'Doa Bepergian',
-    arab: 'اللَّهُمَّ إِنَّا نَسْأَلُكَ فِي سَفَرِنَا هَذَا الْبِرَّ وَالتَّقْوَى',
-    latin: 'Allaahumma innaa nas-aluka fii safarina haadzal birra wat-taqwaa',
-    arti: 'Ya Allah, sesungguhnya kami memohon kepada-Mu dalam perjalanan kami ini kebaikan dan ketakwaan.',
-    kategori: 'Perjalanan',
-    sumber: 'HR. Muslim',
-    emoji: '✈️',
-  ),
-  DoaModel(
-    id: 13,
-    judul: 'Doa Mohon Kesehatan',
-    arab: 'اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي',
-    latin: "Allaahumma 'aafinii fii badanii, allaahumma 'aafinii fii sam'ii, allaahumma 'aafinii fii bashorii",
-    arti: 'Ya Allah, sehatkanlah badanku. Ya Allah, sehatkanlah pendengaranku. Ya Allah, sehatkanlah penglihatanku.',
-    kategori: 'Kesehatan',
-    sumber: 'HR. Abu Dawud',
-    emoji: '💚',
-  ),
-  DoaModel(
-    id: 14,
-    judul: 'Doa Menjenguk Orang Sakit',
-    arab: 'اللَّهُمَّ رَبَّ النَّاسِ أَذْهِبِ الْبَأْسَ اشْفِهِ وَأَنْتَ الشَّافِي',
-    latin: 'Allaahumma rabban naasi adzhibil ba-sa isyfihi wa antasy syaafii',
-    arti: 'Ya Allah, Tuhan manusia, hilangkanlah penyakit ini, sembuhkanlah ia, Engkaulah Yang Maha Menyembuhkan.',
-    kategori: 'Kesehatan',
-    sumber: 'HR. Bukhari & Muslim',
-    emoji: '❤️‍🩹',
-  ),
-  DoaModel(
-    id: 15,
-    judul: 'Doa Mohon Rezeki',
-    arab: 'اللَّهُمَّ اكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ',
-    latin: "Allaahummakfinii bihalaalika 'an haraamika wa aghninii bifadhlika 'amman siwaak",
-    arti: 'Ya Allah, cukupkanlah aku dengan yang halal dari-Mu sehingga tidak membutuhkan yang haram, dan kayakanlah aku dengan karunia-Mu sehingga tidak membutuhkan selain-Mu.',
-    kategori: 'Rezeki',
-    sumber: 'HR. Tirmidzi',
-    emoji: '💰',
-  ),
-  DoaModel(
-    id: 16,
-    judul: 'Doa Mohon Ilmu',
-    arab: 'رَبِّ زِدْنِي عِلْمًا',
-    latin: "Rabbi zidnii 'ilmaa",
-    arti: 'Ya Tuhanku, tambahkanlah ilmu kepadaku.',
-    kategori: 'Pendidikan',
-    sumber: 'QS. Taha: 114',
-    emoji: '📚',
-  ),
-  DoaModel(
-    id: 17,
-    judul: 'Doa Sebelum Belajar',
-    arab: 'رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي وَاحْلُلْ عُقْدَةً مِنْ لِسَانِي يَفْقَهُوا قَوْلِي',
-    latin: 'Rabbisy rahli sadrii wa yassir lii amrii wahlul uqdatam millisaani yafqahu qaulii',
-    arti: 'Ya Tuhanku, lapangkanlah dadaku, mudahkanlah urusanku, dan lepaskanlah kekakuan lidahku agar mereka memahami perkataanku.',
-    kategori: 'Pendidikan',
-    sumber: 'QS. Taha: 25-28',
-    emoji: '🎓',
-  ),
-  DoaModel(
-    id: 18,
-    judul: 'Doa Masuk Kamar Mandi',
-    arab: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ',
-    latin: "Allaahumma innii a'uudzubika minal khubutsi wal khabaa-its",
-    arti: 'Ya Allah, sesungguhnya aku berlindung kepada-Mu dari setan laki-laki dan setan perempuan.',
-    kategori: 'Harian',
-    sumber: 'HR. Bukhari & Muslim',
-    emoji: '🚿',
-  ),
-];
+import '../../../data/models/doa_model.dart';
+import '../controllers/doa_controller.dart';
+import 'package:alquran_digital/app/components/widgets/widgets.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // WARNA
@@ -232,18 +22,6 @@ class _C {
   static Color get text => R.color.textSoft;
   static Color get textMuted => R.color.textMuted;
   static Color get red => R.color.red;
-
-  static final Map<String, Color> kategoriColor = {
-    'Harian': R.color.emerald,
-    'Ibadah': R.color.goldDim,
-    'Perjalanan': const Color(0xFF1565C0),
-    'Kesehatan': const Color(0xFFB71C1C),
-    'Rezeki': const Color(0xFF4A148C),
-    'Pendidikan': const Color(0xFF006064),
-  };
-
-  static Color ofKategori(String k) =>
-      kategoriColor[k] ?? R.color.emerald;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -257,32 +35,15 @@ class DoaView extends StatefulWidget {
 }
 
 class _DoaViewState extends State<DoaView> with TickerProviderStateMixin {
+  final controller = Get.find<DoaController>();
   late AnimationController _headerAnim;
   late AnimationController _listAnim;
 
-  String _filterKategori = 'Semua';
-  String _query = '';
-  bool _showFavoritOnly = false;
   final TextEditingController _searchCtrl = TextEditingController();
   final ScrollController _scrollCtrl = ScrollController();
   final ScrollController _chipScroll = ScrollController();
 
   bool _searchActive = false;
-
-  final List<String> _kategoriList = [
-    'Semua', 'Harian', 'Ibadah', 'Perjalanan', 'Kesehatan', 'Rezeki', 'Pendidikan',
-  ];
-
-  List<DoaModel> get _filtered {
-    return semuaDoa.where((d) {
-      final matchKat = _filterKategori == 'Semua' || d.kategori == _filterKategori;
-      final matchFav = !_showFavoritOnly || d.isFavorit;
-      final matchQ = _query.isEmpty ||
-          d.judul.toLowerCase().contains(_query.toLowerCase()) ||
-          d.arti.toLowerCase().contains(_query.toLowerCase());
-      return matchKat && matchFav && matchQ;
-    }).toList();
-  }
 
   @override
   void initState() {
@@ -293,6 +54,13 @@ class _DoaViewState extends State<DoaView> with TickerProviderStateMixin {
     _listAnim = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 500),
     )..forward();
+
+    // Infinite scroll listener
+    _scrollCtrl.addListener(() {
+      if (_scrollCtrl.position.pixels >= _scrollCtrl.position.maxScrollExtent - 200) {
+        controller.loadMoreDoa();
+      }
+    });
   }
 
   @override
@@ -306,23 +74,15 @@ class _DoaViewState extends State<DoaView> with TickerProviderStateMixin {
   }
 
   void _onFilterChange(String kat) {
-    setState(() => _filterKategori = kat);
+    controller.updateCategory(kat);
     _listAnim.forward(from: 0);
   }
 
-  void _toggleFavorit(int id) {
-    setState(() {
-      final d = semuaDoa.firstWhere((e) => e.id == id);
-      d.isFavorit = !d.isFavorit;
-    });
-    HapticFeedback.lightImpact();
-  }
-
-  void _openDetail(DoaModel doa) {
+  void _openDetail(DataDoa doa) {
     Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder: (_, a, __) => DoaDetailScreen(doa: doa, onFavorit: () => _toggleFavorit(doa.id)),
+        pageBuilder: (_, a, __) => DoaDetailScreen(doa: doa),
         transitionDuration: const Duration(milliseconds: 450),
         transitionsBuilder: (_, anim, __, child) {
           return FadeTransition(
@@ -340,10 +100,53 @@ class _DoaViewState extends State<DoaView> with TickerProviderStateMixin {
     );
   }
 
+  Color _getColorForGroup(String group) {
+    if (group == 'Semua') return R.color.emerald;
+    final int hash = group.hashCode;
+    final double hue = (hash.abs() % 360).toDouble();
+    return HSLColor.fromAHSL(1.0, hue, 0.65, 0.45).toColor();
+  }
+
+  String _getEmoji(DataDoa doa) {
+    final name = doa.nama.toLowerCase();
+    final group = doa.grup.toLowerCase();
+    final tags = doa.tag.map((e) => e.toLowerCase()).toList();
+
+    if (name.contains('tidur') || group.contains('tidur') || tags.contains('tidur')) {
+      return '🌙';
+    }
+    if (name.contains('makan') || group.contains('makan') || tags.contains('makan')) {
+      return '🍽️';
+    }
+    if (name.contains('masjid') || group.contains('masjid') || tags.contains('masjid')) {
+      return '🕌';
+    }
+    if (name.contains('wudhu') || group.contains('wudhu') || tags.contains('wudhu')) {
+      return '💧';
+    }
+    if (name.contains('rumah') || group.contains('rumah') || tags.contains('rumah')) {
+      return '🏠';
+    }
+    if (name.contains('kendaraan') || name.contains('safar') || group.contains('perjalanan') || tags.contains('perjalanan')) {
+      return '🚗';
+    }
+    if (name.contains('sakit') || name.contains('sehat') || group.contains('sakit') || tags.contains('sakit')) {
+      return '❤️‍🩹';
+    }
+    if (name.contains('ilmu') || name.contains('belajar') || group.contains('pendidikan') || tags.contains('pendidikan')) {
+      return '📚';
+    }
+    if (name.contains('rezeki') || name.contains('uang') || name.contains('harta') || group.contains('rezeki') || tags.contains('rezeki')) {
+      return '💰';
+    }
+    if (name.contains('sholat') || name.contains('doa') || group.contains('shalat') || tags.contains('shalat')) {
+      return '🧎';
+    }
+    return '✨';
+  }
+
   @override
   Widget build(BuildContext context) {
-    final filtered = _filtered;
-
     return Scaffold(
       backgroundColor: _C.bg,
       body: Column(
@@ -351,29 +154,42 @@ class _DoaViewState extends State<DoaView> with TickerProviderStateMixin {
           _buildHeader(),
           _buildSearchBar(),
           _buildChips(),
-          _buildStats(filtered.length),
+          Obx(() => _buildStats(controller.filteredDoas.length)),
           Expanded(
-            child: AnimatedBuilder(
-              animation: _listAnim,
-              builder: (_, __) => filtered.isEmpty
-                  ? _buildEmpty()
-                  : ListView.builder(
-                      controller: _scrollCtrl,
-                      padding: const EdgeInsets.fromLTRB(16, 4, 16, 100),
-                      itemCount: filtered.length,
-                      itemBuilder: (ctx, i) {
-                        final delay = (i * 0.06).clamp(0.0, 0.6);
-                        return _DoaCard(
-                          doa: filtered[i],
-                          index: i,
-                          animDelay: delay,
-                          listAnim: _listAnim,
-                          onTap: () => _openDetail(filtered[i]),
-                          onFavorit: () => _toggleFavorit(filtered[i].id),
-                        );
-                      },
-                    ),
-            ),
+            child: Obx(() {
+              if (controller.isLoading.value) {
+                return _buildLoading();
+              }
+              if (controller.errorMessage.value.isNotEmpty) {
+                return _buildError(controller.errorMessage.value);
+              }
+              if (controller.displayedDoas.isEmpty) {
+                return _buildEmpty();
+              }
+              return ListView.builder(
+                controller: _scrollCtrl,
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 100),
+                itemCount: controller.displayedDoas.length + (controller.hasMore.value ? 1 : 0),
+                itemBuilder: (ctx, i) {
+                  if (i == controller.displayedDoas.length) {
+                    return _buildLoadMoreIndicator();
+                  }
+                  final delay = (i * 0.06).clamp(0.0, 0.6);
+                  final doa = controller.displayedDoas[i];
+                  return _DoaCard(
+                    doa: doa,
+                    isFavorit: controller.favoritIds.contains(doa.id),
+                    emoji: _getEmoji(doa),
+                    color: _getColorForGroup(doa.grup),
+                    index: i,
+                    animDelay: delay,
+                    listAnim: _listAnim,
+                    onTap: () => _openDetail(doa),
+                    onFavorit: () => controller.toggleFavorit(doa.id),
+                  );
+                },
+              );
+            }),
           ),
         ],
       ),
@@ -432,51 +248,54 @@ class _DoaViewState extends State<DoaView> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-                  Text(
-                    '${semuaDoa.length} ${R.string.prayerCount}',
+                  Obx(() => Text(
+                    '${controller.filteredDoas.length} ${R.string.prayerCount}',
                     style: R.textStyle.small(color: _C.textMuted),
-                  ),
+                  )),
                 ],
               ),
             ),
             // Favorit toggle
-            _AnimPressButton(
-              onTap: () {
-                setState(() => _showFavoritOnly = !_showFavoritOnly);
-                _listAnim.forward(from: 0);
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: _showFavoritOnly
-                      ? _C.red.withValues(alpha: 0.15)
-                      : _C.surface2,
-                  border: Border.all(
-                    color: _showFavoritOnly
-                        ? _C.red.withValues(alpha: 0.4)
-                        : _C.goldDim.withValues(alpha: 0.2),
+            Obx(() {
+              final active = controller.showFavoritOnly.value;
+              return _AnimPressButton(
+                onTap: () {
+                  controller.toggleShowFavorit();
+                  _listAnim.forward(from: 0);
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: active
+                        ? _C.red.withValues(alpha: 0.15)
+                        : _C.surface2,
+                    border: Border.all(
+                      color: active
+                          ? _C.red.withValues(alpha: 0.4)
+                          : _C.goldDim.withValues(alpha: 0.2),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        active ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                        color: active ? _C.red : _C.textMuted,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Favorit',
+                        style: R.textStyle.small(
+                          color: active ? _C.red : _C.textMuted,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      _showFavoritOnly ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                      color: _showFavoritOnly ? _C.red : _C.textMuted,
-                      size: 16,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Favorit',
-                      style: R.textStyle.small(
-                        color: _showFavoritOnly ? _C.red : _C.textMuted,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+              );
+            }),
           ],
         ),
       ),
@@ -512,7 +331,7 @@ class _DoaViewState extends State<DoaView> with TickerProviderStateMixin {
               child: TextField(
                 controller: _searchCtrl,
                 style: R.textStyle.medium(color: _C.text),
-                onChanged: (v) => setState(() => _query = v),
+                onChanged: (v) => controller.updateSearch(v),
                 onTap: () => setState(() => _searchActive = true),
                 onEditingComplete: () => setState(() => _searchActive = false),
                 decoration: InputDecoration(
@@ -524,18 +343,20 @@ class _DoaViewState extends State<DoaView> with TickerProviderStateMixin {
                 cursorColor: _C.gold,
               ),
             ),
-            if (_query.isNotEmpty)
-              GestureDetector(
-                onTap: () {
-                  _searchCtrl.clear();
-                  setState(() { _query = ''; _searchActive = false; });
-                  FocusScope.of(context).unfocus();
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 12),
-                  child: Icon(Icons.close_rounded, color: _C.textMuted, size: 18),
-                ),
-              ),
+            Obx(() => controller.searchQuery.value.isNotEmpty
+                ? GestureDetector(
+                    onTap: () {
+                      _searchCtrl.clear();
+                      controller.updateSearch('');
+                      setState(() { _searchActive = false; });
+                      FocusScope.of(context).unfocus();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 12),
+                      child: Icon(Icons.close_rounded, color: _C.textMuted, size: 18),
+                    ),
+                  )
+                : const SizedBox.shrink()),
           ],
         ),
       ),
@@ -544,48 +365,51 @@ class _DoaViewState extends State<DoaView> with TickerProviderStateMixin {
 
   // ── Category Chips ────────────────────────────────────────────────────────
   Widget _buildChips() {
-    return SizedBox(
-      height: 44,
-      child: ListView.separated(
-        controller: _chipScroll,
-        padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
-        scrollDirection: Axis.horizontal,
-        itemCount: _kategoriList.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
-        itemBuilder: (_, i) {
-          final kat = _kategoriList[i];
-          final active = kat == _filterKategori;
-          final color = kat == 'Semua' ? _C.emerald : _C.ofKategori(kat);
-          return _AnimPressButton(
-            onTap: () => _onFilterChange(kat),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: active ? color.withValues(alpha: 0.2) : _C.surface2,
-                border: Border.all(
-                  color: active ? color.withValues(alpha: 0.7) : _C.goldDim.withValues(alpha: 0.15),
-                  width: active ? 1.2 : 1,
+    return Obx(() {
+      final list = controller.kategoriList;
+      return SizedBox(
+        height: 44,
+        child: ListView.separated(
+          controller: _chipScroll,
+          padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
+          scrollDirection: Axis.horizontal,
+          itemCount: list.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 8),
+          itemBuilder: (_, i) {
+            final kat = list[i];
+            final active = kat == controller.currentCategory.value;
+            final color = _getColorForGroup(kat);
+            return _AnimPressButton(
+              onTap: () => _onFilterChange(kat),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: active ? color.withValues(alpha: 0.2) : _C.surface2,
+                  border: Border.all(
+                    color: active ? color.withValues(alpha: 0.7) : _C.goldDim.withValues(alpha: 0.15),
+                    width: active ? 1.2 : 1,
+                  ),
+                ),
+                child: Text(
+                  kat,
+                  style: R.textStyle.small(
+                    fontWeight: active ? FontWeight.w600 : FontWeight.w400,
+                    color: active ? Color.lerp(color, Colors.white, 0.5) : _C.textMuted,
+                  ).copyWith(letterSpacing: 0.3),
                 ),
               ),
-              child: Text(
-                kat,
-                style: R.textStyle.small(
-                  fontWeight: active ? FontWeight.w600 : FontWeight.w400,
-                  color: active ? Color.lerp(color, Colors.white, 0.5) : _C.textMuted,
-                ).copyWith(letterSpacing: 0.3),
-              ),
-            ),
-          );
-        },
-      ),
-    );
+            );
+          },
+        ),
+      );
+    });
   }
 
   // ── Stats bar ─────────────────────────────────────────────────────────────
   Widget _buildStats(int count) {
-    final favCount = semuaDoa.where((d) => d.isFavorit).length;
+    final favCount = controller.favoritIds.length;
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 4),
       child: Row(
@@ -608,27 +432,77 @@ class _DoaViewState extends State<DoaView> with TickerProviderStateMixin {
     );
   }
 
+  // ── Loading ──────────────────────────────────────────────────────────────
+  Widget _buildLoading() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CustomLoader(size: 50),
+          const SizedBox(height: 16),
+          Text(
+            'Memuat daftar doa...',
+            style: R.textStyle.medium(color: _C.textMuted),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Error ────────────────────────────────────────────────────────────────
+  Widget _buildError(String error) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 48),
+            const SizedBox(height: 16),
+            Text(
+              'Gagal memuat data',
+              style: R.textStyle.mediumBold.copyWith(color: Colors.white),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error,
+              textAlign: TextAlign.center,
+              style: R.textStyle.small(color: _C.textMuted),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => controller.fetchDoaList(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _C.surface2,
+                foregroundColor: _C.goldLight,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: _C.goldDim.withValues(alpha: 0.3)),
+                ),
+              ),
+              child: const Text('Coba Lagi'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   // ── Empty state ───────────────────────────────────────────────────────────
   Widget _buildEmpty() {
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('🔍', style: const TextStyle(fontSize: 48)),
-          const SizedBox(height: 16),
-          Text(
-            _showFavoritOnly ? 'Belum ada doa favorit' : 'Doa tidak ditemukan',
-            style: R.textStyle.medium(color: _C.textMuted),
-          ),
-          if (_showFavoritOnly)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Text(
-                'Tekan ♡ pada doa untuk menyimpannya',
-                style: R.textStyle.small(color: _C.textMuted.withValues(alpha: 0.6)),
-              ),
-            ),
-        ],
+      child: _AnimatedEmptyState(
+        isFavoritEmpty: controller.showFavoritOnly.value,
+      ),
+    );
+  }
+
+  // ── Load More Indicator ──────────────────────────────────────────────────
+  Widget _buildLoadMoreIndicator() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 24),
+      child: Center(
+        child: CustomLoader(size: 30),
       ),
     );
   }
@@ -650,10 +524,156 @@ class _DoaViewState extends State<DoaView> with TickerProviderStateMixin {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// OPSI PENGATURAN BOTTOM SHEET
+// ─────────────────────────────────────────────────────────────────────────────
+void _showSettingsBottomSheet(BuildContext context, DoaController controller) {
+  Get.bottomSheet(
+    Container(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+      decoration: BoxDecoration(
+        color: _C.surface,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
+        border: Border(
+          top: BorderSide(color: _C.goldDim.withValues(alpha: 0.15)),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: _C.textMuted.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Pengaturan Tampilan',
+                style: R.textStyle.mediumBold.copyWith(color: _C.goldLight),
+              ),
+              GestureDetector(
+                onTap: () => Get.back(),
+                child: Icon(Icons.close_rounded, color: _C.textMuted, size: 22),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          
+          // Slider font size
+          Text(
+            'Ukuran Font Arab',
+            style: R.textStyle.smallBold.copyWith(color: _C.text),
+          ),
+          const SizedBox(height: 8),
+          Obx(() => Row(
+            children: [
+              Text('A', style: TextStyle(color: _C.textMuted, fontSize: 16)),
+              Expanded(
+                child: Slider(
+                  value: controller.arabicFontSize.value,
+                  min: 18.0,
+                  max: 40.0,
+                  activeColor: _C.gold,
+                  inactiveColor: _C.surface2,
+                  onChanged: (val) => controller.setArabicFontSize(val),
+                ),
+              ),
+              Text('A', style: TextStyle(color: _C.goldLight, fontSize: 26, fontWeight: FontWeight.bold)),
+            ],
+          )),
+          const SizedBox(height: 16),
+          
+          // Latin toggle custom widget
+          Obx(() => _buildSettingToggle(
+            label: 'Tampilkan Transliterasi (Latin)',
+            value: controller.showLatin.value,
+            onTap: () => controller.toggleLatin(),
+          )),
+          
+          const Divider(color: Colors.white10),
+          
+          // Translation toggle custom widget
+          Obx(() => _buildSettingToggle(
+            label: 'Tampilkan Terjemahan (Arti)',
+            value: controller.showTranslation.value,
+            onTap: () => controller.toggleTranslation(),
+          )),
+        ],
+      ),
+    ),
+    isScrollControlled: true,
+  );
+}
+
+Widget _buildSettingToggle({
+  required String label,
+  required bool value,
+  required VoidCallback onTap,
+}) {
+  return GestureDetector(
+    onTap: onTap,
+    behavior: HitTestBehavior.opaque,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: R.textStyle.medium(color: _C.text)),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: 46,
+            height: 26,
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(13),
+              color: value ? _C.emerald : _C.surface2,
+              border: Border.all(
+                color: value ? _C.emeraldLight.withValues(alpha: 0.3) : _C.goldDim.withValues(alpha: 0.15),
+              ),
+            ),
+            child: Stack(
+              children: [
+                AnimatedPositioned(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOutBack,
+                  left: value ? 20.0 : 0.0,
+                  child: Container(
+                    width: 20,
+                    height: 20,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // DOA CARD
 // ─────────────────────────────────────────────────────────────────────────────
 class _DoaCard extends StatefulWidget {
-  final DoaModel doa;
+  final DataDoa doa;
+  final bool isFavorit;
+  final String emoji;
+  final Color color;
   final int index;
   final double animDelay;
   final AnimationController listAnim;
@@ -662,6 +682,9 @@ class _DoaCard extends StatefulWidget {
 
   const _DoaCard({
     required this.doa,
+    required this.isFavorit,
+    required this.emoji,
+    required this.color,
     required this.index,
     required this.animDelay,
     required this.listAnim,
@@ -695,7 +718,7 @@ class _DoaCardState extends State<_DoaCard> with SingleTickerProviderStateMixin 
   @override
   Widget build(BuildContext context) {
     final doa = widget.doa;
-    final catColor = _C.ofKategori(doa.kategori);
+    final catColor = widget.color;
 
     return AnimatedBuilder(
       animation: widget.listAnim,
@@ -791,7 +814,7 @@ class _DoaCardState extends State<_DoaCard> with SingleTickerProviderStateMixin 
                                 ),
                               ),
                               child: Center(
-                                child: Text(doa.emoji,
+                                child: Text(widget.emoji,
                                     style: const TextStyle(fontSize: 20)),
                               ),
                             ),
@@ -801,7 +824,7 @@ class _DoaCardState extends State<_DoaCard> with SingleTickerProviderStateMixin 
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    doa.judul,
+                                    doa.nama,
                                     style: R.textStyle.mediumBold.copyWith(
                                       color: _C.text,
                                       height: 1.2,
@@ -810,14 +833,21 @@ class _DoaCardState extends State<_DoaCard> with SingleTickerProviderStateMixin 
                                   const SizedBox(height: 4),
                                   Row(
                                     children: [
-                                      _Chip(label: doa.kategori, color: catColor),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        doa.sumber,
-                                        style: R.textStyle.small(
-                                          color: _C.textMuted,
-                                        ).copyWith(fontSize: 10),
-                                        overflow: TextOverflow.ellipsis,
+                                      Expanded(
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Row(
+                                            children: [
+                                              _Chip(label: doa.grup, color: catColor),
+                                              const SizedBox(width: 6),
+                                              if (doa.tag.isNotEmpty)
+                                                ...doa.tag.map((tag) => Padding(
+                                                  padding: const EdgeInsets.only(right: 4),
+                                                  child: _Chip(label: '#$tag', color: _C.gold),
+                                                )),
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -828,7 +858,7 @@ class _DoaCardState extends State<_DoaCard> with SingleTickerProviderStateMixin 
                             GestureDetector(
                               onTap: () {
                                 widget.onFavorit();
-                                if (!doa.isFavorit) {
+                                if (!widget.isFavorit) {
                                   _favAnim.forward(from: 0);
                                 }
                               },
@@ -843,10 +873,10 @@ class _DoaCardState extends State<_DoaCard> with SingleTickerProviderStateMixin 
                                   return Transform.scale(
                                     scale: scale,
                                     child: Icon(
-                                      doa.isFavorit
+                                      widget.isFavorit
                                           ? Icons.favorite_rounded
                                           : Icons.favorite_border_rounded,
-                                      color: doa.isFavorit ? _C.red : _C.textMuted,
+                                      color: widget.isFavorit ? _C.red : _C.textMuted,
                                       size: 22,
                                     ),
                                   );
@@ -869,7 +899,7 @@ class _DoaCardState extends State<_DoaCard> with SingleTickerProviderStateMixin 
                             ),
                           ),
                           child: Text(
-                            doa.arab,
+                            doa.ar,
                             textAlign: TextAlign.right,
                             style: R.textStyle.largeNormal.copyWith(
                               fontFamily: 'Poppins',
@@ -883,7 +913,7 @@ class _DoaCardState extends State<_DoaCard> with SingleTickerProviderStateMixin 
                         const SizedBox(height: 10),
                         // Arti preview
                         Text(
-                          doa.arti,
+                          doa.idn,
                           style: R.textStyle.small(
                             color: _C.textMuted,
                           ).copyWith(height: 1.5),
@@ -922,13 +952,11 @@ class _DoaCardState extends State<_DoaCard> with SingleTickerProviderStateMixin 
 // DETAIL SCREEN
 // ─────────────────────────────────────────────────────────────────────────────
 class DoaDetailScreen extends StatefulWidget {
-  final DoaModel doa;
-  final VoidCallback onFavorit;
+  final DataDoa doa;
 
   const DoaDetailScreen({
     super.key,
     required this.doa,
-    required this.onFavorit,
   });
 
   @override
@@ -937,6 +965,7 @@ class DoaDetailScreen extends StatefulWidget {
 
 class _DoaDetailScreenState extends State<DoaDetailScreen>
     with SingleTickerProviderStateMixin {
+  final controller = Get.find<DoaController>();
   late AnimationController _anim;
   bool _copied = false;
   bool _latinVisible = true;
@@ -958,7 +987,7 @@ class _DoaDetailScreenState extends State<DoaDetailScreen>
   }
 
   void _copyAll() {
-    final text = '${widget.doa.arab}\n\n${widget.doa.latin}\n\n${widget.doa.arti}';
+    final text = '${widget.doa.ar}\n\n${widget.doa.tr}\n\n${widget.doa.idn}';
     Clipboard.setData(ClipboardData(text: text));
     setState(() => _copied = true);
     HapticFeedback.mediumImpact();
@@ -967,67 +996,131 @@ class _DoaDetailScreenState extends State<DoaDetailScreen>
     });
   }
 
+  Color _getColorForGroup(String group) {
+    final int hash = group.hashCode;
+    final double hue = (hash.abs() % 360).toDouble();
+    return HSLColor.fromAHSL(1.0, hue, 0.65, 0.45).toColor();
+  }
+
+  String _getEmoji(DataDoa doa) {
+    final name = doa.nama.toLowerCase();
+    final group = doa.grup.toLowerCase();
+    final tags = doa.tag.map((e) => e.toLowerCase()).toList();
+
+    if (name.contains('tidur') || group.contains('tidur') || tags.contains('tidur')) {
+      return '🌙';
+    }
+    if (name.contains('makan') || group.contains('makan') || tags.contains('makan')) {
+      return '🍽️';
+    }
+    if (name.contains('masjid') || group.contains('masjid') || tags.contains('masjid')) {
+      return '🕌';
+    }
+    if (name.contains('wudhu') || group.contains('wudhu') || tags.contains('wudhu')) {
+      return '💧';
+    }
+    if (name.contains('rumah') || group.contains('rumah') || tags.contains('rumah')) {
+      return '🏠';
+    }
+    if (name.contains('kendaraan') || name.contains('safar') || group.contains('perjalanan') || tags.contains('perjalanan')) {
+      return '🚗';
+    }
+    if (name.contains('sakit') || name.contains('sehat') || group.contains('sakit') || tags.contains('sakit')) {
+      return '❤️‍🩹';
+    }
+    if (name.contains('ilmu') || name.contains('belajar') || group.contains('pendidikan') || tags.contains('pendidikan')) {
+      return '📚';
+    }
+    if (name.contains('rezeki') || name.contains('uang') || name.contains('harta') || group.contains('rezeki') || tags.contains('rezeki')) {
+      return '💰';
+    }
+    if (name.contains('sholat') || name.contains('doa') || group.contains('shalat') || tags.contains('shalat')) {
+      return '🧎';
+    }
+    return '✨';
+  }
+
   @override
   Widget build(BuildContext context) {
     final doa = widget.doa;
-    final catColor = _C.ofKategori(doa.kategori);
+    final catColor = _getColorForGroup(doa.grup);
+    final emoji = _getEmoji(doa);
 
     return Scaffold(
       backgroundColor: _C.bg,
       body: CustomScrollView(
         slivers: [
           // ── App Bar ──────────────────────────────────────────────────────
-          SliverAppBar(
-            expandedHeight: 180,
-            pinned: true,
-            backgroundColor: _C.bg,
-            elevation: 0,
-            leading: GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Container(
-                margin: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.black26,
-                  border: Border.all(color: _C.goldDim.withValues(alpha: 0.3)),
-                ),
-                child: Icon(Icons.arrow_back_ios_new_rounded,
-                    color: _C.goldLight, size: 16),
-              ),
-            ),
-            actions: [
-              GestureDetector(
-                onTap: () {
-                  widget.onFavorit();
-                  setState(() {});
-                },
+          Obx(() {
+            final isFav = controller.favoritIds.contains(doa.id);
+            return SliverAppBar(
+              expandedHeight: 180,
+              pinned: true,
+              backgroundColor: _C.bg,
+              elevation: 0,
+              leading: GestureDetector(
+                onTap: () => Navigator.pop(context),
                 child: Container(
                   margin: const EdgeInsets.all(8),
-                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.black26,
-                    border: Border.all(
-                      color: doa.isFavorit
-                          ? _C.red.withValues(alpha: 0.4)
-                          : _C.goldDim.withValues(alpha: 0.3),
-                    ),
+                    border: Border.all(color: _C.goldDim.withValues(alpha: 0.3)),
                   ),
-                  child: Icon(
-                    doa.isFavorit
-                        ? Icons.favorite_rounded
-                        : Icons.favorite_border_rounded,
-                    color: doa.isFavorit ? _C.red : _C.goldLight,
-                    size: 18,
-                  ),
+                  child: Icon(Icons.arrow_back_ios_new_rounded,
+                      color: _C.goldLight, size: 16),
                 ),
               ),
-              const SizedBox(width: 4),
-            ],
-            flexibleSpace: FlexibleSpaceBar(
-              background: _buildDetailHeader(doa, catColor),
-            ),
-          ),
+              actions: [
+                GestureDetector(
+                  onTap: () => _showSettingsBottomSheet(context, controller),
+                  child: Container(
+                    margin: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.black26,
+                      border: Border.all(
+                        color: _C.goldDim.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.settings_rounded,
+                      color: _C.goldLight,
+                      size: 18,
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => controller.toggleFavorit(doa.id),
+                  child: Container(
+                    margin: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.black26,
+                      border: Border.all(
+                        color: isFav
+                            ? _C.red.withValues(alpha: 0.4)
+                            : _C.goldDim.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Icon(
+                      isFav
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_border_rounded,
+                      color: isFav ? _C.red : _C.goldLight,
+                      size: 18,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+              ],
+              flexibleSpace: FlexibleSpaceBar(
+                background: _buildDetailHeader(doa, catColor, emoji),
+              ),
+            );
+          }),
 
           // ── Body ─────────────────────────────────────────────────────────
           SliverToBoxAdapter(
@@ -1055,11 +1148,13 @@ class _DoaDetailScreenState extends State<DoaDetailScreen>
                           ),
                         ],
                       ),
-                      child: Text(
-                        doa.arab,
+                      child: Obx(() => Text(
+                        doa.ar,
                         textAlign: TextAlign.right,
                         style: R.textStyle.extraLargeNormal.copyWith(
+                          fontFamily: 'Poppins',
                           color: _C.goldLight,
+                          fontSize: controller.arabicFontSize.value,
                           height: 2.0,
                           shadows: [
                             Shadow(
@@ -1068,108 +1163,117 @@ class _DoaDetailScreenState extends State<DoaDetailScreen>
                             ),
                           ],
                         ),
-                      ),
+                      )),
                     ),
                   ),
 
                   const SizedBox(height: 16),
 
                   // Latin
-                  _buildToggleSection(
-                    label: 'Latin',
-                    visible: _latinVisible,
-                    onToggle: () => setState(() => _latinVisible = !_latinVisible),
-                    delay: 0.2,
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: _C.surface,
-                        border: Border.all(color: _C.emerald.withValues(alpha: 0.2)),
+                  Obx(() {
+                    if (!controller.showLatin.value) return const SizedBox.shrink();
+                    return _buildToggleSection(
+                      label: 'Latin',
+                      visible: _latinVisible,
+                      onToggle: () => setState(() => _latinVisible = !_latinVisible),
+                      delay: 0.2,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: _C.surface,
+                          border: Border.all(color: _C.emerald.withValues(alpha: 0.2)),
+                        ),
+                        child: Text(
+                          doa.tr,
+                          style: R.textStyle.mediumNormal.copyWith(
+                            fontStyle: FontStyle.italic,
+                            color: _C.emeraldLight,
+                            height: 1.7,
+                          ),
+                        ),
                       ),
-                      child: Text(
-                        doa.latin,
-                        style: R.textStyle.mediumNormal.copyWith(
-                          fontStyle: FontStyle.italic,
-                          color: _C.emeraldLight,
-                          height: 1.7,
+                    );
+                  }),
+
+                  Obx(() => controller.showLatin.value ? const SizedBox(height: 16) : const SizedBox.shrink()),
+
+                  // Arti
+                  Obx(() {
+                    if (!controller.showTranslation.value) return const SizedBox.shrink();
+                    return _buildToggleSection(
+                      label: 'Artinya',
+                      visible: _artiVisible,
+                      onToggle: () => setState(() => _artiVisible = !_artiVisible),
+                      delay: 0.3,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: _C.surface,
+                          border: Border.all(color: _C.goldDim.withValues(alpha: 0.15)),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 3,
+                              height: 60,
+                              margin: const EdgeInsets.only(right: 12, top: 2),
+                              decoration: BoxDecoration(
+                                color: _C.gold,
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                '"${doa.idn}"',
+                                style: R.textStyle.mediumNormal.copyWith(
+                                  color: _C.text,
+                                  height: 1.7,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+
+                  Obx(() => controller.showTranslation.value ? const SizedBox(height: 20) : const SizedBox.shrink()),
+
+                  // Tentang
+                  if (doa.tentang.isNotEmpty) ...[
+                    _buildSection(
+                      label: 'Tentang',
+                      icon: '📖',
+                      delay: 0.4,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: _C.surface2,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.info_outline_rounded,
+                                color: _C.goldDim, size: 16),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                doa.tentang,
+                                style: R.textStyle.small(
+                                  color: _C.textMuted,
+                                ).copyWith(fontSize: 13),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Arti
-                  _buildToggleSection(
-                    label: 'Artinya',
-                    visible: _artiVisible,
-                    onToggle: () => setState(() => _artiVisible = !_artiVisible),
-                    delay: 0.3,
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: _C.surface,
-                        border: Border.all(color: _C.goldDim.withValues(alpha: 0.15)),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 3,
-                            height: 60,
-                            margin: const EdgeInsets.only(right: 12, top: 2),
-                            decoration: BoxDecoration(
-                              color: _C.gold,
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              '"${doa.arti}"',
-                              style: R.textStyle.mediumNormal.copyWith(
-                                color: _C.text,
-                                height: 1.7,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Sumber
-                  _buildSection(
-                    label: 'Sumber',
-                    icon: '📖',
-                    delay: 0.4,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: _C.surface2,
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.menu_book_rounded,
-                              color: _C.goldDim, size: 16),
-                          const SizedBox(width: 8),
-                          Text(
-                            doa.sumber,
-                            style: R.textStyle.small(
-                              color: _C.textMuted,
-                            ).copyWith(fontSize: 13),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 32),
+                    const SizedBox(height: 32),
+                  ],
 
                   // Copy button
                   _AnimPressButton(
@@ -1224,7 +1328,7 @@ class _DoaDetailScreenState extends State<DoaDetailScreen>
     );
   }
 
-  Widget _buildDetailHeader(DoaModel doa, Color catColor) {
+  Widget _buildDetailHeader(DataDoa doa, Color catColor, String emoji) {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -1262,7 +1366,7 @@ class _DoaDetailScreenState extends State<DoaDetailScreen>
                     border: Border.all(color: catColor.withValues(alpha: 0.4)),
                   ),
                   child: Center(
-                    child: Text(doa.emoji,
+                    child: Text(emoji,
                         style: const TextStyle(fontSize: 28)),
                   ),
                 ),
@@ -1273,14 +1377,14 @@ class _DoaDetailScreenState extends State<DoaDetailScreen>
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        doa.judul,
+                        doa.nama,
                         style: R.textStyle.largeBold.copyWith(
                           color: _C.text,
                           height: 1.2,
                         ),
                       ),
                       const SizedBox(height: 6),
-                      _Chip(label: doa.kategori, color: catColor),
+                      _Chip(label: doa.grup, color: catColor),
                     ],
                   ),
                 ),
@@ -1491,4 +1595,218 @@ class _DiamondPatternPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_) => false;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ANIMATED EMPTY STATE
+// ─────────────────────────────────────────────────────────────────────────────
+class _AnimatedEmptyState extends StatefulWidget {
+  final bool isFavoritEmpty;
+  const _AnimatedEmptyState({required this.isFavoritEmpty});
+
+  @override
+  State<_AnimatedEmptyState> createState() => _AnimatedEmptyStateState();
+}
+
+class _AnimatedEmptyStateState extends State<_AnimatedEmptyState> with TickerProviderStateMixin {
+  late AnimationController _bobController;
+  late AnimationController _particleController;
+  final List<_Particle> _particles = [];
+  final math.Random _random = math.Random();
+
+  @override
+  void initState() {
+    super.initState();
+    // Bobbing & rotating animation for the main badge
+    _bobController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat(reverse: true);
+
+    // Particle animation loop
+    _particleController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..addListener(() {
+        _updateParticles();
+      })..repeat();
+
+    // Generate initial particles scattered around
+    for (int i = 0; i < 15; i++) {
+      _particles.add(_createParticle(isInitial: true));
+    }
+  }
+
+  _Particle _createParticle({bool isInitial = false}) {
+    return _Particle(
+      x: _random.nextDouble() * 220 - 110,
+      y: isInitial ? (_random.nextDouble() * 160 - 80) : 80.0,
+      size: _random.nextDouble() * 6 + 3,
+      speed: _random.nextDouble() * 0.9 + 0.4,
+      opacity: _random.nextDouble() * 0.6 + 0.2,
+      angle: _random.nextDouble() * math.pi * 2,
+      rotationSpeed: (_random.nextDouble() - 0.5) * 0.06,
+    );
+  }
+
+  void _updateParticles() {
+    if (!mounted) return;
+    setState(() {
+      for (int i = 0; i < _particles.length; i++) {
+        final p = _particles[i];
+        p.y -= p.speed;
+        p.angle += p.rotationSpeed;
+        if (p.y < -80) {
+          _particles[i] = _createParticle();
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _bobController.dispose();
+    _particleController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final themeColor = widget.isFavoritEmpty ? _C.red : _C.gold;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            // Particle backdrop
+            CustomPaint(
+              size: const Size(200, 160),
+              painter: _ParticlePainter(particles: _particles, color: themeColor),
+            ),
+            // Bobbing badge
+            AnimatedBuilder(
+              animation: _bobController,
+              builder: (context, child) {
+                final double translation = math.sin(_bobController.value * math.pi * 2) * 8.0;
+                final double rotation = math.sin(_bobController.value * math.pi * 2) * 0.08;
+                return Transform.translate(
+                  offset: Offset(0, translation),
+                  child: Transform.rotate(
+                    angle: rotation,
+                    child: child,
+                  ),
+                );
+              },
+              child: Container(
+                width: 86,
+                height: 86,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: themeColor.withValues(alpha: 0.12),
+                  border: Border.all(
+                    color: themeColor.withValues(alpha: 0.35),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: themeColor.withValues(alpha: 0.1),
+                      blurRadius: 24,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: Text(
+                    widget.isFavoritEmpty ? '❤️' : '🔍',
+                    style: const TextStyle(fontSize: 40),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        Text(
+          widget.isFavoritEmpty ? 'Belum ada doa favorit' : 'Doa tidak ditemukan',
+          style: R.textStyle.mediumBold.copyWith(color: _C.text),
+        ),
+        if (widget.isFavoritEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 8, left: 32, right: 32),
+            child: Text(
+              'Tekan ♡ pada doa untuk menyimpannya',
+              textAlign: TextAlign.center,
+              style: R.textStyle.small(color: _C.textMuted.withValues(alpha: 0.8)),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _Particle {
+  double x;
+  double y;
+  double size;
+  double speed;
+  double opacity;
+  double angle;
+  double rotationSpeed;
+
+  _Particle({
+    required this.x,
+    required this.y,
+    required this.size,
+    required this.speed,
+    required this.opacity,
+    required this.angle,
+    required this.rotationSpeed,
+  });
+}
+
+class _ParticlePainter extends CustomPainter {
+  final List<_Particle> particles;
+  final Color color;
+
+  _ParticlePainter({required this.particles, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    for (final p in particles) {
+      final double progress = ((80.0 - p.y).abs() / 160.0).clamp(0.0, 1.0);
+      final double currentOpacity = p.opacity * (1.0 - progress);
+      
+      final paint = Paint()
+        ..color = color.withValues(alpha: currentOpacity)
+        ..style = PaintingStyle.fill;
+
+      final double px = center.dx + p.x;
+      final double py = center.dy + p.y;
+      
+      final path = Path();
+      final double r = p.size;
+      final double innerR = r * 0.35;
+      
+      // Draw 4-point star
+      for (int i = 0; i < 8; i++) {
+        final double angle = p.angle + i * math.pi / 4;
+        final double currentR = (i % 2 == 0) ? r : innerR;
+        final double sx = px + currentR * math.cos(angle);
+        final double sy = py + currentR * math.sin(angle);
+        if (i == 0) {
+          path.moveTo(sx, sy);
+        } else {
+          path.lineTo(sx, sy);
+        }
+      }
+      path.close();
+      canvas.drawPath(path, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

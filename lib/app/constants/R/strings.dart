@@ -37,4 +37,24 @@ class Strings {
   final String noPrayerFound = 'Doa tidak ditemukan';
   final String copyPrayer = 'Salin Doa';
   final String prayerCount = 'doa tersedia';
+
+  // jadwal sholat
+  final String jadwalSholatTitle = 'Jadwal Sholat';
+  final String nextPrayer = 'Sholat Berikutnya';
+  final String timeRemaining = 'Waktu Tersisa';
+  final String hourLabel = 'JAM';
+  final String minuteLabel = 'MENIT';
+  final String secondLabel = 'DETIK';
+  final String masehi = 'Masehi';
+  final String hijriah = 'Hijriah';
+  final String progressToday = 'Progress Sholat Hari Ini';
+  final String prayerTitleSection = 'Waktu Sholat';
+  final String nextLabel = 'Berikutnya';
+  final String additionalInfo = 'Informasi Tambahan';
+  final String qiblaDirection = 'Arah Kiblat';
+  final String makkahKabah = "Ka'bah, Makkah";
+  final String otherTimes = 'Waktu Lainnya';
+  final String haditsArabic = 'إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَوْقُوتًا';
+  final String haditsTranslation = '"Sesungguhnya sholat itu adalah kewajiban yang ditentukan waktunya atas orang-orang yang beriman."';
+  final String haditsReference = "— QS. An-Nisa' : 103";
 }

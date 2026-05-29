@@ -1,5 +1,8 @@
+import 'dart:async';
+import 'dart:math' as math;
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_compass/flutter_compass.dart';
 import '../../../data/repositories/jadwal_sholat_repository.dart';
 import '../../../data/models/jadwal_sholat_model.dart';
 import '../../../data/providers/database_helper.dart';
@@ -39,10 +42,89 @@ class JadwalSholatController extends GetxController {
   // Today's schedule data
   final todayJadwal = Rxn<Jadwal>();
 
+  // Compass state variables
+  final deviceHeading = 0.0.obs;
+  final qiblaDirection = 291.5.obs; // Default fallback for Indonesia / Pekalongan
+  final isCompassAvailable = false.obs;
+  final compassError = ''.obs;
+  final currentLatitude = (-6.2088).obs;
+  final currentLongitude = (106.8456).obs;
+  StreamSubscription<CompassEvent>? _compassSubscription;
+
   @override
   void onInit() {
     super.onInit();
     initLocationAndLoad();
+    _initCompass();
+  }
+
+  @override
+  void onClose() {
+    _compassSubscription?.cancel();
+    super.onClose();
+  }
+
+  double calculateQiblaDirection(double lat, double lon) {
+    // Kaaba coordinates
+    const double kaabaLat = 21.4225 * math.pi / 180.0;
+    const double kaabaLon = 39.8262 * math.pi / 180.0;
+
+    double userLat = lat * math.pi / 180.0;
+    double userLon = lon * math.pi / 180.0;
+
+    double dLon = kaabaLon - userLon;
+
+    double y = math.sin(dLon);
+    double x = math.cos(userLat) * math.tan(kaabaLat) - math.sin(userLat) * math.cos(dLon);
+
+    double qiblaRad = math.atan2(y, x);
+    double qiblaDeg = qiblaRad * 180.0 / math.pi;
+
+    // Normalize to 0-360 degrees
+    return (qiblaDeg + 360.0) % 360.0;
+  }
+
+  void _initCompass() async {
+    try {
+      // Get current location coordinate
+      Position? position;
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (serviceEnabled) {
+        LocationPermission permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
+          position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.low,
+            timeLimit: const Duration(seconds: 4),
+          );
+        }
+      }
+
+      double lat = -6.2088;
+      double lon = 106.8456;
+      if (position != null) {
+        lat = position.latitude;
+        lon = position.longitude;
+      }
+      currentLatitude.value = lat;
+      currentLongitude.value = lon;
+      qiblaDirection.value = calculateQiblaDirection(lat, lon);
+
+      // Listen to compass events
+      _compassSubscription = FlutterCompass.events?.listen((CompassEvent event) {
+        if (event.heading != null) {
+          deviceHeading.value = event.heading!;
+          isCompassAvailable.value = true;
+        } else {
+          isCompassAvailable.value = false;
+        }
+      }, onError: (e) {
+        compassError.value = e.toString();
+        isCompassAvailable.value = false;
+      });
+    } catch (e) {
+      print('Gagal inisialisasi kompas: $e');
+      isCompassAvailable.value = false;
+    }
   }
 
   Future<void> initLocationAndLoad() async {
@@ -104,6 +186,9 @@ class JadwalSholatController extends GetxController {
     String? detectedProvinceName;
 
     if (latitude != null && longitude != null) {
+      currentLatitude.value = latitude;
+      currentLongitude.value = longitude;
+      qiblaDirection.value = calculateQiblaDirection(latitude, longitude);
       // 2a. Gunakan reverse geocoding via OpenStreetMap Nominatim
       try {
         final client = GetConnect();

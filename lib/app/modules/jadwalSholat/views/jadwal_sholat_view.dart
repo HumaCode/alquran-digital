@@ -1368,51 +1368,74 @@ class _JadwalSholatBottomRow extends StatelessWidget {
   }
 
   Widget _buildQiblaCard() {
-    return Container(
-      height: 190,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        color: R.color.surfaceJadwal,
-        border: Border.all(color: R.color.goldDim.withOpacity(0.15)),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(18),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            // Background ornamen kiblat
-            Positioned.fill(
-              child: AnimatedBuilder(
-                animation: ringCtrl,
-                builder: (_, __) => CustomPaint(
+    final controller = Get.find<JadwalSholatController>();
+
+    return Obx(() {
+      final hasCompass = controller.isCompassAvailable.value;
+
+      double bgAngle;
+      double compassAngle;
+      double qiblaAngle;
+
+      if (hasCompass) {
+        // Real compass values (heading is degrees, convert to radians)
+        final headingRad = -controller.deviceHeading.value * math.pi / 180.0;
+        bgAngle = headingRad;
+        compassAngle = headingRad; // dial rotation
+        qiblaAngle = (controller.qiblaDirection.value - controller.deviceHeading.value) * math.pi / 180.0; // needle rotation
+      } else {
+        // Fallback animations
+        bgAngle = ringCtrl.value * 2 * math.pi;
+        compassAngle = 0.0; // dial stays still
+        qiblaAngle = math.sin(compassCtrl.value * 2 * math.pi) * 0.04; // needle oscillates
+      }
+
+      final qiblaDegStr = hasCompass 
+          ? '${controller.qiblaDirection.value.toStringAsFixed(1)}°'
+          : '291.5° NW';
+
+      return Container(
+        height: 190,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          color: R.color.surfaceJadwal,
+          border: Border.all(color: R.color.goldDim.withOpacity(0.15)),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(18),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Background ornamen kiblat
+              Positioned.fill(
+                child: CustomPaint(
                   painter: _CompassBgPainter(
-                    angle: ringCtrl.value * 2 * math.pi,
+                    angle: bgAngle,
                     color: R.color.goldDim,
                   ),
                 ),
               ),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  R.string.qiblaDirection,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: R.color.textMutedJadwal,
-                    letterSpacing: 2,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    hasCompass ? 'KOMPAS KIBLAT AKTIF' : R.string.qiblaDirection,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: hasCompass ? R.color.emeraldLight : R.color.textMutedJadwal,
+                      fontWeight: hasCompass ? FontWeight.bold : FontWeight.normal,
+                      letterSpacing: 2,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                // Kompas Kiblat dinamis
-                AnimatedBuilder(
-                  animation: compassCtrl,
-                  builder: (_, __) => SizedBox(
+                  const SizedBox(height: 8),
+                  // Kompas Kiblat dinamis
+                  SizedBox(
                     width: 90,
                     height: 90,
                     child: CustomPaint(
                       painter: _QiblaCompassPainter(
-                        angle: math.sin(compassCtrl.value * 2 * math.pi) * 0.04,
+                        dialAngle: compassAngle,
+                        needleAngle: qiblaAngle,
                         goldColor: R.color.gold,
                         goldDim: R.color.goldDim,
                         emerald: R.color.emerald,
@@ -1420,26 +1443,26 @@ class _JadwalSholatBottomRow extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '291.5° NW',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: R.color.goldLight,
+                  const SizedBox(height: 8),
+                  Text(
+                    qiblaDegStr,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: R.color.goldLight,
+                    ),
                   ),
-                ),
-                Text(
-                  R.string.makkahKabah,
-                  style: TextStyle(fontSize: 9, color: R.color.textMutedJadwal),
-                ),
-              ],
-            ),
-          ],
+                  Text(
+                    R.string.makkahKabah,
+                    style: TextStyle(fontSize: 9, color: R.color.textMutedJadwal),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _buildImsakCard() {
@@ -2208,11 +2231,13 @@ class _CompassBgPainter extends CustomPainter {
 
 // Menggambar detail jarum Kompas Kiblat dan lambang Ka'bah
 class _QiblaCompassPainter extends CustomPainter {
-  final double angle;
+  final double dialAngle; // Rotasi piringan arah mata angin
+  final double needleAngle; // Rotasi jarum penunjuk ka'bah
   final Color goldColor, goldDim, emerald, textColor;
 
   const _QiblaCompassPainter({
-    required this.angle,
+    required this.dialAngle,
+    required this.needleAngle,
     required this.goldColor,
     required this.goldDim,
     required this.emerald,
@@ -2230,7 +2255,13 @@ class _QiblaCompassPainter extends CustomPainter {
       ..color = goldDim.withOpacity(0.4)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
-    canvas.drawCircle(Offset(cx, cy), r, ringPaint);
+
+    // 1. Gambar piringan arah mata angin (berputar sesuai dialAngle)
+    canvas.save();
+    canvas.translate(cx, cy);
+    canvas.rotate(dialAngle);
+
+    canvas.drawCircle(Offset.zero, r, ringPaint);
 
     // Garis-garis kecil derajat arah mata angin
     final tickPaint = Paint()
@@ -2240,8 +2271,8 @@ class _QiblaCompassPainter extends CustomPainter {
       final a = i * math.pi / 16;
       final len = i % 4 == 0 ? 8.0 : 4.0;
       canvas.drawLine(
-        Offset(cx + (r - len) * math.cos(a), cy + (r - len) * math.sin(a)),
-        Offset(cx + r * math.cos(a), cy + r * math.sin(a)),
+        Offset((r - len) * math.cos(a), (r - len) * math.sin(a)),
+        Offset(r * math.cos(a), r * math.sin(a)),
         tickPaint,
       );
     }
@@ -2250,8 +2281,8 @@ class _QiblaCompassPainter extends CustomPainter {
     final labels = ['U', 'S', 'B', 'T'];
     final angles = [math.pi * 3 / 2, math.pi / 2, math.pi, 0];
     for (int i = 0; i < 4; i++) {
-      final tx = cx + (r - 16) * math.cos(angles[i]);
-      final ty = cy + (r - 16) * math.sin(angles[i]);
+      final tx = (r - 16) * math.cos(angles[i]);
+      final ty = (r - 16) * math.sin(angles[i]);
       final tp = TextPainter(
         text: TextSpan(
           text: labels[i],
@@ -2265,11 +2296,12 @@ class _QiblaCompassPainter extends CustomPainter {
       )..layout();
       tp.paint(canvas, Offset(tx - tp.width / 2, ty - tp.height / 2));
     }
+    canvas.restore();
 
-    // Menggambar jarum kompas dinamis
+    // 2. Gambar jarum kompas dinamis (berputar sesuai needleAngle)
     canvas.save();
     canvas.translate(cx, cy);
-    canvas.rotate(angle);
+    canvas.rotate(needleAngle);
 
     final needleColor = Paint()..color = goldColor;
     final needleShadow = Paint()..color = goldDim.withOpacity(0.5);
@@ -2310,7 +2342,8 @@ class _QiblaCompassPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_QiblaCompassPainter old) => old.angle != angle;
+  bool shouldRepaint(_QiblaCompassPainter old) =>
+      old.dialAngle != dialAngle || old.needleAngle != needleAngle;
 }
 
 // Menggambar aksen berlian (diamond) kecil pembatas seksi

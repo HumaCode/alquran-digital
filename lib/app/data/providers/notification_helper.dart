@@ -42,7 +42,7 @@ class NotificationHelper {
     );
 
     await _localNotifications.initialize(
-      initializationSettings: initializationSettings,
+      settings: initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         // Handle click if needed
       },
@@ -116,14 +116,12 @@ class NotificationHelper {
             final id = date.day * 100 + prayerIdx;
             
             await _localNotifications.zonedSchedule(
-              id,
-              'Waktu $name',
-              'Telah memasuki waktu sholat $name untuk wilayah ${schedule.data.kabkota} dan sekitarnya.',
-              tz.TZDateTime.from(scheduledTime, tz.local),
-              notificationDetails,
+              id: id,
+              title: 'Waktu $name',
+              body: 'Telah memasuki waktu sholat $name untuk wilayah ${schedule.data.kabkota} dan sekitarnya.',
+              scheduledDate: tz.TZDateTime.from(scheduledTime, tz.local),
+              notificationDetails: notificationDetails,
               androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-              uiLocalNotificationDateInterpretation:
-                  UILocalNotificationDateInterpretation.absoluteTime,
             );
             count++;
           }

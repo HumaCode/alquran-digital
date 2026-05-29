@@ -374,78 +374,57 @@ class DetailSurahView extends GetView<DetailSurahController> {
             
             const SizedBox(height: 24),
 
-            // ── Next & Previous Buttons ────────────────────────────────────
+            // ── Elegant Islamic Divider & Sadaqallahul 'Adzim ───────────────────
+            const SizedBox(height: 32),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                if (detail.suratSebelumnya != null)
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        // Navigate to previous surah with replacement so stack doesn't grow indefinitely
-                        Get.offNamed(
-                          Routes.DETAIL_SURAH,
-                          arguments: detail.suratSebelumnya!.nomor,
-                        );
-                      },
-                      icon: Icon(Icons.arrow_back_ios_rounded, size: 16, color: _goldLight),
-                      label: Text(
-                        detail.suratSebelumnya!.namaLatin,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: _goldLight, fontFamily: 'Poppins'),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: _goldDim),
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                  )
-                else
-                  const Spacer(),
-                const SizedBox(width: 16),
-                if (detail.suratSelanjutnya != null)
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Navigate to next surah with replacement
-                        Get.offNamed(
-                          Routes.DETAIL_SURAH,
-                          arguments: detail.suratSelanjutnya!.nomor,
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _gold,
-                        foregroundColor: _bg,
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              detail.suratSelanjutnya!.namaLatin,
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          const Icon(Icons.arrow_forward_ios_rounded, size: 16),
-                        ],
-                      ),
-                    ),
-                  )
-                else
-                  const Spacer(),
+                Expanded(
+                  child: Divider(
+                    color: _goldDim.withValues(alpha: 0.2),
+                    thickness: 1,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Icon(
+                    Icons.brightness_7_rounded, // Islamic-style star/flower shape
+                    color: _goldDim.withValues(alpha: 0.5),
+                    size: 20,
+                  ),
+                ),
+                Expanded(
+                  child: Divider(
+                    color: _goldDim.withValues(alpha: 0.2),
+                    thickness: 1,
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 24),
+            Center(
+              child: Text(
+                'صَدَقَ اللهُ الْعَظِيْمُ',
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: _goldLight,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Center(
+              child: Text(
+                '"Maha benar Allah yang Maha Agung"',
+                style: R.textStyle.small(
+                  color: _textSoft.withValues(alpha: 0.6),
+                ).copyWith(
+                  fontStyle: FontStyle.italic,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+            const SizedBox(height: 48),
           ],
         );
       }),

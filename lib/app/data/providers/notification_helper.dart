@@ -42,7 +42,7 @@ class NotificationHelper {
     );
 
     await _localNotifications.initialize(
-      initializationSettings,
+      initializationSettings: initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         // Handle click if needed
       },

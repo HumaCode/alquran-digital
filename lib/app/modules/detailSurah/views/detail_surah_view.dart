@@ -193,7 +193,9 @@ class DetailSurahView extends GetView<DetailSurahController> {
               itemCount: controller.visibleAyat.length,
               itemBuilder: (context, index) {
                 final ayat = controller.visibleAyat[index];
+                final key = controller.ayatKeys.putIfAbsent(ayat.nomorAyat, () => GlobalKey());
                 return Padding(
+                  key: key,
                   padding: const EdgeInsets.only(bottom: 24),
                   child: Container(
                     padding: const EdgeInsets.all(16),
@@ -231,6 +233,30 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                 ),
                               ),
                               const Spacer(),
+                              // Tandai Terakhir Dibaca Button
+                              IconButton(
+                                icon: Obx(() => Icon(
+                                      controller.lastReadAyatNomor.value == ayat.nomorAyat
+                                          ? Icons.bookmark_added_rounded
+                                          : Icons.bookmark_add_outlined,
+                                      color: controller.lastReadAyatNomor.value == ayat.nomorAyat
+                                          ? _gold
+                                          : _goldDim,
+                                      size: 20,
+                                    )),
+                                onPressed: () {
+                                  controller.markAsLastRead(
+                                    detail.nomor,
+                                    detail.namaLatin,
+                                    ayat.nomorAyat,
+                                  );
+                                  CustomToast.show(
+                                    context,
+                                    message: 'Ayat ${ayat.nomorAyat} ditandai sebagai terakhir dibaca',
+                                    type: ToastType.success,
+                                  );
+                                },
+                              ),
                               // Copy Button
                               IconButton(
                                 icon: Icon(Icons.copy_rounded, color: _goldDim, size: 20),

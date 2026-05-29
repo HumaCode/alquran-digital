@@ -115,5 +115,13 @@ class SurahRepository {
       print('Gagal sinkronisasi data di background: $e');
     }
   }
+
+  Future<void> saveLastRead(int nomorSurah, String namaLatin, int nomorAyat) async {
+    await DatabaseHelper.instance.saveLastRead(nomorSurah, namaLatin, nomorAyat);
+  }
+
+  Future<Map<String, dynamic>?> getLastRead() async {
+    return await DatabaseHelper.instance.getLastRead();
+  }
 }
 

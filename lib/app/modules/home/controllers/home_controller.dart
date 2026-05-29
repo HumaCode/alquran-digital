@@ -21,6 +21,12 @@ class HomeController extends GetxController {
   final searchQuery = ''.obs;
   final searchController = TextEditingController();
 
+  // Last Read states
+  final lastReadSurahNomor = 0.obs;
+  final lastReadSurahNama = ''.obs;
+  final lastReadAyatNomor = 0.obs;
+  final hasLastRead = false.obs;
+
   List<DataSurah> _allSurahs = [];
   List<DataSurah> get allSurahs => _allSurahs;
   int _loadedCount = 0;
@@ -31,6 +37,7 @@ class HomeController extends GetxController {
     super.onInit();
     scrollController.addListener(_onScroll);
     fetchSurahs();
+    fetchLastRead();
   }
 
   @override
@@ -114,6 +121,22 @@ class HomeController extends GetxController {
       errorMessage.value = e.toString();
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchLastRead() async {
+    try {
+      final lastRead = await _repository.getLastRead();
+      if (lastRead != null) {
+        lastReadSurahNomor.value = lastRead['nomorSurah'] as int;
+        lastReadSurahNama.value = lastRead['namaLatin'] as String;
+        lastReadAyatNomor.value = lastRead['nomorAyat'] as int;
+        hasLastRead.value = true;
+      } else {
+        hasLastRead.value = false;
+      }
+    } catch (e) {
+      print('Gagal mengambil data terakhir dibaca: $e');
     }
   }
 }

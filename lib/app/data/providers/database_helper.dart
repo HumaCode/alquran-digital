@@ -270,6 +270,28 @@ class DatabaseHelper {
     return result.first['value'] as String?;
   }
 
+  Future<void> saveLastRead(int nomorSurah, String namaLatin, int nomorAyat) async {
+    await updateMetadata('last_read_surah_nomor', nomorSurah.toString());
+    await updateMetadata('last_read_surah_nama_latin', namaLatin);
+    await updateMetadata('last_read_ayat_nomor', nomorAyat.toString());
+  }
+
+  Future<Map<String, dynamic>?> getLastRead() async {
+    final nomorSurahStr = await getMetadata('last_read_surah_nomor');
+    final namaLatin = await getMetadata('last_read_surah_nama_latin');
+    final nomorAyatStr = await getMetadata('last_read_ayat_nomor');
+
+    if (nomorSurahStr == null || namaLatin == null || nomorAyatStr == null) {
+      return null;
+    }
+
+    return {
+      'nomorSurah': int.parse(nomorSurahStr),
+      'namaLatin': namaLatin,
+      'nomorAyat': int.parse(nomorAyatStr),
+    };
+  }
+
   Future<void> clearAllData() async {
     final db = await instance.database;
     await db.delete('ayats');

@@ -142,83 +142,108 @@ class _HomeViewState extends State<HomeView>
 
             // ── Last Read Banner ─────────────────────────────────────────
             SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        _emeraldDark,
-                        _emeraldMedium,
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: _goldDim.withOpacity(0.3),
-                      width: 1,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: _gold.withOpacity(0.08),
-                        blurRadius: 20,
-                        spreadRadius: 2,
+              child: Obx(() {
+                final hasLast = _homeController.hasLastRead.value;
+                final surahNama = _homeController.lastReadSurahNama.value;
+                final ayatNo = _homeController.lastReadAyatNomor.value;
+                final surahNo = _homeController.lastReadSurahNomor.value;
+
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+                  child: GestureDetector(
+                    onTap: () async {
+                      if (hasLast) {
+                        await Get.toNamed(
+                          Routes.DETAIL_SURAH,
+                          arguments: {
+                            'nomor': surahNo,
+                            'ayat': ayatNo,
+                          },
+                        );
+                      } else {
+                        // Mulai dari Al-Fatihah jika belum ada riwayat
+                        await Get.toNamed(Routes.DETAIL_SURAH, arguments: 1);
+                      }
+                      _homeController.fetchLastRead();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 16,
                       ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(colors: [_goldDim, _gold]),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            _emeraldDark,
+                            _emeraldMedium,
+                          ],
                         ),
-                        child: Icon(
-                          Icons.bookmark_rounded,
-                          color: _bg,
-                          size: 22,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: _goldDim.withValues(alpha: 0.3),
+                          width: 1,
                         ),
-                      ),
-                      const SizedBox(width: 14),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            R.string.lastRead,
-                            style: R.textStyle.small(
-                              color: _textSoft.withOpacity(0.5),
-                            ).copyWith(
-                              fontSize: 11,
-                              letterSpacing: 1.5,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            'Al-Baqarah • Ayat 255',
-                            style: R.textStyle.medium(
-                              fontWeight: FontWeight.w600,
-                              color: _goldLight,
-                            ).copyWith(
-                              fontSize: 16,
-                            ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: _gold.withValues(alpha: 0.08),
+                            blurRadius: 20,
+                            spreadRadius: 2,
                           ),
                         ],
                       ),
-                      const Spacer(),
-                      Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        color: _goldDim,
-                        size: 16,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 44,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(colors: [_goldDim, _gold]),
+                            ),
+                            child: Icon(
+                              Icons.bookmark_rounded,
+                              color: _bg,
+                              size: 22,
+                            ),
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  R.string.lastRead,
+                                  style: R.textStyle.small(
+                                    color: _textSoft.withValues(alpha: 0.5),
+                                  ).copyWith(
+                                    fontSize: 11,
+                                    letterSpacing: 1.5,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  hasLast ? '$surahNama • Ayat $ayatNo' : 'Mulai membaca',
+                                  style: R.textStyle.medium(
+                                    fontWeight: FontWeight.w600,
+                                    color: _goldLight,
+                                  ).copyWith(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            color: _goldDim,
+                            size: 16,
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
+                );
+              }),
             ),
 
             // ── Tab Bar ──────────────────────────────────────────────────
@@ -402,8 +427,9 @@ class _HomeViewState extends State<HomeView>
                           }
                         });
                       },
-                      onTap: () {
-                        Get.toNamed(Routes.DETAIL_SURAH, arguments: surahList[i].nomor);
+                      onTap: () async {
+                        await Get.toNamed(Routes.DETAIL_SURAH, arguments: surahList[i].nomor);
+                        _homeController.fetchLastRead();
                       },
                     ),
                     childCount: surahList.length,
@@ -412,87 +438,99 @@ class _HomeViewState extends State<HomeView>
               }),
             ] else if (_activeTab == 1) ...[
               // Terakhir Dibaca (History)
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, i) {
-                    final history = [
-                      DataSurah(nomor: 2, nama: 'البقرة', namaLatin: 'Al-Baqarah', jumlahAyat: 286, tempatTurun: 'Madinah', arti: 'Sapi Betina', deskripsi: '', audioFull: {}),
-                      DataSurah(nomor: 1, nama: 'الفاتحة', namaLatin: 'Al-Fatihah', jumlahAyat: 7, tempatTurun: 'Mekah', arti: 'Pembukaan', deskripsi: '', audioFull: {}),
-                    ];
-                    final lastAyat = [255, 7];
-                    final item = history[i];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-                      child: GestureDetector(
-                        onTap: () {
-                          Get.toNamed(Routes.DETAIL_SURAH, arguments: item.nomor);
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            color: R.color.bg2.withValues(alpha: 0.6),
-                            border: Border.all(color: _goldDim.withValues(alpha: 0.12), width: 1),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: _goldDim.withValues(alpha: 0.15),
-                                ),
-                                child: Text(
-                                  '${i + 1}',
-                                  style: R.textStyle.small(
-                                    color: _goldLight,
-                                    fontWeight: FontWeight.w700,
-                                  ).copyWith(fontSize: 11, fontFamily: 'Poppins'),
-                                ),
-                              ),
-                              const SizedBox(width: 14),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      item.namaLatin,
-                                      style: R.textStyle.medium(
-                                        fontWeight: FontWeight.w600,
-                                        color: _textSoft,
-                                      ).copyWith(fontSize: 15, fontFamily: 'Poppins'),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      'Terakhir dibaca: Ayat ${lastAyat[i]}',
-                                      style: R.textStyle.small(
-                                        color: _textSoft.withValues(alpha: 0.4),
-                                      ).copyWith(fontFamily: 'Poppins'),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Text(
-                                item.nama,
-                                style: R.textStyle.large(
-                                  color: _goldLight,
-                                  fontWeight: FontWeight.w500,
-                                ).copyWith(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ],
-                          ),
+              Obx(() {
+                if (!_homeController.hasLastRead.value) {
+                  return SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 60),
+                      child: Center(
+                        child: Text(
+                          'Belum ada riwayat membaca',
+                          style: TextStyle(color: _textSoft.withValues(alpha: 0.5)),
                         ),
                       ),
-                    );
-                  },
-                  childCount: 2,
-                ),
-              ),
+                    ),
+                  );
+                }
+
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, i) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                        child: GestureDetector(
+                          onTap: () async {
+                            await Get.toNamed(
+                              Routes.DETAIL_SURAH,
+                              arguments: {
+                                'nomor': _homeController.lastReadSurahNomor.value,
+                                'ayat': _homeController.lastReadAyatNomor.value,
+                              },
+                            );
+                            _homeController.fetchLastRead();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(14),
+                              color: R.color.bg2.withValues(alpha: 0.6),
+                              border: Border.all(color: _goldDim.withValues(alpha: 0.12), width: 1),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: _goldDim.withValues(alpha: 0.15),
+                                  ),
+                                  child: Text(
+                                    '1',
+                                    style: R.textStyle.small(
+                                      color: _goldLight,
+                                      fontWeight: FontWeight.w700,
+                                    ).copyWith(fontSize: 11, fontFamily: 'Poppins'),
+                                  ),
+                                ),
+                                const SizedBox(width: 14),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        _homeController.lastReadSurahNama.value,
+                                        style: R.textStyle.medium(
+                                          fontWeight: FontWeight.w600,
+                                          color: _textSoft,
+                                        ).copyWith(fontSize: 15, fontFamily: 'Poppins'),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        'Terakhir dibaca: Ayat ${_homeController.lastReadAyatNomor.value}',
+                                        style: R.textStyle.small(
+                                          color: _textSoft.withValues(alpha: 0.4),
+                                        ).copyWith(fontFamily: 'Poppins'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  color: _goldDim,
+                                  size: 16,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    childCount: 1,
+                  ),
+                );
+              }),
             ] else ...[
               // Bookmarks
               Obx(() {

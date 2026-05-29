@@ -13,11 +13,14 @@ class DetailSurahController extends GetxController {
   final errorMessage = ''.obs;
 
   late final int nomorSurah;
+  int? targetAyat;
+  final lastReadAyatNomor = 0.obs;
 
   // Pagination states
   final visibleAyat = <Ayat>[].obs;
   final isMoreLoading = false.obs;
   final scrollController = ScrollController();
+  final Map<int, GlobalKey> ayatKeys = {};
 
   List<Ayat> _allAyat = [];
   int _loadedCount = 0;
@@ -31,8 +34,11 @@ class DetailSurahController extends GetxController {
     final args = Get.arguments;
     if (args is int) {
       nomorSurah = args;
-    } else if (args is Map && args['nomor'] is int) {
+    } else if (args is Map) {
       nomorSurah = args['nomor'] as int;
+      if (args['ayat'] is int) {
+        targetAyat = args['ayat'] as int;
+      }
     } else {
       nomorSurah = 1; // Fallback to Al-Fatihah
     }
@@ -86,10 +92,47 @@ class DetailSurahController extends GetxController {
       visibleAyat.clear();
       _loadedCount = 0;
       loadNextPage();
+
+      if (targetAyat != null) {
+        final index = _allAyat.indexWhere((element) => element.nomorAyat == targetAyat);
+        if (index != -1) {
+          while (_loadedCount <= index && _loadedCount < _allAyat.length) {
+            loadNextPage();
+          }
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Future.delayed(const Duration(milliseconds: 300), () {
+              final key = ayatKeys[targetAyat];
+              if (key != null && key.currentContext != null) {
+                Scrollable.ensureVisible(
+                  key.currentContext!,
+                  duration: const Duration(milliseconds: 800),
+                  curve: Curves.easeInOut,
+                );
+              }
+            });
+          });
+        }
+      }
+
+      // Ambil data terakhir dibaca untuk di-highlight di UI
+      final lastRead = await _repository.getLastRead();
+      if (lastRead != null && lastRead['nomorSurah'] == nomorSurah) {
+        lastReadAyatNomor.value = lastRead['nomorAyat'] as int;
+      }
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> markAsLastRead(int nomorSurah, String namaLatin, int nomorAyat) async {
+    try {
+      await _repository.saveLastRead(nomorSurah, namaLatin, nomorAyat);
+      lastReadAyatNomor.value = nomorAyat;
+    } catch (e) {
+      print('Gagal menyimpan ayat terakhir dibaca: $e');
     }
   }
 }

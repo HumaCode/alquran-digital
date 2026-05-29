@@ -855,7 +855,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
               });
               HapticFeedback.selectionClick();
             },
-            notifEnabled: _notifEnabled,
+            notifEnabled: _controller.isNotifEnabled.value,
           ),
         ),
       );

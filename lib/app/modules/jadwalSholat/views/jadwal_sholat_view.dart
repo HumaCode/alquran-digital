@@ -563,28 +563,31 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                             itemBuilder: (context, idx) {
                               final city = list[idx];
                               final isSelected = _controller.selectedKabKota.value == city;
-                              return ListTile(
-                                dense: true,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                tileColor: isSelected ? R.color.emerald.withOpacity(0.1) : Colors.transparent,
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                                title: Text(
-                                  city,
-                                  style: TextStyle(
-                                    color: isSelected ? R.color.emeraldLight : R.color.textJadwal,
-                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                    fontSize: 13,
+                              return Material(
+                                color: Colors.transparent,
+                                child: ListTile(
+                                  dense: true,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
+                                  tileColor: isSelected ? R.color.emerald.withOpacity(0.1) : Colors.transparent,
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                                  title: Text(
+                                    city,
+                                    style: TextStyle(
+                                      color: isSelected ? R.color.emeraldLight : R.color.textJadwal,
+                                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                  trailing: isSelected
+                                      ? Icon(Icons.check_circle_rounded, color: R.color.emeraldLight, size: 16)
+                                      : null,
+                                  onTap: () {
+                                    _controller.updateCity(city);
+                                    Navigator.pop(context);
+                                  },
                                 ),
-                                trailing: isSelected
-                                    ? Icon(Icons.check_circle_rounded, color: R.color.emeraldLight, size: 16)
-                                    : null,
-                                onTap: () {
-                                  _controller.updateCity(city);
-                                  Navigator.pop(context);
-                                },
                               );
                             },
                           );

@@ -42,6 +42,12 @@ class DetailSurahView extends GetView<DetailSurahController> {
           );
         }),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings_rounded, color: _goldLight),
+            onPressed: () => _showSettingsBottomSheet(context),
+          ),
+        ],
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
@@ -389,39 +395,41 @@ class DetailSurahView extends GetView<DetailSurahController> {
                             fontWeight: FontWeight.w500,
                           ).copyWith(
                             fontFamily: 'Poppins',
-                            fontSize: 26,
+                            fontSize: controller.arabicFontSize.value,
                             height: 1.8,
                           ),
                         ),
-                        const SizedBox(height: 18),
-
-                        // Latin text
-                        Text(
-                          ayat.teksLatin,
-                          textAlign: TextAlign.left,
-                          style: R.textStyle.medium(
-                            color: _gold.withValues(alpha: 0.9),
-                          ).copyWith(
-                            fontFamily: 'Poppins',
-                            fontSize: 14,
-                            fontStyle: FontStyle.italic,
-                            height: 1.4,
+                        if (controller.showLatin.value) ...[
+                          const SizedBox(height: 18),
+                          // Latin text
+                          Text(
+                            ayat.teksLatin,
+                            textAlign: TextAlign.left,
+                            style: R.textStyle.medium(
+                              color: _gold.withValues(alpha: 0.9),
+                            ).copyWith(
+                              fontFamily: 'Poppins',
+                              fontSize: 14,
+                              fontStyle: FontStyle.italic,
+                              height: 1.4,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 10),
-
-                        // Translation (Indonesian)
-                        Text(
-                          ayat.teksIndonesia,
-                          textAlign: TextAlign.left,
-                          style: R.textStyle.small(
-                            color: _textSoft.withValues(alpha: 0.8),
-                          ).copyWith(
-                            fontFamily: 'Poppins',
-                            fontSize: 14,
-                            height: 1.4,
+                        ],
+                        if (controller.showTranslation.value) ...[
+                          SizedBox(height: controller.showLatin.value ? 10 : 18),
+                          // Translation (Indonesian)
+                          Text(
+                            ayat.teksIndonesia,
+                            textAlign: TextAlign.left,
+                            style: R.textStyle.small(
+                              color: _textSoft.withValues(alpha: 0.8),
+                            ).copyWith(
+                              fontFamily: 'Poppins',
+                              fontSize: 14,
+                              height: 1.4,
+                            ),
                           ),
-                        ),
+                        ],
                       ],
                     ),
                   ),
@@ -642,6 +650,175 @@ class DetailSurahView extends GetView<DetailSurahController> {
       ),
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+    );
+  }
+
+  void _showSettingsBottomSheet(BuildContext context) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        decoration: BoxDecoration(
+          color: _bg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border.all(
+            color: _goldDim.withValues(alpha: 0.2),
+            width: 1.5,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Handle Bar
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: _goldDim.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.tune_rounded, color: _goldLight),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Pengaturan Tampilan',
+                        style: R.textStyle.medium(
+                          color: _goldLight,
+                          fontWeight: FontWeight.bold,
+                        ).copyWith(fontSize: 18),
+                      ),
+                    ],
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close_rounded, color: _goldDim),
+                    onPressed: () => Get.back(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Divider(
+                color: _goldDim.withValues(alpha: 0.15),
+                thickness: 1,
+              ),
+              const SizedBox(height: 16),
+
+              // Font Size Slider
+              Text(
+                'Ukuran Huruf Arab',
+                style: R.textStyle.medium(
+                  color: _goldLight,
+                ).copyWith(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Text('A', style: TextStyle(color: _textSoft, fontSize: 16)),
+                  Expanded(
+                    child: Obx(() => Slider(
+                          value: controller.arabicFontSize.value,
+                          min: 20.0,
+                          max: 40.0,
+                          divisions: 10,
+                          activeColor: _gold,
+                          inactiveColor: _goldDim.withValues(alpha: 0.3),
+                          onChanged: (val) {
+                            controller.updateArabicFontSize(val);
+                          },
+                        )),
+                  ),
+                  Text('A', style: TextStyle(color: _textSoft, fontSize: 24, fontWeight: FontWeight.bold)),
+                  const SizedBox(width: 8),
+                  Obx(() => Text(
+                        '${controller.arabicFontSize.value.toInt()} px',
+                        style: TextStyle(color: _goldLight, fontSize: 13, fontWeight: FontWeight.w600),
+                      )),
+                ],
+              ),
+              const SizedBox(height: 20),
+
+              // Toggle Latin
+              Obx(() => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Latin / Transliterasi',
+                            style: R.textStyle.medium(
+                              color: _goldLight,
+                            ).copyWith(fontSize: 14, fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Menampilkan ejaan latin ayat',
+                            style: R.textStyle.small(
+                              color: _textSoft.withValues(alpha: 0.6),
+                            ).copyWith(fontSize: 11),
+                          ),
+                        ],
+                      ),
+                      Switch.adaptive(
+                        value: controller.showLatin.value,
+                        activeColor: _gold,
+                        activeTrackColor: _gold.withValues(alpha: 0.3),
+                        onChanged: (val) {
+                          controller.toggleShowLatin(val);
+                        },
+                      ),
+                    ],
+                  )),
+              const SizedBox(height: 16),
+
+              // Toggle Translation
+              Obx(() => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Terjemahan (Arti)',
+                            style: R.textStyle.medium(
+                              color: _goldLight,
+                            ).copyWith(fontSize: 14, fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Menampilkan terjemahan bahasa Indonesia',
+                            style: R.textStyle.small(
+                              color: _textSoft.withValues(alpha: 0.6),
+                            ).copyWith(fontSize: 11),
+                          ),
+                        ],
+                      ),
+                      Switch.adaptive(
+                        value: controller.showTranslation.value,
+                        activeColor: _gold,
+                        activeTrackColor: _gold.withValues(alpha: 0.3),
+                        onChanged: (val) {
+                          controller.toggleShowTranslation(val);
+                        },
+                      ),
+                    ],
+                  )),
+              const SizedBox(height: 24),
+            ],
+          ),
+        ),
+      ),
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
     );
   }
 }

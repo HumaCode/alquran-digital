@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../../../data/models/detail_surah_model.dart';
 import '../../../data/models/tafsir_model.dart';
+import '../../../data/providers/database_helper.dart';
 import '../../../data/repositories/surah_repository.dart';
 
 class DetailSurahController extends GetxController {
@@ -14,6 +15,11 @@ class DetailSurahController extends GetxController {
   final detailSurah = Rxn<DetailSurah>();
   final errorMessage = ''.obs;
   final tafsirSurah = Rxn<TafsirSurah>();
+
+  // Settings states
+  final arabicFontSize = 26.0.obs;
+  final showLatin = true.obs;
+  final showTranslation = true.obs;
 
   late final int nomorSurah;
   int? targetAyat;
@@ -39,6 +45,7 @@ class DetailSurahController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    loadSettings();
 
     // Get the Surah number from arguments
     final args = Get.arguments;
@@ -277,5 +284,55 @@ class DetailSurahController extends GetxController {
       return match?.teks;
     }
     return null;
+  }
+
+  Future<void> loadSettings() async {
+    try {
+      final dbHelper = DatabaseHelper.instance;
+      
+      final savedFontSize = await dbHelper.getMetadata('setting_arabic_font_size');
+      if (savedFontSize != null) {
+        arabicFontSize.value = double.tryParse(savedFontSize) ?? 26.0;
+      }
+
+      final savedShowLatin = await dbHelper.getMetadata('setting_show_latin');
+      if (savedShowLatin != null) {
+        showLatin.value = savedShowLatin == 'true';
+      }
+
+      final savedShowTranslation = await dbHelper.getMetadata('setting_show_translation');
+      if (savedShowTranslation != null) {
+        showTranslation.value = savedShowTranslation == 'true';
+      }
+    } catch (e) {
+      print('Gagal memuat pengaturan: $e');
+    }
+  }
+
+  Future<void> updateArabicFontSize(double size) async {
+    arabicFontSize.value = size;
+    try {
+      await DatabaseHelper.instance.updateMetadata('setting_arabic_font_size', size.toString());
+    } catch (e) {
+      print('Gagal menyimpan ukuran font: $e');
+    }
+  }
+
+  Future<void> toggleShowLatin(bool value) async {
+    showLatin.value = value;
+    try {
+      await DatabaseHelper.instance.updateMetadata('setting_show_latin', value.toString());
+    } catch (e) {
+      print('Gagal menyimpan toggle latin: $e');
+    }
+  }
+
+  Future<void> toggleShowTranslation(bool value) async {
+    showTranslation.value = value;
+    try {
+      await DatabaseHelper.instance.updateMetadata('setting_show_translation', value.toString());
+    } catch (e) {
+      print('Gagal menyimpan toggle terjemahan: $e');
+    }
   }
 }

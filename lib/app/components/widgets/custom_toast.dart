@@ -191,6 +191,8 @@ class _DynamicIslandToastWidgetState extends State<_DynamicIslandToastWidget>
   Widget build(BuildContext context) {
     final statusHeight = MediaQuery.of(context).padding.top;
     final topOffset = statusHeight > 0 ? statusHeight + 8.0 : 16.0;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final maxToastWidth = (screenWidth - 24).clamp(300.0, 420.0);
 
     return Positioned(
       top: topOffset,
@@ -205,15 +207,21 @@ class _DynamicIslandToastWidgetState extends State<_DynamicIslandToastWidget>
               // Fade entire toast container out at the very end of reverse animation
               final double scale = 0.8 + (_animController.value * 0.2);
               final double opacity = (_animController.value * 5.0).clamp(0.0, 1.0);
+              final double currentWidth = Tween<double>(
+                begin: 110.0,
+                end: maxToastWidth,
+              ).transform(_animController.value);
 
               return Opacity(
                 opacity: opacity,
                 child: Transform.scale(
                   scale: scale,
                   child: Container(
-                    width: _islandWidth.value,
-                    height: _islandHeight.value,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    width: currentWidth,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    constraints: BoxConstraints(
+                      minHeight: _islandHeight.value,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFF070E0B), // Deep notch pure dark
                       borderRadius: BorderRadius.circular(_borderRadius.value),
@@ -232,6 +240,8 @@ class _DynamicIslandToastWidgetState extends State<_DynamicIslandToastWidget>
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(_borderRadius.value),
                       child: Center(
+                        widthFactor: 1.0,
+                        heightFactor: 1.0,
                         child: FadeTransition(
                           opacity: _contentOpacity,
                           child: Row(
@@ -252,7 +262,7 @@ class _DynamicIslandToastWidgetState extends State<_DynamicIslandToastWidget>
                                   ).copyWith(
                                     fontSize: 13,
                                   ),
-                                  maxLines: 1,
+                                  maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),

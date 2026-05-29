@@ -370,8 +370,10 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
   }
 
   void _showLocationBottomSheet(BuildContext context) {
+    _controller.searchQuery.value = '';
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       backgroundColor: R.color.bgJadwal,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -382,7 +384,12 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
       builder: (context) {
         return Obx(() {
           return Container(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.only(
+              left: 24,
+              right: 24,
+              top: 24,
+              bottom: 24 + MediaQuery.of(context).viewInsets.bottom,
+            ),
             decoration: BoxDecoration(
               color: R.color.bgJadwal,
               borderRadius: const BorderRadius.only(
@@ -506,51 +513,82 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Kabupaten / Kota',
+                  'Cari Kabupaten / Kota',
                   style: TextStyle(fontSize: 12, color: R.color.textMutedJadwal),
                 ),
                 const SizedBox(height: 6),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: R.color.surface2Jadwal,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: R.color.goldDim.withOpacity(0.2)),
+                TextField(
+                  onChanged: (val) => _controller.searchQuery.value = val,
+                  style: TextStyle(color: R.color.textJadwal, fontSize: 14),
+                  decoration: InputDecoration(
+                    hintText: 'Masukkan nama kota...',
+                    hintStyle: TextStyle(color: R.color.textMutedJadwal, fontSize: 13),
+                    prefixIcon: Icon(Icons.search_rounded, color: R.color.goldLight, size: 20),
+                    filled: true,
+                    fillColor: R.color.surface2Jadwal,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: R.color.goldDim.withOpacity(0.2)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: R.color.goldDim.withOpacity(0.2)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: R.color.gold, width: 1.5),
+                    ),
                   ),
-                  child: DropdownButtonHideUnderline(
-                    child: _controller.isCitiesLoading.value
-                        ? const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 12),
-                            child: Center(
-                              child: SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.amber),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: 180,
+                  child: _controller.isCitiesLoading.value
+                      ? const Center(child: CustomLoader(size: 40))
+                      : Obx(() {
+                          final list = _controller.filteredKabKotaList;
+                          if (list.isEmpty) {
+                            return Center(
+                              child: Text(
+                                'Kota tidak ditemukan',
+                                style: TextStyle(color: R.color.textMutedJadwal),
                               ),
-                            ),
-                          )
-                        : DropdownButton<String>(
-                            value: _controller.kabKotaList.contains(_controller.selectedKabKota.value)
-                                ? _controller.selectedKabKota.value
-                                : null,
-                            isExpanded: true,
-                            dropdownColor: R.color.surface2Jadwal,
-                            style: TextStyle(color: R.color.textJadwal, fontSize: 14),
-                            icon: Icon(Icons.keyboard_arrow_down_rounded, color: R.color.goldLight),
-                            items: _controller.kabKotaList.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
+                            );
+                          }
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: list.length,
+                            itemBuilder: (context, idx) {
+                              final city = list[idx];
+                              final isSelected = _controller.selectedKabKota.value == city;
+                              return ListTile(
+                                dense: true,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                tileColor: isSelected ? R.color.emerald.withOpacity(0.1) : Colors.transparent,
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                                title: Text(
+                                  city,
+                                  style: TextStyle(
+                                    color: isSelected ? R.color.emeraldLight : R.color.textJadwal,
+                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                trailing: isSelected
+                                    ? Icon(Icons.check_circle_rounded, color: R.color.emeraldLight, size: 16)
+                                    : null,
+                                onTap: () {
+                                  _controller.updateCity(city);
+                                  Navigator.pop(context);
+                                },
                               );
-                            }).toList(),
-                            onChanged: (newVal) {
-                              if (newVal != null) {
-                                _controller.updateCity(newVal);
-                                Navigator.pop(context);
-                              }
                             },
-                          ),
-                  ),
+                          );
+                        }),
                 ),
                 const SizedBox(height: 12),
               ],

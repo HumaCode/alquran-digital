@@ -21,6 +21,18 @@ class JadwalSholatController extends GetxController {
   final provinsiList = <String>[].obs;
   final kabKotaList = <String>[].obs;
 
+  // Search query for cities filtering
+  final searchQuery = ''.obs;
+
+  List<String> get filteredKabKotaList {
+    if (searchQuery.value.isEmpty) {
+      return kabKotaList;
+    }
+    return kabKotaList
+        .where((city) => city.toLowerCase().contains(searchQuery.value.toLowerCase()))
+        .toList();
+  }
+
   // Monthly schedule data
   final jadwalSholat = Rxn<JadwalSholat>();
   
@@ -239,7 +251,8 @@ class JadwalSholatController extends GetxController {
   Future<void> updateProvince(String prov) async {
     if (selectedProvinsi.value == prov) return;
     selectedProvinsi.value = prov;
-    
+    searchQuery.value = '';
+
     // Simpan pilihan provinsi terakhir
     await DatabaseHelper.instance.updateMetadata('jadwal_sholat_selected_provinsi', prov);
 

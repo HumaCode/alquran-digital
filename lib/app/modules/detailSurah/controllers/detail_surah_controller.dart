@@ -27,6 +27,8 @@ class DetailSurahController extends GetxController {
   final AudioPlayer _audioPlayer = AudioPlayer();
   final currentlyPlayingAyat = RxnInt();
   final isAudioPlaying = false.obs;
+  final isPlayingFullSurah = false.obs;
+  int _currentFullSurahIndex = 0;
 
   List<Ayat> _allAyat = [];
   int _loadedCount = 0;
@@ -51,8 +53,20 @@ class DetailSurahController extends GetxController {
 
     // Listen to audio player completion
     _audioPlayer.onPlayerComplete.listen((event) {
-      currentlyPlayingAyat.value = null;
-      isAudioPlaying.value = false;
+      if (isPlayingFullSurah.value) {
+        _currentFullSurahIndex++;
+        if (_currentFullSurahIndex < _allAyat.length) {
+          _playFullSurahAyat(_currentFullSurahIndex);
+        } else {
+          // Finished playing all verses
+          isPlayingFullSurah.value = false;
+          currentlyPlayingAyat.value = null;
+          isAudioPlaying.value = false;
+        }
+      } else {
+        currentlyPlayingAyat.value = null;
+        isAudioPlaying.value = false;
+      }
     });
 
     scrollController.addListener(_onScroll);
@@ -150,6 +164,10 @@ class DetailSurahController extends GetxController {
   }
 
   Future<void> togglePlayAudio(Ayat ayat) async {
+    if (isPlayingFullSurah.value) {
+      isPlayingFullSurah.value = false;
+    }
+
     final audioUrl = ayat.audio['05'];
     if (audioUrl == null) {
       Get.snackbar(
@@ -179,6 +197,64 @@ class DetailSurahController extends GetxController {
       isAudioPlaying.value = false;
       currentlyPlayingAyat.value = null;
       print('Gagal memutar audio: $e');
+    }
+  }
+
+  Future<void> togglePlayFullSurah() async {
+    if (isPlayingFullSurah.value) {
+      await _audioPlayer.stop();
+      isPlayingFullSurah.value = false;
+      currentlyPlayingAyat.value = null;
+      isAudioPlaying.value = false;
+    } else {
+      if (_allAyat.isEmpty) return;
+      isPlayingFullSurah.value = true;
+      _currentFullSurahIndex = 0;
+      await _playFullSurahAyat(0);
+    }
+  }
+
+  Future<void> _playFullSurahAyat(int index) async {
+    if (index >= _allAyat.length) return;
+    final ayat = _allAyat[index];
+    final audioUrl = ayat.audio['05'];
+    if (audioUrl == null) {
+      _currentFullSurahIndex++;
+      if (_currentFullSurahIndex < _allAyat.length) {
+        await _playFullSurahAyat(_currentFullSurahIndex);
+      } else {
+        isPlayingFullSurah.value = false;
+        currentlyPlayingAyat.value = null;
+        isAudioPlaying.value = false;
+      }
+      return;
+    }
+
+    try {
+      currentlyPlayingAyat.value = ayat.nomorAyat;
+      isAudioPlaying.value = true;
+
+      // Auto-scroll ke ayat yang sedang diputar
+      final key = ayatKeys[ayat.nomorAyat];
+      if (key != null && key.currentContext != null) {
+        Scrollable.ensureVisible(
+          key.currentContext!,
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeInOut,
+        );
+      }
+
+      await _audioPlayer.play(UrlSource(audioUrl));
+    } catch (e) {
+      print('Gagal memutar audio ayat ke-${index + 1}: $e');
+      _currentFullSurahIndex++;
+      if (_currentFullSurahIndex < _allAyat.length) {
+        await _playFullSurahAyat(_currentFullSurahIndex);
+      } else {
+        isPlayingFullSurah.value = false;
+        currentlyPlayingAyat.value = null;
+        isAudioPlaying.value = false;
+      }
     }
   }
 }

@@ -101,87 +101,152 @@ class DetailSurahView extends GetView<DetailSurahController> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           children: [
             // ── Surah Card Header ──────────────────────────────────────────
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [_emeraldDark, _emeraldMedium],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: _goldDim.withValues(alpha: 0.3),
-                  width: 1.5,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: _gold.withValues(alpha: 0.08),
-                    blurRadius: 20,
-                    spreadRadius: 2,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [_emeraldDark, _emeraldMedium],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    detail.namaLatin,
-                    style: R.textStyle.large(
-                      color: _goldLight,
-                      fontWeight: FontWeight.bold,
-                    ).copyWith(fontSize: 24),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    detail.arti,
-                    style: R.textStyle.medium(
-                      color: _textSoft.withValues(alpha: 0.7),
-                    ).copyWith(fontSize: 14),
-                  ),
-                  const SizedBox(height: 12),
-                  Divider(
+                  border: Border.all(
                     color: _goldDim.withValues(alpha: 0.3),
-                    thickness: 1,
+                    width: 1.5,
                   ),
-                  const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        detail.tempatTurun.toUpperCase(),
-                        style: R.textStyle.small(
-                          color: _goldLight,
-                          fontWeight: FontWeight.w600,
-                        ).copyWith(letterSpacing: 1.5, fontSize: 12),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Icon(Icons.circle, color: _goldDim, size: 6),
-                      ),
-                      Text(
-                        '${detail.jumlahAyat} AYAT',
-                        style: R.textStyle.small(
-                          color: _goldLight,
-                          fontWeight: FontWeight.w600,
-                        ).copyWith(letterSpacing: 1.5, fontSize: 12),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  // Beautiful Bismillah (except for Al-Fatihah which has it as verse 1 and At-Tawbah which does not have it)
-                  if (detail.nomor != 1 && detail.nomor != 9)
-                    Text(
-                      R.string.bismillah,
-                      textAlign: TextAlign.center,
-                      style: R.textStyle.large(
-                        color: _goldLight,
-                      ).copyWith(
-                        fontSize: 24,
-                        letterSpacing: 1,
+                  boxShadow: [
+                    BoxShadow(
+                      color: _gold.withValues(alpha: 0.08),
+                      blurRadius: 20,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: Stack(
+                  children: [
+                    // Islamic Pattern overlay
+                    Positioned.fill(
+                      child: Opacity(
+                        opacity: 0.06,
+                        child: CustomPaint(
+                          painter: DetailCardPatternPainter(color: _gold),
+                        ),
                       ),
                     ),
-                ],
+                    // Card Content
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+                      child: Column(
+                        children: [
+                          Text(
+                            detail.namaLatin,
+                            style: R.textStyle.large(
+                              color: _goldLight,
+                              fontWeight: FontWeight.bold,
+                            ).copyWith(fontSize: 24),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            detail.arti,
+                            style: R.textStyle.medium(
+                              color: _textSoft.withValues(alpha: 0.7),
+                            ).copyWith(fontSize: 14),
+                          ),
+                          const SizedBox(height: 12),
+                          Divider(
+                            color: _goldDim.withValues(alpha: 0.3),
+                            thickness: 1,
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                detail.tempatTurun.toUpperCase(),
+                                style: R.textStyle.small(
+                                  color: _goldLight,
+                                  fontWeight: FontWeight.w600,
+                                ).copyWith(letterSpacing: 1.5, fontSize: 12),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                child: Icon(Icons.circle, color: _goldDim, size: 6),
+                              ),
+                              Text(
+                                '${detail.jumlahAyat} AYAT',
+                                style: R.textStyle.small(
+                                  color: _goldLight,
+                                  fontWeight: FontWeight.w600,
+                                ).copyWith(letterSpacing: 1.5, fontSize: 12),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          // Full Surah Audio Player Controls (Gabungan)
+                          Obx(() {
+                            final isPlaying = controller.isPlayingFullSurah.value;
+                            final currentAyat = controller.currentlyPlayingAyat.value;
+                            return Column(
+                              children: [
+                                ElevatedButton.icon(
+                                  onPressed: () {
+                                    controller.togglePlayFullSurah();
+                                  },
+                                  icon: Icon(
+                                    isPlaying ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded,
+                                    color: _emeraldDark,
+                                    size: 20,
+                                  ),
+                                  label: Text(
+                                    isPlaying ? 'JEDA MURATTAL PENUH' : 'PUTAR MURATTAL PENUH',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: _emeraldDark,
+                                      letterSpacing: 1.2,
+                                      fontSize: 12,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: _gold,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                  ),
+                                ),
+                                if (isPlaying && currentAyat != null) ...[
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Memutar ayat $currentAyat dari ${detail.jumlahAyat}',
+                                    style: R.textStyle.small(
+                                      color: _goldLight.withValues(alpha: 0.8),
+                                    ).copyWith(fontStyle: FontStyle.italic, fontSize: 12),
+                                  ),
+                                ]
+                              ],
+                            );
+                          }),
+                          // Beautiful Bismillah (except for Al-Fatihah which has it as verse 1 and At-Tawbah which does not have it)
+                          if (detail.nomor != 1 && detail.nomor != 9) ...[
+                            const SizedBox(height: 24),
+                            Text(
+                              R.string.bismillah,
+                              textAlign: TextAlign.center,
+                              style: R.textStyle.large(
+                                color: _goldLight,
+                              ).copyWith(
+                                fontSize: 24,
+                                letterSpacing: 1,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 32),
@@ -430,4 +495,55 @@ class DetailSurahView extends GetView<DetailSurahController> {
       }),
     );
   }
+}
+
+class DetailCardPatternPainter extends CustomPainter {
+  final Color color;
+  const DetailCardPatternPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.5;
+
+    final path = Path();
+    const double sp = 40.0;
+
+    // Draw intersecting diagonal lines to form diamond mesh
+    for (double i = -size.height; i < size.width; i += sp) {
+      path.moveTo(i, 0);
+      path.lineTo(i + size.height, size.height);
+    }
+    for (double i = 0; i < size.width + size.height; i += sp) {
+      path.moveTo(i, 0);
+      path.lineTo(i - size.height, size.height);
+    }
+    canvas.drawPath(path, paint);
+
+    // Draw small stars at intersection points
+    final starPaint = Paint()
+      ..color = color.withValues(alpha: 0.8)
+      ..style = PaintingStyle.fill;
+
+    for (double x = 0; x < size.width; x += sp) {
+      for (double y = 0; y < size.height; y += sp) {
+        final starPath = Path()
+          ..moveTo(x, y - 3)
+          ..lineTo(x + 2, y - 1)
+          ..lineTo(x + 4, y)
+          ..lineTo(x + 2, y + 1)
+          ..lineTo(x, y + 3)
+          ..lineTo(x - 2, y + 1)
+          ..lineTo(x - 4, y)
+          ..lineTo(x - 2, y - 1)
+          ..close();
+        canvas.drawPath(starPath, starPaint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

@@ -12,4 +12,10 @@ class ApiUrl {
   static const String getAllDoa = '$baseUrl/doa';
   static const String getDetailDoa =
       '$baseUrl/doa'; // Gunakan: ${ApiUrl.getDetailDoa}/$id
+
+  static const String getAllProvinsi = '$baseUrl/v2/shalat/provinsi';
+  static const String getDaftarKota =
+      '$baseUrl/v2/shalat/kabkota'; // Request Body = "provinsi": "Jawa Barat"  contoh
+  static const String getJadwalSholatBulanan =
+      '$baseUrl/v2/shalat'; // Request Body: "provinsi": "Jawa Barat", "kabkota": "Kota Bogor", "bulan": 1,      // 1-12 (optional, default: bulan sekarang) "tahun": 2026    // (optional, default: tahun sekarang)
 }

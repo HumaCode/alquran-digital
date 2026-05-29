@@ -2,6 +2,10 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:alquran_digital/app/components/widgets/widgets.dart';
+import '../controllers/jadwal_sholat_controller.dart';
+import '../../../data/models/jadwal_sholat_model.dart';
 import 'package:alquran_digital/app/constants/r.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -39,6 +43,8 @@ class JadwalSholatView extends StatefulWidget {
 
 class _JadwalSholatViewState extends State<JadwalSholatView>
     with TickerProviderStateMixin {
+  final _controller = Get.find<JadwalSholatController>();
+  StreamSubscription? _todayJadwalSubscription;
   
   // Timer dan penanggalan
   late Timer _ticker;
@@ -56,7 +62,6 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
   // State local UI
   int? _expandedCard;
   bool _notifEnabled = true;
-  final String _kota = 'Pekalongan';
   String _tanggal = '';
   String _hijri = '';
 
@@ -120,12 +125,84 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
     'Dzulhijjah',
   ];
 
+  void _updateSholatTimes(Jadwal today) {
+    TimeOfDay parseTime(String timeStr) {
+      try {
+        final parts = timeStr.trim().split(':');
+        return TimeOfDay(
+          hour: int.parse(parts[0]),
+          minute: int.parse(parts[1]),
+        );
+      } catch (e) {
+        return const TimeOfDay(hour: 0, minute: 0);
+      }
+    }
+
+    _sholat[0] = WaktuSholat(
+      nama: 'Subuh',
+      arabNama: 'الصبح',
+      waktu: parseTime(today.subuh),
+      icon: '🌄',
+      accent: const Color(0xFF4A90D9),
+      deskripsi: 'Sebelum terbit matahari',
+    );
+    _sholat[1] = WaktuSholat(
+      nama: 'Dzuhur',
+      arabNama: 'الظهر',
+      waktu: parseTime(today.dzuhur),
+      icon: '☀️',
+      accent: const Color(0xFFE8A020),
+      deskripsi: 'Setelah matahari tergelincir',
+    );
+    _sholat[2] = WaktuSholat(
+      nama: 'Ashar',
+      arabNama: 'العصر',
+      waktu: parseTime(today.ashar),
+      icon: '🌤️',
+      accent: const Color(0xFFD4612A),
+      deskripsi: 'Sore hari menjelang petang',
+    );
+    _sholat[3] = WaktuSholat(
+      nama: 'Maghrib',
+      arabNama: 'المغرب',
+      waktu: parseTime(today.maghrib),
+      icon: '🌇',
+      accent: const Color(0xFFBF3A5A),
+      deskripsi: 'Setelah matahari terbenam',
+    );
+    _sholat[4] = WaktuSholat(
+      nama: 'Isya',
+      arabNama: 'العشاء',
+      waktu: parseTime(today.isya),
+      icon: '🌙',
+      accent: const Color(0xFF5E35B1),
+      deskripsi: 'Ketika langit gelap sempurna',
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     _now = DateTime.now();
+    
+    // Set initial times if already available
+    final initialToday = _controller.todayJadwal.value;
+    if (initialToday != null) {
+      _updateSholatTimes(initialToday);
+    }
+    
     _buildDates();
     _calcSholatBerikut();
+
+    // Listen to changes in todayJadwal reactively
+    _todayJadwalSubscription = _controller.todayJadwal.listen((today) {
+      if (today != null && mounted) {
+        setState(() {
+          _updateSholatTimes(today);
+          _calcSholatBerikut();
+        });
+      }
+    });
 
     // Ticker untuk memperbarui countdown setiap 1 detik secara realtime
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -178,6 +255,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
 
   @override
   void dispose() {
+    _todayJadwalSubscription?.cancel();
     _ticker.cancel();
     _entranceCtrl.dispose();
     _pulseCtrl.dispose();
@@ -291,6 +369,155 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
     return sMin < nowMin;
   }
 
+  void _showLocationBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: R.color.bgJadwal,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
+      ),
+      builder: (context) {
+        return Obx(() {
+          return Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: R.color.bgJadwal,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
+              ),
+              border: Border(
+                top: BorderSide(color: R.color.goldDim.withOpacity(0.15)),
+              ),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 20),
+                    decoration: BoxDecoration(
+                      color: R.color.textMutedJadwal.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Pilih Lokasi',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: R.color.goldLight,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Icon(Icons.close_rounded, color: R.color.textMutedJadwal, size: 22),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Provinsi',
+                  style: TextStyle(fontSize: 12, color: R.color.textMutedJadwal),
+                ),
+                const SizedBox(height: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: R.color.surface2Jadwal,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: R.color.goldDim.withOpacity(0.2)),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _controller.provinsiList.contains(_controller.selectedProvinsi.value)
+                          ? _controller.selectedProvinsi.value
+                          : null,
+                      isExpanded: true,
+                      dropdownColor: R.color.surface2Jadwal,
+                      style: TextStyle(color: R.color.textJadwal, fontSize: 14),
+                      icon: Icon(Icons.keyboard_arrow_down_rounded, color: R.color.goldLight),
+                      items: _controller.provinsiList.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (newVal) {
+                        if (newVal != null) {
+                          _controller.updateProvince(newVal);
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Kabupaten / Kota',
+                  style: TextStyle(fontSize: 12, color: R.color.textMutedJadwal),
+                ),
+                const SizedBox(height: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: R.color.surface2Jadwal,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: R.color.goldDim.withOpacity(0.2)),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: _controller.isCitiesLoading.value
+                        ? const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            child: Center(
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.amber),
+                              ),
+                            ),
+                          )
+                        : DropdownButton<String>(
+                            value: _controller.kabKotaList.contains(_controller.selectedKabKota.value)
+                                ? _controller.selectedKabKota.value
+                                : null,
+                            isExpanded: true,
+                            dropdownColor: R.color.surface2Jadwal,
+                            style: TextStyle(color: R.color.textJadwal, fontSize: 14),
+                            icon: Icon(Icons.keyboard_arrow_down_rounded, color: R.color.goldLight),
+                            items: _controller.kabKotaList.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (newVal) {
+                              if (newVal != null) {
+                                _controller.updateCity(newVal);
+                                Navigator.pop(context);
+                              }
+                            },
+                          ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+              ],
+            ),
+          );
+        });
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -301,60 +528,106 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
           Positioned.fill(child: _GeoBg()),
           
           SafeArea(
-            child: CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                // 1. Header & App Bar
-                SliverToBoxAdapter(
-                  child: _JadwalSholatAppBar(
-                    kota: _kota,
-                    notifEnabled: _notifEnabled,
-                    onNotifToggle: () {
-                      setState(() => _notifEnabled = !_notifEnabled);
-                      HapticFeedback.lightImpact();
-                    },
-                    entranceCtrl: _entranceCtrl,
+            child: Obx(() {
+              final isDataLoading = _controller.isLoading.value && _controller.todayJadwal.value == null;
+              final errorMsg = _controller.errorMessage.value;
+
+              return CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  // 1. Header & App Bar
+                  SliverToBoxAdapter(
+                    child: _JadwalSholatAppBar(
+                      kota: _controller.selectedKabKota.value,
+                      notifEnabled: _notifEnabled,
+                      onNotifToggle: () {
+                        setState(() => _notifEnabled = !_notifEnabled);
+                        HapticFeedback.lightImpact();
+                      },
+                      onLocationTap: () => _showLocationBottomSheet(context),
+                      entranceCtrl: _entranceCtrl,
+                    ),
                   ),
-                ),
-                // 2. Tampilan Utama Countdown Sholat Terdekat
-                SliverToBoxAdapter(
-                  child: _HeroCountdown(
-                    sholat: _sholat[_sholatBerikutIdx],
-                    countdownStr: _countdownStr,
-                    pulseCtrl: _pulseCtrl,
-                    entranceCtrl: _entranceCtrl,
-                  ),
-                ),
-                // 3. Penanggalan Masehi & Hijriah
-                SliverToBoxAdapter(
-                  child: _TanggalHijriRow(
-                    tanggal: _tanggal,
-                    hijri: _hijri,
-                  ),
-                ),
-                // 4. Progress Tracker pelaksanaan sholat harian
-                SliverToBoxAdapter(
-                  child: _SholatProgressBar(
-                    now: _now,
-                    sholat: _sholat,
-                  ),
-                ),
-                // 5. Label Section Pembatas
-                SliverToBoxAdapter(
-                  child: _buildSectionLabel(R.string.prayerTitleSection),
-                ),
-                // 6. Kartu daftar waktu sholat stagger
-                ..._buildSholatCards(),
-                // 7. Seksi tambahan di bagian bawah (Kompas Kiblat & Waktu Tambahan)
-                SliverToBoxAdapter(
-                  child: _JadwalSholatBottomRow(
-                    ringCtrl: _ringCtrl,
-                    compassCtrl: _compassCtrl,
-                  ),
-                ),
-                const SliverToBoxAdapter(child: SizedBox(height: 32)),
-              ],
-            ),
+                  
+                  if (isDataLoading)
+                    const SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(
+                        child: CustomLoader(size: 60),
+                      ),
+                    )
+                  else if (errorMsg.isNotEmpty && _controller.todayJadwal.value == null)
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.cloud_off_rounded, color: Colors.redAccent, size: 48),
+                              const SizedBox(height: 16),
+                              Text(
+                                errorMsg,
+                                style: TextStyle(color: R.color.textMutedJadwal),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 16),
+                              ElevatedButton(
+                                onPressed: () => _controller.fetchSchedule(),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: R.color.emerald,
+                                  foregroundColor: Colors.white,
+                                ),
+                                child: const Text('Coba Lagi'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  else ...[
+                    // 2. Tampilan Utama Countdown Sholat Terdekat
+                    SliverToBoxAdapter(
+                      child: _HeroCountdown(
+                        sholat: _sholat[_sholatBerikutIdx],
+                        countdownStr: _countdownStr,
+                        pulseCtrl: _pulseCtrl,
+                        entranceCtrl: _entranceCtrl,
+                      ),
+                    ),
+                    // 3. Penanggalan Masehi & Hijriah
+                    SliverToBoxAdapter(
+                      child: _TanggalHijriRow(
+                        tanggal: _tanggal,
+                        hijri: _hijri,
+                      ),
+                    ),
+                    // 4. Progress Tracker pelaksanaan sholat harian
+                    SliverToBoxAdapter(
+                      child: _SholatProgressBar(
+                        now: _now,
+                        sholat: _sholat,
+                      ),
+                    ),
+                    // 5. Label Section Pembatas
+                    SliverToBoxAdapter(
+                      child: _buildSectionLabel(R.string.prayerTitleSection),
+                    ),
+                    // 6. Kartu daftar waktu sholat stagger
+                    ..._buildSholatCards(),
+                    // 7. Seksi tambahan di bagian bawah (Kompas Kiblat & Waktu Tambahan)
+                    SliverToBoxAdapter(
+                      child: _JadwalSholatBottomRow(
+                        ringCtrl: _ringCtrl,
+                        compassCtrl: _compassCtrl,
+                      ),
+                    ),
+                    const SliverToBoxAdapter(child: SizedBox(height: 32)),
+                  ],
+                ],
+              );
+            }),
           ),
         ],
       ),
@@ -442,12 +715,14 @@ class _JadwalSholatAppBar extends StatelessWidget {
   final String kota;
   final bool notifEnabled;
   final VoidCallback onNotifToggle;
+  final VoidCallback onLocationTap;
   final AnimationController entranceCtrl;
 
   const _JadwalSholatAppBar({
     required this.kota,
     required this.notifEnabled,
     required this.onNotifToggle,
+    required this.onLocationTap,
     required this.entranceCtrl,
   });
 
@@ -497,19 +772,30 @@ class _JadwalSholatAppBar extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.location_on_rounded,
-                        color: R.color.emeraldLight,
-                        size: 12,
-                      ),
-                      const SizedBox(width: 3),
-                      Text(
-                        kota,
-                        style: TextStyle(fontSize: 12, color: R.color.textMutedJadwal),
-                      ),
-                    ],
+                  GestureDetector(
+                    onTap: onLocationTap,
+                    behavior: HitTestBehavior.opaque,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.location_on_rounded,
+                          color: R.color.emeraldLight,
+                          size: 12,
+                        ),
+                        const SizedBox(width: 3),
+                        Text(
+                          kota,
+                          style: TextStyle(fontSize: 12, color: R.color.textMutedJadwal),
+                        ),
+                        const SizedBox(width: 2),
+                        Icon(
+                          Icons.arrow_drop_down_rounded,
+                          color: R.color.goldLight,
+                          size: 16,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

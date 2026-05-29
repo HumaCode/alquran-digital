@@ -444,7 +444,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                   ),
                 );
               },
-            ),
+            );
           }),
             
             // Loading Indicator for Pagination

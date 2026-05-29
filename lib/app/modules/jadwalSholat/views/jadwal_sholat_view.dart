@@ -426,6 +426,49 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                   ],
                 ),
                 const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () async {
+                    Navigator.pop(context);
+                    await _controller.detectLocation();
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [R.color.emerald, R.color.emeraldLight],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: R.color.emerald.withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.my_location_rounded,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Deteksi Lokasi Otomatis (GPS / IP)',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
                 Text(
                   'Provinsi',
                   style: TextStyle(fontSize: 12, color: R.color.textMutedJadwal),

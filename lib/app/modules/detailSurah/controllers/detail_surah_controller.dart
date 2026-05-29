@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../../../data/models/detail_surah_model.dart';
 import '../../../data/repositories/surah_repository.dart';
 
@@ -22,6 +23,11 @@ class DetailSurahController extends GetxController {
   final scrollController = ScrollController();
   final Map<int, GlobalKey> ayatKeys = {};
 
+  // Audio Player states
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  final currentlyPlayingAyat = RxnInt();
+  final isAudioPlaying = false.obs;
+
   List<Ayat> _allAyat = [];
   int _loadedCount = 0;
   static const int _pageSize = 20;
@@ -43,6 +49,12 @@ class DetailSurahController extends GetxController {
       nomorSurah = 1; // Fallback to Al-Fatihah
     }
 
+    // Listen to audio player completion
+    _audioPlayer.onPlayerComplete.listen((event) {
+      currentlyPlayingAyat.value = null;
+      isAudioPlaying.value = false;
+    });
+
     scrollController.addListener(_onScroll);
     fetchDetailSurah();
   }
@@ -50,6 +62,7 @@ class DetailSurahController extends GetxController {
   @override
   void onClose() {
     scrollController.dispose();
+    _audioPlayer.dispose();
     super.onClose();
   }
 
@@ -133,6 +146,39 @@ class DetailSurahController extends GetxController {
       lastReadAyatNomor.value = nomorAyat;
     } catch (e) {
       print('Gagal menyimpan ayat terakhir dibaca: $e');
+    }
+  }
+
+  Future<void> togglePlayAudio(Ayat ayat) async {
+    final audioUrl = ayat.audio['05'];
+    if (audioUrl == null) {
+      Get.snackbar(
+        'Audio Tidak Tersedia',
+        'Audio Misyari Rasyid tidak tersedia untuk ayat ini.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    try {
+      if (currentlyPlayingAyat.value == ayat.nomorAyat) {
+        if (isAudioPlaying.value) {
+          await _audioPlayer.pause();
+          isAudioPlaying.value = false;
+        } else {
+          await _audioPlayer.resume();
+          isAudioPlaying.value = true;
+        }
+      } else {
+        await _audioPlayer.stop();
+        currentlyPlayingAyat.value = ayat.nomorAyat;
+        isAudioPlaying.value = true;
+        await _audioPlayer.play(UrlSource(audioUrl));
+      }
+    } catch (e) {
+      isAudioPlaying.value = false;
+      currentlyPlayingAyat.value = null;
+      print('Gagal memutar audio: $e');
     }
   }
 }

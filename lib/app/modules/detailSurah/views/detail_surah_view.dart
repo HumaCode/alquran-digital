@@ -233,6 +233,21 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                 ),
                               ),
                               const Spacer(),
+                              // Play Audio Button
+                              IconButton(
+                                icon: Obx(() {
+                                  final isPlaying = controller.currentlyPlayingAyat.value == ayat.nomorAyat &&
+                                      controller.isAudioPlaying.value;
+                                  return Icon(
+                                    isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                                    color: isPlaying ? _gold : _goldDim,
+                                    size: 22,
+                                  );
+                                }),
+                                onPressed: () {
+                                  controller.togglePlayAudio(ayat);
+                                },
+                              ),
                               // Tandai Terakhir Dibaca Button
                               IconButton(
                                 icon: Obx(() => Icon(

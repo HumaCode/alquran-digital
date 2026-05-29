@@ -21,6 +21,8 @@ class AppPages {
       name: _Paths.HOME,
       page: () => const HomeView(),
       binding: HomeBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
       name: _Paths.SPLASH,
@@ -31,11 +33,15 @@ class AppPages {
       name: _Paths.DOA,
       page: () => const DoaView(),
       binding: DoaBinding(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: const Duration(milliseconds: 350),
     ),
     GetPage(
       name: _Paths.DETAIL_SURAH,
       page: () => const DetailSurahView(),
       binding: DetailSurahBinding(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: const Duration(milliseconds: 350),
     ),
   ];
 }

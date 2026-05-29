@@ -14,6 +14,8 @@ void main() {
       ),
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
+      defaultTransition: Transition.rightToLeftWithFade,
+      transitionDuration: const Duration(milliseconds: 350),
     ),
   );
 }

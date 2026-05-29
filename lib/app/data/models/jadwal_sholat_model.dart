@@ -45,7 +45,8 @@ class Data {
       kabkota: json['kabkota'] as String,
       bulan: json['bulan'] as int,
       tahun: json['tahun'] as int,
-      bulanNama: json['bulanNama'] as String,
+      // API menggunakan snake_case: bulan_nama
+      bulanNama: json['bulan_nama'] as String,
       jadwal: (json['jadwal'] as List)
           .map((item) => Jadwal.fromJson(item as Map<String, dynamic>))
           .toList(),
@@ -58,7 +59,7 @@ class Data {
       'kabkota': kabkota,
       'bulan': bulan,
       'tahun': tahun,
-      'bulanNama': bulanNama,
+      'bulan_nama': bulanNama,
       'jadwal': jadwal.map((item) => item.toJson()).toList(),
     };
   }
@@ -94,7 +95,8 @@ class Jadwal {
   factory Jadwal.fromJson(Map<String, dynamic> json) {
     return Jadwal(
       tanggal: json['tanggal'] is int ? json['tanggal'] as int : int.parse(json['tanggal'].toString()),
-      tanggalLengkap: DateTime.parse(json['tanggalLengkap'] as String),
+      // API menggunakan snake_case: tanggal_lengkap
+      tanggalLengkap: DateTime.parse(json['tanggal_lengkap'] as String),
       hari: json['hari'] as String,
       imsak: json['imsak'] as String,
       subuh: json['subuh'] as String,
@@ -110,7 +112,7 @@ class Jadwal {
   Map<String, dynamic> toJson() {
     return {
       'tanggal': tanggal,
-      'tanggalLengkap': tanggalLengkap.toIso8601String().split('T')[0],
+      'tanggal_lengkap': tanggalLengkap.toIso8601String().split('T')[0],
       'hari': hari,
       'imsak': imsak,
       'subuh': subuh,

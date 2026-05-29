@@ -368,6 +368,13 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                   );
                                 },
                               ),
+                              // Tafsir Button
+                              IconButton(
+                                icon: Icon(Icons.menu_book_rounded, color: _goldDim, size: 20),
+                                onPressed: () {
+                                  _showTafsirBottomSheet(context, detail, ayat.nomorAyat);
+                                },
+                              ),
                             ],
                           ),
                         ),
@@ -493,6 +500,148 @@ class DetailSurahView extends GetView<DetailSurahController> {
           ],
         );
       }),
+    );
+  }
+
+  void _showTafsirBottomSheet(BuildContext context, Data detail, int nomorAyat) {
+    final Future<String?> tafsirFuture = controller.getAyatTafsir(nomorAyat);
+
+    Get.bottomSheet(
+      Container(
+        height: Get.height * 0.7,
+        decoration: BoxDecoration(
+          color: _bg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border.all(
+            color: _goldDim.withValues(alpha: 0.2),
+            width: 1.5,
+          ),
+        ),
+        child: Column(
+          children: [
+            // Handle Bar for dragging indicator
+            const SizedBox(height: 12),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: _goldDim.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Header
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Tafsir QS. ${detail.namaLatin}',
+                          style: R.textStyle.medium(
+                            color: _goldLight,
+                            fontWeight: FontWeight.bold,
+                          ).copyWith(fontSize: 18),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Ayat ke-$nomorAyat',
+                          style: R.textStyle.small(
+                            color: _textSoft.withValues(alpha: 0.6),
+                          ).copyWith(fontSize: 13),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close_rounded, color: _goldDim),
+                    onPressed: () => Get.back(),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Divider(
+              color: _goldDim.withValues(alpha: 0.15),
+              thickness: 1,
+            ),
+            // Content
+            Expanded(
+              child: FutureBuilder<String?>(
+                future: tafsirFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: _gold,
+                      ),
+                    );
+                  }
+                  if (snapshot.hasError || snapshot.data == null) {
+                    return Center(
+                      child: Text(
+                        'Gagal memuat tafsir ayat ini.',
+                        style: R.textStyle.medium(color: _textSoft),
+                      ),
+                    );
+                  }
+
+                  final tafsirText = snapshot.data!;
+
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Decorative label
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: _gold.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: _goldDim.withValues(alpha: 0.2),
+                              width: 1,
+                            ),
+                          ),
+                          child: Text(
+                            'Tafsir Wajiz (Kemenag)',
+                            style: TextStyle(
+                              color: _goldLight,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Poppins',
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        // Tafsir Text
+                        Text(
+                          tafsirText,
+                          style: TextStyle(
+                            color: _textSoft.withValues(alpha: 0.9),
+                            fontSize: 15,
+                            height: 1.8,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
     );
   }
 }

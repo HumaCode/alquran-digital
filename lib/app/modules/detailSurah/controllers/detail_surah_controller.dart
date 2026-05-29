@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../../../data/models/detail_surah_model.dart';
+import '../../../data/models/tafsir_model.dart';
 import '../../../data/repositories/surah_repository.dart';
 
 class DetailSurahController extends GetxController {
@@ -12,6 +13,7 @@ class DetailSurahController extends GetxController {
   final isLoading = false.obs;
   final detailSurah = Rxn<DetailSurah>();
   final errorMessage = ''.obs;
+  final tafsirSurah = Rxn<TafsirSurah>();
 
   late final int nomorSurah;
   int? targetAyat;
@@ -256,5 +258,24 @@ class DetailSurahController extends GetxController {
         isAudioPlaying.value = false;
       }
     }
+  }
+
+  Future<String?> getAyatTafsir(int nomorAyat) async {
+    if (tafsirSurah.value == null || tafsirSurah.value!.data.nomor != nomorSurah) {
+      try {
+        final tafsir = await _repository.getTafsirSurah(nomorSurah);
+        tafsirSurah.value = tafsir;
+      } catch (e) {
+        print('Gagal mengambil tafsir: $e');
+        return null;
+      }
+    }
+
+    final list = tafsirSurah.value?.data.tafsir;
+    if (list != null) {
+      final match = list.firstWhereOrNull((element) => element.ayat == nomorAyat);
+      return match?.teks;
+    }
+    return null;
   }
 }

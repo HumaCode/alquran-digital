@@ -1,5 +1,6 @@
 import '../models/detail_surah_model.dart';
 import '../models/surah_model.dart';
+import '../models/tafsir_model.dart';
 import '../providers/database_helper.dart';
 import '../providers/surah_provider.dart';
 
@@ -83,6 +84,20 @@ class SurahRepository {
       return detailSurah;
     } else {
       throw Exception('Data detail surah kosong');
+    }
+  }
+
+  Future<TafsirSurah> getTafsirSurah(int nomor) async {
+    final response = await _provider.fetchTafsirSurah(nomor);
+    if (response.status.hasError) {
+      throw Exception('Gagal memuat tafsir surah: ${response.statusText}');
+    }
+
+    final data = response.body;
+    if (data != null) {
+      return TafsirSurah.fromJson(data as Map<String, dynamic>);
+    } else {
+      throw Exception('Data tafsir surah kosong');
     }
   }
 

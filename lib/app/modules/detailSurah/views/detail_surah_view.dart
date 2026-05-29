@@ -668,116 +668,119 @@ class DetailSurahView extends GetView<DetailSurahController> {
             width: 1.5,
           ),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Handle bar
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: _goldDim.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(10),
+        child: Material(
+          color: Colors.transparent,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Handle bar
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: _goldDim.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            // Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Pengaturan Tampilan',
-                  style: R.textStyle.medium(
-                    color: _goldLight,
-                    fontWeight: FontWeight.bold,
-                  ).copyWith(fontSize: 18),
+              const SizedBox(height: 16),
+              // Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Pengaturan Tampilan',
+                    style: R.textStyle.medium(
+                      color: _goldLight,
+                      fontWeight: FontWeight.bold,
+                    ).copyWith(fontSize: 18),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close_rounded, color: _goldDim),
+                    onPressed: () => Get.back(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Divider(
+                color: _goldDim.withValues(alpha: 0.15),
+                thickness: 1,
+              ),
+              const SizedBox(height: 16),
+              
+              // Slider for Font Size
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Ukuran Font Arab',
+                    style: R.textStyle.small(color: _textSoft).copyWith(fontSize: 14),
+                  ),
+                  Text(
+                    '${controller.arabicFontSize.value.toInt()} px',
+                    style: TextStyle(
+                      color: _goldLight,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+              SliderTheme(
+                data: SliderThemeData(
+                  activeTrackColor: _gold,
+                  inactiveTrackColor: _goldDim.withValues(alpha: 0.2),
+                  thumbColor: _goldLight,
+                  overlayColor: _goldLight.withValues(alpha: 0.2),
+                  valueIndicatorColor: _emeraldDark,
+                  valueIndicatorTextStyle: TextStyle(color: _goldLight),
                 ),
-                IconButton(
-                  icon: Icon(Icons.close_rounded, color: _goldDim),
-                  onPressed: () => Get.back(),
+                child: Slider(
+                  value: controller.arabicFontSize.value,
+                  min: 20.0,
+                  max: 42.0,
+                  divisions: 11,
+                  label: '${controller.arabicFontSize.value.toInt()}px',
+                  onChanged: (value) {
+                    controller.arabicFontSize.value = value;
+                  },
                 ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Divider(
-              color: _goldDim.withValues(alpha: 0.15),
-              thickness: 1,
-            ),
-            const SizedBox(height: 16),
-            
-            // Slider for Font Size
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Ukuran Font Arab',
+              ),
+              const SizedBox(height: 12),
+              
+              // Toggle Latin Text
+              SwitchListTile.adaptive(
+                title: Text(
+                  'Tampilkan Latin',
                   style: R.textStyle.small(color: _textSoft).copyWith(fontSize: 14),
                 ),
-                Text(
-                  '${controller.arabicFontSize.value.toInt()} px',
-                  style: TextStyle(
-                    color: _goldLight,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-            SliderTheme(
-              data: SliderThemeData(
-                activeTrackColor: _gold,
-                inactiveTrackColor: _goldDim.withValues(alpha: 0.2),
-                thumbColor: _goldLight,
-                overlayColor: _goldLight.withValues(alpha: 0.2),
-                valueIndicatorColor: _emeraldDark,
-                valueIndicatorTextStyle: TextStyle(color: _goldLight),
-              ),
-              child: Slider(
-                value: controller.arabicFontSize.value,
-                min: 20.0,
-                max: 42.0,
-                divisions: 11,
-                label: '${controller.arabicFontSize.value.toInt()}px',
+                activeColor: _gold,
+                activeTrackColor: _gold.withValues(alpha: 0.3),
+                inactiveThumbColor: _textSoft.withValues(alpha: 0.5),
+                inactiveTrackColor: _bg2.withValues(alpha: 0.5),
+                value: controller.showLatin.value,
                 onChanged: (value) {
-                  controller.arabicFontSize.value = value;
+                  controller.showLatin.value = value;
                 },
               ),
-            ),
-            const SizedBox(height: 12),
-            
-            // Toggle Latin Text
-            SwitchListTile.adaptive(
-              title: Text(
-                'Tampilkan Latin',
-                style: R.textStyle.small(color: _textSoft).copyWith(fontSize: 14),
+              
+              // Toggle Translation Text
+              SwitchListTile.adaptive(
+                title: Text(
+                  'Tampilkan Terjemahan',
+                  style: R.textStyle.small(color: _textSoft).copyWith(fontSize: 14),
+                ),
+                activeColor: _gold,
+                activeTrackColor: _gold.withValues(alpha: 0.3),
+                inactiveThumbColor: _textSoft.withValues(alpha: 0.5),
+                inactiveTrackColor: _bg2.withValues(alpha: 0.5),
+                value: controller.showTranslation.value,
+                onChanged: (value) {
+                  controller.showTranslation.value = value;
+                },
               ),
-              activeColor: _gold,
-              activeTrackColor: _gold.withValues(alpha: 0.3),
-              inactiveThumbColor: _textSoft.withValues(alpha: 0.5),
-              inactiveTrackColor: _bg2.withValues(alpha: 0.5),
-              value: controller.showLatin.value,
-              onChanged: (value) {
-                controller.showLatin.value = value;
-              },
-            ),
-            
-            // Toggle Translation Text
-            SwitchListTile.adaptive(
-              title: Text(
-                'Tampilkan Terjemahan',
-                style: R.textStyle.small(color: _textSoft).copyWith(fontSize: 14),
-              ),
-              activeColor: _gold,
-              activeTrackColor: _gold.withValues(alpha: 0.3),
-              inactiveThumbColor: _textSoft.withValues(alpha: 0.5),
-              inactiveTrackColor: _bg2.withValues(alpha: 0.5),
-              value: controller.showTranslation.value,
-              onChanged: (value) {
-                controller.showTranslation.value = value;
-              },
-            ),
-            const SizedBox(height: 24),
-          ],
+              const SizedBox(height: 24),
+            ],
+          ),
         ),
       )),
       backgroundColor: Colors.transparent,

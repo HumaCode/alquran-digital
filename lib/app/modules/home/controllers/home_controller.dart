@@ -27,6 +27,9 @@ class HomeController extends GetxController {
   final lastReadAyatNomor = 0.obs;
   final hasLastRead = false.obs;
 
+  // Bookmark states
+  final bookmarkedSurahIds = <int>[].obs;
+
   List<DataSurah> _allSurahs = [];
   List<DataSurah> get allSurahs => _allSurahs;
   int _loadedCount = 0;
@@ -38,6 +41,7 @@ class HomeController extends GetxController {
     scrollController.addListener(_onScroll);
     fetchSurahs();
     fetchLastRead();
+    fetchBookmarks();
   }
 
   @override
@@ -137,6 +141,33 @@ class HomeController extends GetxController {
       }
     } catch (e) {
       print('Gagal mengambil data terakhir dibaca: $e');
+    }
+  }
+
+  Future<void> fetchBookmarks() async {
+    try {
+      final list = await _repository.getBookmarks();
+      bookmarkedSurahIds.assignAll(list);
+    } catch (e) {
+      print('Gagal mengambil bookmark: $e');
+    }
+  }
+
+  Future<bool> toggleBookmark(int nomorSurah) async {
+    try {
+      bool added = false;
+      if (bookmarkedSurahIds.contains(nomorSurah)) {
+        bookmarkedSurahIds.remove(nomorSurah);
+        added = false;
+      } else {
+        bookmarkedSurahIds.add(nomorSurah);
+        added = true;
+      }
+      await _repository.saveBookmarks(bookmarkedSurahIds.toList());
+      return added;
+    } catch (e) {
+      print('Gagal menyimpan bookmark: $e');
+      return false;
     }
   }
 }

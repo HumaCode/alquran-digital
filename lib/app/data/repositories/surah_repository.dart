@@ -123,5 +123,13 @@ class SurahRepository {
   Future<Map<String, dynamic>?> getLastRead() async {
     return await DatabaseHelper.instance.getLastRead();
   }
+
+  Future<void> saveBookmarks(List<int> bookmarks) async {
+    await DatabaseHelper.instance.saveBookmarks(bookmarks);
+  }
+
+  Future<List<int>> getBookmarks() async {
+    return await DatabaseHelper.instance.getBookmarks();
+  }
 }
 

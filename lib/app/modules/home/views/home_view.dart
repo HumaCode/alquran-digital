@@ -32,7 +32,6 @@ class _HomeViewState extends State<HomeView>
   late Animation<double> _fadeAnim;
 
   int _activeTab = 0;
-  final Set<int> _bookmarks = {1, 36, 67};
   final List<String> _tabs = [R.string.tabDaftarSurat, R.string.tabTerakhirDibaca, R.string.tabBookmark];
 
   @override
@@ -417,15 +416,18 @@ class _HomeViewState extends State<HomeView>
                       goldLight: _goldLight,
                       goldDim: _goldDim,
                       textSoft: _textSoft,
-                      isBookmarked: _bookmarks.contains(surahList[i].nomor),
-                      onBookmarkTapped: () {
-                        setState(() {
-                          if (_bookmarks.contains(surahList[i].nomor)) {
-                            _bookmarks.remove(surahList[i].nomor);
-                          } else {
-                            _bookmarks.add(surahList[i].nomor);
-                          }
-                        });
+                      isBookmarked: _homeController.bookmarkedSurahIds.contains(surahList[i].nomor),
+                      onBookmarkTapped: () async {
+                        final surah = surahList[i];
+                        final added = await _homeController.toggleBookmark(surah.nomor);
+                        if (context.mounted) {
+                          CustomToast.show(
+                            context,
+                            message: added
+                                ? 'Surah ${surah.namaLatin} ditambahkan ke bookmark'
+                                : 'Surah ${surah.namaLatin} dihapus dari bookmark',
+                          );
+                        }
                       },
                       onTap: () async {
                         await Get.toNamed(Routes.DETAIL_SURAH, arguments: surahList[i].nomor);
@@ -536,7 +538,7 @@ class _HomeViewState extends State<HomeView>
               Obx(() {
                 final listToUse = _homeController.allSurahs;
                 final bookmarkedList = listToUse
-                    .where((s) => _bookmarks.contains(s.nomor))
+                    .where((s) => _homeController.bookmarkedSurahIds.contains(s.nomor))
                     .toList();
 
                 if (bookmarkedList.isEmpty) {
@@ -581,13 +583,20 @@ class _HomeViewState extends State<HomeView>
                         goldDim: _goldDim,
                         textSoft: _textSoft,
                         isBookmarked: true,
-                        onBookmarkTapped: () {
-                          setState(() {
-                            _bookmarks.remove(item.nomor);
-                          });
+                        onBookmarkTapped: () async {
+                          final added = await _homeController.toggleBookmark(item.nomor);
+                          if (context.mounted) {
+                            CustomToast.show(
+                              context,
+                              message: added
+                                  ? 'Surah ${item.namaLatin} ditambahkan ke bookmark'
+                                  : 'Surah ${item.namaLatin} dihapus dari bookmark',
+                            );
+                          }
                         },
-                        onTap: () {
-                          Get.toNamed(Routes.DETAIL_SURAH, arguments: item.nomor);
+                        onTap: () async {
+                          await Get.toNamed(Routes.DETAIL_SURAH, arguments: item.nomor);
+                          _homeController.fetchLastRead();
                         },
                       );
                     },

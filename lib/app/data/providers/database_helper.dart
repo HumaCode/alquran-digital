@@ -292,6 +292,26 @@ class DatabaseHelper {
     };
   }
 
+  Future<void> saveBookmarks(List<int> bookmarks) async {
+    final bookmarksJson = jsonEncode(bookmarks);
+    await updateMetadata('bookmarks', bookmarksJson);
+  }
+
+  Future<List<int>> getBookmarks() async {
+    final bookmarksJson = await getMetadata('bookmarks');
+    if (bookmarksJson == null) return [1, 36, 67]; // default bookmarks
+    try {
+      final decoded = jsonDecode(bookmarksJson);
+      if (decoded is List) {
+        return decoded.map((e) => e as int).toList();
+      }
+    } catch (e) {
+      print('Gagal mengurai bookmark JSON: $e');
+    }
+    return [1, 36, 67];
+  }
+
+
   Future<void> clearAllData() async {
     final db = await instance.database;
     await db.delete('ayats');

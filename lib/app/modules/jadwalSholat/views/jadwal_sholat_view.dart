@@ -366,7 +366,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
     if (!_notifEnabled) return;
     try {
       await _audioPlayer.stop();
-      await _audioPlayer.play(AssetSource('notif/adzhan.mp3'));
+      await _audioPlayer.play(AssetSource(R.audio.adzhan));
     } catch (e) {
       print('Gagal memutar adzan: $e');
     }

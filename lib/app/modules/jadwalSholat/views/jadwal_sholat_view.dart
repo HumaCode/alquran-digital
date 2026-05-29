@@ -856,6 +856,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
               });
               HapticFeedback.selectionClick();
             },
+            notifEnabled: _notifEnabled,
           ),
         ),
       );
@@ -1716,6 +1717,7 @@ class _SholatCard extends StatelessWidget {
   final bool isExpanded;
   final String Function(TimeOfDay) fmt;
   final VoidCallback onTap;
+  final bool notifEnabled;
 
   const _SholatCard({
     required this.sholat,
@@ -1725,6 +1727,7 @@ class _SholatCard extends StatelessWidget {
     required this.isExpanded,
     required this.fmt,
     required this.onTap,
+    required this.notifEnabled,
   });
 
   // Jumlah rakaat masing-masing sholat fardhu
@@ -1992,9 +1995,9 @@ class _SholatCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               _InfoBadge(
-                icon: Icons.notifications_rounded,
-                label: 'Notif Aktif',
-                color: R.color.emerald,
+                icon: notifEnabled ? Icons.notifications_rounded : Icons.notifications_off_rounded,
+                label: notifEnabled ? 'Notif Aktif' : 'Notif Mati',
+                color: notifEnabled ? R.color.emerald : R.color.textMutedJadwal,
               ),
               const SizedBox(width: 8),
               _InfoBadge(

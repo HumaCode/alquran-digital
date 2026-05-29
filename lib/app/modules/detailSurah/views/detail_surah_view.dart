@@ -616,38 +616,87 @@ class DetailSurahView extends GetView<DetailSurahController> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Decorative label
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: _gold.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(
-                              color: _goldDim.withValues(alpha: 0.2),
-                              width: 1,
+                        // Decorative label and Font Size Row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: _gold.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(
+                                  color: _goldDim.withValues(alpha: 0.2),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Text(
+                                'Tafsir Wajiz (Kemenag)',
+                                style: TextStyle(
+                                  color: _goldLight,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
                             ),
-                          ),
-                          child: Text(
-                            'Tafsir Wajiz (Kemenag)',
-                            style: TextStyle(
-                              color: _goldLight,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Poppins',
+                            // Font Size Adjuster
+                            Row(
+                              children: [
+                                Text(
+                                  'Ukuran: ',
+                                  style: TextStyle(
+                                    color: _textSoft.withValues(alpha: 0.5),
+                                    fontSize: 11,
+                                    fontFamily: 'Poppins',
+                                  ),
+                                ),
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(),
+                                  icon: Icon(Icons.remove_circle_outline_rounded, color: _goldDim, size: 20),
+                                  onPressed: () {
+                                    if (controller.tafsirFontSize.value > 12.0) {
+                                      controller.tafsirFontSize.value -= 1.0;
+                                    }
+                                  },
+                                ),
+                                const SizedBox(width: 6),
+                                Obx(() => Text(
+                                  '${controller.tafsirFontSize.value.toInt()}',
+                                  style: TextStyle(
+                                    color: _goldLight,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Poppins',
+                                  ),
+                                )),
+                                const SizedBox(width: 6),
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(),
+                                  icon: Icon(Icons.add_circle_outline_rounded, color: _goldDim, size: 20),
+                                  onPressed: () {
+                                    if (controller.tafsirFontSize.value < 26.0) {
+                                      controller.tafsirFontSize.value += 1.0;
+                                    }
+                                  },
+                                ),
+                              ],
                             ),
-                          ),
+                          ],
                         ),
                         const SizedBox(height: 16),
                         // Tafsir Text
-                        Text(
+                        Obx(() => Text(
                           tafsirText,
                           style: TextStyle(
                             color: _textSoft.withValues(alpha: 0.9),
-                            fontSize: 15,
+                            fontSize: controller.tafsirFontSize.value,
                             height: 1.8,
                             fontFamily: 'Poppins',
                           ),
-                        ),
+                        )),
                         const SizedBox(height: 24),
                       ],
                     ),

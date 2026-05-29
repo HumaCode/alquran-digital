@@ -19,6 +19,7 @@ class DetailSurahController extends GetxController {
   final arabicFontSize = 26.0.obs;
   final showLatin = true.obs;
   final showTranslation = true.obs;
+  final tafsirFontSize = 15.0.obs;
 
   late final int nomorSurah;
   int? targetAyat;

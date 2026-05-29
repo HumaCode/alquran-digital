@@ -1,0 +1,279 @@
+import 'dart:convert';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+import '../models/detail_surah_model.dart';
+import '../models/surah_model.dart';
+
+class DatabaseHelper {
+  static final DatabaseHelper instance = DatabaseHelper._init();
+  static Database? _database;
+
+  DatabaseHelper._init();
+
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+    _database = await _initDB('alquran.db');
+    return _database!;
+  }
+
+  Future<Database> _initDB(String filePath) async {
+    final dbPath = await getDatabasesPath();
+    final path = join(dbPath, filePath);
+
+    return await openDatabase(
+      path,
+      version: 1,
+      onCreate: _createDB,
+    );
+  }
+
+  Future<void> _createDB(Database db, int version) async {
+    // 1. Tabel Surah
+    await db.execute('''
+      CREATE TABLE surahs (
+        nomor INTEGER PRIMARY KEY,
+        nama TEXT NOT NULL,
+        namaLatin TEXT NOT NULL,
+        jumlahAyat INTEGER NOT NULL,
+        tempatTurun TEXT NOT NULL,
+        arti TEXT NOT NULL,
+        deskripsi TEXT NOT NULL,
+        audioFull TEXT NOT NULL
+      )
+    ''');
+
+    // 2. Tabel Ayat
+    await db.execute('''
+      CREATE TABLE ayats (
+        nomorSurah INTEGER NOT NULL,
+        nomorAyat INTEGER NOT NULL,
+        teksArab TEXT NOT NULL,
+        teksLatin TEXT NOT NULL,
+        teksIndonesia TEXT NOT NULL,
+        audio TEXT NOT NULL,
+        PRIMARY KEY (nomorSurah, nomorAyat),
+        FOREIGN KEY (nomorSurah) REFERENCES surahs (nomor) ON DELETE CASCADE
+      )
+    ''');
+
+    // 3. Tabel Metadata untuk sync info
+    await db.execute('''
+      CREATE TABLE metadata (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+      )
+    ''');
+  }
+
+  // ── Operations for Surahs ──────────────────────────────────────────────────
+
+  Future<void> insertSurahs(List<DataSurah> surahList) async {
+    final db = await instance.database;
+    final batch = db.batch();
+
+    for (var surah in surahList) {
+      batch.insert(
+        'surahs',
+        {
+          'nomor': surah.nomor,
+          'nama': surah.nama,
+          'namaLatin': surah.namaLatin,
+          'jumlahAyat': surah.jumlahAyat,
+          'tempatTurun': surah.tempatTurun,
+          'arti': surah.arti,
+          'deskripsi': surah.deskripsi,
+          'audioFull': jsonEncode(surah.audioFull),
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+
+    await batch.commit(noResult: true);
+  }
+
+  Future<List<DataSurah>> getSurahs() async {
+    final db = await instance.database;
+    final result = await db.query('surahs', orderBy: 'nomor ASC');
+
+    return result.map((json) {
+      // Decode audioFull from JSON string
+      final audioFullMap = Map<String, String>.from(
+        jsonDecode(json['audioFull'] as String) as Map,
+      );
+
+      return DataSurah(
+        nomor: json['nomor'] as int,
+        nama: json['nama'] as String,
+        namaLatin: json['namaLatin'] as String,
+        jumlahAyat: json['jumlahAyat'] as int,
+        tempatTurun: json['tempatTurun'] as String,
+        arti: json['arti'] as String,
+        deskripsi: json['deskripsi'] as String,
+        audioFull: audioFullMap,
+      );
+    }).toList();
+  }
+
+  // ── Operations for Detail Surah & Ayats ────────────────────────────────────
+
+  Future<void> insertAyats(int nomorSurah, List<Ayat> ayatList) async {
+    final db = await instance.database;
+    final batch = db.batch();
+
+    for (var ayat in ayatList) {
+      batch.insert(
+        'ayats',
+        {
+          'nomorSurah': nomorSurah,
+          'nomorAyat': ayat.nomorAyat,
+          'teksArab': ayat.teksArab,
+          'teksLatin': ayat.teksLatin,
+          'teksIndonesia': ayat.teksIndonesia,
+          'audio': jsonEncode(ayat.audio),
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+
+    await batch.commit(noResult: true);
+  }
+
+  Future<bool> hasAyats(int nomorSurah) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'ayats',
+      columns: ['nomorAyat'],
+      where: 'nomorSurah = ?',
+      whereArgs: [nomorSurah],
+      limit: 1,
+    );
+    return result.isNotEmpty;
+  }
+
+  Future<DetailSurah?> getDetailSurah(int nomorSurah) async {
+    final db = await instance.database;
+
+    // 1. Get current surah info
+    final surahResult = await db.query(
+      'surahs',
+      where: 'nomor = ?',
+      whereArgs: [nomorSurah],
+    );
+
+    if (surahResult.isEmpty) return null;
+    final surahMap = surahResult.first;
+
+    // 2. Get all verses for this surah
+    final ayatResult = await db.query(
+      'ayats',
+      where: 'nomorSurah = ?',
+      whereArgs: [nomorSurah],
+      orderBy: 'nomorAyat ASC',
+    );
+
+    final ayatList = ayatResult.map((json) {
+      final audioMap = Map<String, String>.from(
+        jsonDecode(json['audio'] as String) as Map,
+      );
+      return Ayat(
+        nomorAyat: json['nomorAyat'] as int,
+        teksArab: json['teksArab'] as String,
+        teksLatin: json['teksLatin'] as String,
+        teksIndonesia: json['teksIndonesia'] as String,
+        audio: audioMap,
+      );
+    }).toList();
+
+    // 3. Query previous surah
+    SuratSebelumnya? suratSebelumnya;
+    if (nomorSurah > 1) {
+      final prevResult = await db.query(
+        'surahs',
+        columns: ['nomor', 'nama', 'namaLatin', 'jumlahAyat'],
+        where: 'nomor = ?',
+        whereArgs: [nomorSurah - 1],
+      );
+      if (prevResult.isNotEmpty) {
+        final prevMap = prevResult.first;
+        suratSebelumnya = SuratSebelumnya(
+          nomor: prevMap['nomor'] as int,
+          nama: prevMap['nama'] as String,
+          namaLatin: prevMap['namaLatin'] as String,
+          jumlahAyat: prevMap['jumlahAyat'] as int,
+        );
+      }
+    }
+
+    // 4. Query next surah
+    SuratSelanjutnya? suratSelanjutnya;
+    if (nomorSurah < 114) {
+      final nextResult = await db.query(
+        'surahs',
+        columns: ['nomor', 'nama', 'namaLatin', 'jumlahAyat'],
+        where: 'nomor = ?',
+        whereArgs: [nomorSurah + 1],
+      );
+      if (nextResult.isNotEmpty) {
+        final nextMap = nextResult.first;
+        suratSelanjutnya = SuratSelanjutnya(
+          nomor: nextMap['nomor'] as int,
+          nama: nextMap['nama'] as String,
+          namaLatin: nextMap['namaLatin'] as String,
+          jumlahAyat: nextMap['jumlahAyat'] as int,
+        );
+      }
+    }
+
+    final audioFullMap = Map<String, String>.from(
+      jsonDecode(surahMap['audioFull'] as String) as Map,
+    );
+
+    return DetailSurah(
+      code: 200,
+      message: 'success',
+      data: Data(
+        nomor: surahMap['nomor'] as int,
+        nama: surahMap['nama'] as String,
+        namaLatin: surahMap['namaLatin'] as String,
+        jumlahAyat: surahMap['jumlahAyat'] as int,
+        tempatTurun: surahMap['tempatTurun'] as String,
+        arti: surahMap['arti'] as String,
+        deskripsi: surahMap['deskripsi'] as String,
+        audioFull: audioFullMap,
+        ayat: ayatList,
+        suratSebelumnya: suratSebelumnya,
+        suratSelanjutnya: suratSelanjutnya,
+      ),
+    );
+  }
+
+  // ── Metadata operations for sync ──────────────────────────────────────────
+
+  Future<void> updateMetadata(String key, String value) async {
+    final db = await instance.database;
+    await db.insert(
+      'metadata',
+      {'key': key, 'value': value},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<String?> getMetadata(String key) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'metadata',
+      columns: ['value'],
+      where: 'key = ?',
+      whereArgs: [key],
+    );
+    if (result.isEmpty) return null;
+    return result.first['value'] as String?;
+  }
+
+  Future<void> clearAllData() async {
+    final db = await instance.database;
+    await db.delete('ayats');
+    await db.delete('surahs');
+    await db.delete('metadata');
+  }
+}

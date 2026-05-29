@@ -1,5 +1,6 @@
 import '../models/detail_surah_model.dart';
 import '../models/surah_model.dart';
+import '../providers/database_helper.dart';
 import '../providers/surah_provider.dart';
 
 class SurahRepository {
@@ -8,6 +9,21 @@ class SurahRepository {
   SurahRepository(this._provider);
 
   Future<List<DataSurah>> getSurahs() async {
+    final dbHelper = DatabaseHelper.instance;
+
+    // 1. Coba ambil dari database lokal terlebih dahulu
+    try {
+      final localSurahs = await dbHelper.getSurahs();
+      if (localSurahs.isNotEmpty) {
+        // Jalankan sinkronisasi background secara asinkron (Silent Update)
+        _checkAndSyncSurahsInBackground();
+        return localSurahs;
+      }
+    } catch (e) {
+      print('Gagal mengambil surah lokal: $e');
+    }
+
+    // 2. Jika database lokal kosong, ambil dari API (Blocking untuk pertama kali)
     final response = await _provider.fetchSurahs();
     if (response.status.hasError) {
       throw Exception('Gagal memuat daftar surah: ${response.statusText}');
@@ -16,6 +32,15 @@ class SurahRepository {
     final data = response.body;
     if (data != null) {
       final surahResponse = Surah.fromJson(data as Map<String, dynamic>);
+
+      // Simpan ke SQLite
+      try {
+        await dbHelper.insertSurahs(surahResponse.data);
+        await dbHelper.updateMetadata('last_sync_date', DateTime.now().toIso8601String());
+      } catch (e) {
+        print('Gagal menyimpan surah ke database lokal: $e');
+      }
+
       return surahResponse.data;
     } else {
       throw Exception('Data surah kosong');
@@ -23,6 +48,22 @@ class SurahRepository {
   }
 
   Future<DetailSurah> getDetailSurah(int nomor) async {
+    final dbHelper = DatabaseHelper.instance;
+
+    // 1. Cek apakah ayat surah ini sudah tersimpan di database lokal
+    try {
+      final hasLocalAyats = await dbHelper.hasAyats(nomor);
+      if (hasLocalAyats) {
+        final localDetail = await dbHelper.getDetailSurah(nomor);
+        if (localDetail != null) {
+          return localDetail;
+        }
+      }
+    } catch (e) {
+      print('Gagal mengecek detail surah lokal: $e');
+    }
+
+    // 2. Jika belum tersimpan di lokal, ambil dari API
     final response = await _provider.fetchDetailSurah(nomor);
     if (response.status.hasError) {
       throw Exception('Gagal memuat detail surah: ${response.statusText}');
@@ -30,9 +71,49 @@ class SurahRepository {
 
     final data = response.body;
     if (data != null) {
-      return DetailSurah.fromJson(data as Map<String, dynamic>);
+      final detailSurah = DetailSurah.fromJson(data as Map<String, dynamic>);
+
+      // Simpan ayat dan surah ke SQLite secara asinkron agar tidak memblokir UI
+      try {
+        await dbHelper.insertAyats(nomor, detailSurah.data.ayat);
+      } catch (e) {
+        print('Gagal menyimpan ayat ke database lokal: $e');
+      }
+
+      return detailSurah;
     } else {
       throw Exception('Data detail surah kosong');
     }
   }
+
+  // Pengecekan sinkronisasi asinkron di latar belakang
+  Future<void> _checkAndSyncSurahsInBackground() async {
+    final dbHelper = DatabaseHelper.instance;
+    try {
+      final lastSyncStr = await dbHelper.getMetadata('last_sync_date');
+      if (lastSyncStr != null) {
+        final lastSync = DateTime.parse(lastSyncStr);
+        final difference = DateTime.now().difference(lastSync).inDays;
+
+        // Hanya sinkronisasi ulang jika data lokal sudah lebih dari 7 hari
+        if (difference < 7) {
+          return;
+        }
+      }
+
+      // Ambil data terbaru dari API secara silent
+      final response = await _provider.fetchSurahs();
+      if (!response.status.hasError && response.body != null) {
+        final surahResponse = Surah.fromJson(response.body as Map<String, dynamic>);
+        
+        // Simpan pembaruan ke database lokal
+        await dbHelper.insertSurahs(surahResponse.data);
+        await dbHelper.updateMetadata('last_sync_date', DateTime.now().toIso8601String());
+        print('Sinkronisasi database surah lokal berhasil (Silent Update)');
+      }
+    } catch (e) {
+      print('Gagal sinkronisasi data di background: $e');
+    }
+  }
 }
+

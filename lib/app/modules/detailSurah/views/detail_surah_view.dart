@@ -259,11 +259,17 @@ class DetailSurahView extends GetView<DetailSurahController> {
             const SizedBox(height: 32),
 
             // ── Ayat List ──────────────────────────────────────────────────
-            Obx(() => ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: controller.visibleAyat.length,
-              itemBuilder: (context, index) {
+            Obx(() {
+              // Force GetX to track changes for settings variables
+              final _ = controller.arabicFontSize.value;
+              final __ = controller.showLatin.value;
+              final ___ = controller.showTranslation.value;
+
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: controller.visibleAyat.length,
+                itemBuilder: (context, index) {
                 final ayat = controller.visibleAyat[index];
                 final key = controller.ayatKeys.putIfAbsent(ayat.nomorAyat, () => GlobalKey());
                 return Padding(
@@ -438,7 +444,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                   ),
                 );
               },
-            )),
+            }),
             
             // Loading Indicator for Pagination
             Obx(() {

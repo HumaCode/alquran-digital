@@ -383,7 +383,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                     child: OutlinedButton.icon(
                       onPressed: () {
                         // Navigate to previous surah with replacement so stack doesn't grow indefinitely
-                        Get.offAndToNamed(
+                        Get.offNamed(
                           Routes.DETAIL_SURAH,
                           arguments: detail.suratSebelumnya!.nomor,
                         );
@@ -411,7 +411,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                     child: ElevatedButton(
                       onPressed: () {
                         // Navigate to next surah with replacement
-                        Get.offAndToNamed(
+                        Get.offNamed(
                           Routes.DETAIL_SURAH,
                           arguments: detail.suratSelanjutnya!.nomor,
                         );

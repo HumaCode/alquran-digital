@@ -2,6 +2,7 @@ import 'dart:convert';
 import '../models/provinsi_model.dart';
 import '../models/kab_kota_model.dart';
 import '../models/jadwal_sholat_model.dart';
+import '../models/imsakiyah_model.dart';
 import '../providers/jadwal_sholat_provider.dart';
 import '../providers/database_helper.dart';
 
@@ -122,6 +123,79 @@ class JadwalSholatRepository {
       }
     } catch (e) {
       print('Gagal sinkronisasi background jadwal sholat: $e');
+    }
+  }
+
+  // Ambil Jadwal Imsakiyah
+  Future<Imsakiyah> getImsakiyah({
+    required String provinsi,
+    required String kabkota,
+  }) async {
+    final dbHelper = DatabaseHelper.instance;
+
+    // 1. Coba ambil dari cache lokal jika parameter cocok
+    try {
+      final cachedJson = await dbHelper.getMetadata('imsakiyah_cached');
+      if (cachedJson != null) {
+        final decoded = jsonDecode(cachedJson);
+        final cachedData = Imsakiyah.fromJson(decoded as Map<String, dynamic>);
+
+        if (cachedData.data.provinsi.toLowerCase() == provinsi.toLowerCase() &&
+            cachedData.data.kabkota.toLowerCase() == kabkota.toLowerCase()) {
+          
+          // Sinkronisasi background asinkron (silent)
+          _syncImsakiyahInBackground(
+            provinsi: provinsi,
+            kabkota: kabkota,
+          );
+          
+          return cachedData;
+        }
+      }
+    } catch (e) {
+      print('Gagal mengambil cache imsakiyah: $e');
+    }
+
+    // 2. Jika cache kosong atau tidak cocok, fetch dari API
+    final response = await _provider.fetchImsakiyah(
+      provinsi: provinsi,
+      kabkota: kabkota,
+    );
+
+    if (response.status.hasError) {
+      throw Exception('Gagal memuat jadwal imsakiyah: ${response.statusText}');
+    }
+
+    final data = response.body;
+    if (data != null) {
+      // Simpan ke cache
+      try {
+        await dbHelper.updateMetadata('imsakiyah_cached', jsonEncode(data));
+      } catch (e) {
+        print('Gagal menyimpan cache imsakiyah: $e');
+      }
+      return Imsakiyah.fromJson(data as Map<String, dynamic>);
+    } else {
+      throw Exception('Jadwal imsakiyah kosong');
+    }
+  }
+
+  void _syncImsakiyahInBackground({
+    required String provinsi,
+    required String kabkota,
+  }) async {
+    try {
+      final response = await _provider.fetchImsakiyah(
+        provinsi: provinsi,
+        kabkota: kabkota,
+      );
+      if (!response.status.hasError && response.body != null) {
+        final dbHelper = DatabaseHelper.instance;
+        await dbHelper.updateMetadata('imsakiyah_cached', jsonEncode(response.body));
+        print('Berhasil sinkronisasi imsakiyah di background');
+      }
+    } catch (e) {
+      print('Gagal sinkronisasi background imsakiyah: $e');
     }
   }
 }

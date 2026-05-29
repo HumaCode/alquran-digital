@@ -33,4 +33,16 @@ class JadwalSholatProvider extends GetConnect {
 
     return post(ApiUrl.getJadwalSholatBulanan, body);
   }
+
+  // 4. Ambil Jadwal Imsakiyah (POST)
+  Future<Response> fetchImsakiyah({
+    required String provinsi,
+    required String kabkota,
+  }) {
+    final Map<String, dynamic> body = {
+      'provinsi': provinsi,
+      'kabkota': kabkota,
+    };
+    return post(ApiUrl.getImsakiyah, body);
+  }
 }

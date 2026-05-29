@@ -6,6 +6,8 @@ import '../modules/doa/bindings/doa_binding.dart';
 import '../modules/doa/views/doa_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/imsakiyah/bindings/imsakiyah_binding.dart';
+import '../modules/imsakiyah/views/imsakiyah_view.dart';
 import '../modules/jadwalSholat/bindings/jadwal_sholat_binding.dart';
 import '../modules/jadwalSholat/views/jadwal_sholat_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
@@ -49,6 +51,11 @@ class AppPages {
       name: _Paths.JADWAL_SHOLAT,
       page: () => const JadwalSholatView(),
       binding: JadwalSholatBinding(),
+    ),
+    GetPage(
+      name: _Paths.IMSAKIYAH,
+      page: () => const ImsakiyahView(),
+      binding: ImsakiyahBinding(),
     ),
   ];
 }

@@ -18,4 +18,6 @@ class ApiUrl {
       '$baseUrl/v2/shalat/kabkota'; // Request Body = "provinsi": "Jawa Barat"  contoh
   static const String getJadwalSholatBulanan =
       '$baseUrl/v2/shalat'; // Request Body: "provinsi": "Jawa Barat", "kabkota": "Kota Bogor", "bulan": 1,      // 1-12 (optional, default: bulan sekarang) "tahun": 2026    // (optional, default: tahun sekarang)
+
+  static const String getImsakiyah = '$baseUrl/v2/imsakiyah';
 }

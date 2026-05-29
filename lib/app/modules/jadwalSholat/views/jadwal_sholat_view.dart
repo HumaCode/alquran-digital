@@ -7,6 +7,7 @@ import 'package:alquran_digital/app/components/widgets/widgets.dart';
 import '../controllers/jadwal_sholat_controller.dart';
 import '../../../data/models/jadwal_sholat_model.dart';
 import 'package:alquran_digital/app/constants/r.dart';
+import 'package:alquran_digital/app/routes/app_pages.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // MODEL WAKTU SHOLAT

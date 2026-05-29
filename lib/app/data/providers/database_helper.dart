@@ -24,6 +24,16 @@ class DatabaseHelper {
       path,
       version: 1,
       onCreate: _createDB,
+      onOpen: (db) async {
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS downloaded_murotal (
+            surah_nomor INTEGER,
+            qori_id TEXT,
+            local_path TEXT NOT NULL,
+            PRIMARY KEY (surah_nomor, qori_id)
+          )
+        ''');
+      },
     );
   }
 
@@ -317,5 +327,47 @@ class DatabaseHelper {
     await db.delete('ayats');
     await db.delete('surahs');
     await db.delete('metadata');
+    await db.delete('downloaded_murotal');
+  }
+
+  // ── Operations for Downloaded Murotal ─────────────────────────────────────
+
+  Future<void> insertDownloadedMurotal(int surahNomor, String qoriId, String localPath) async {
+    final db = await instance.database;
+    await db.insert(
+      'downloaded_murotal',
+      {
+        'surah_nomor': surahNomor,
+        'qori_id': qoriId,
+        'local_path': localPath,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<String?> getDownloadedMurotalPath(int surahNomor, String qoriId) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'downloaded_murotal',
+      columns: ['local_path'],
+      where: 'surah_nomor = ? AND qori_id = ?',
+      whereArgs: [surahNomor, qoriId],
+    );
+    if (result.isEmpty) return null;
+    return result.first['local_path'] as String?;
+  }
+
+  Future<List<Map<String, dynamic>>> getAllDownloadedMurotal() async {
+    final db = await instance.database;
+    return await db.query('downloaded_murotal');
+  }
+
+  Future<void> deleteDownloadedMurotal(int surahNomor, String qoriId) async {
+    final db = await instance.database;
+    await db.delete(
+      'downloaded_murotal',
+      where: 'surah_nomor = ? AND qori_id = ?',
+      whereArgs: [surahNomor, qoriId],
+    );
   }
 }

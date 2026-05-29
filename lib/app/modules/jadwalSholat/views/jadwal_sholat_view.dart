@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:alquran_digital/app/components/widgets/widgets.dart';
 import '../controllers/jadwal_sholat_controller.dart';
 import '../../../data/models/jadwal_sholat_model.dart';
@@ -46,6 +47,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
     with TickerProviderStateMixin {
   final _controller = Get.find<JadwalSholatController>();
   StreamSubscription? _todayJadwalSubscription;
+  late AudioPlayer _audioPlayer;
   
   // Timer dan penanggalan
   late Timer _ticker;
@@ -185,6 +187,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
   void initState() {
     super.initState();
     _now = DateTime.now();
+    _audioPlayer = AudioPlayer();
     
     // Set initial times if already available
     final initialToday = _controller.todayJadwal.value;
@@ -211,6 +214,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
         setState(() {
           _now = DateTime.now();
           _calcSholatBerikut();
+          _checkAndPlayPrayerTime();
         });
       }
     });
@@ -258,6 +262,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
   void dispose() {
     _todayJadwalSubscription?.cancel();
     _ticker.cancel();
+    _audioPlayer.dispose();
     _entranceCtrl.dispose();
     _pulseCtrl.dispose();
     _compassCtrl.dispose();
@@ -346,6 +351,73 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
       targetDt = targetDt.add(const Duration(days: 1));
     }
     _countdown = targetDt.difference(_now);
+  }
+
+  void _checkAndPlayPrayerTime() {
+    for (final s in _sholat) {
+      if (_now.hour == s.waktu.hour && _now.minute == s.waktu.minute && _now.second == 0) {
+        _playAdhanDialog(s.nama);
+        break;
+      }
+    }
+  }
+
+  Future<void> _playAdhan() async {
+    if (!_notifEnabled) return;
+    try {
+      await _audioPlayer.stop();
+      await _audioPlayer.play(AssetSource('notif/adzhan.mp3'));
+    } catch (e) {
+      print('Gagal memutar adzan: $e');
+    }
+  }
+
+  void _playAdhanDialog(String sholatNama) {
+    if (!_notifEnabled) return;
+    _playAdhan();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: AlertDialog(
+            backgroundColor: R.color.surfaceJadwal,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(color: R.color.goldDim.withOpacity(0.3)),
+            ),
+            title: Row(
+              children: [
+                Icon(Icons.notifications_active_rounded, color: R.color.goldLight),
+                const SizedBox(width: 10),
+                Text(
+                  'Waktu $sholatNama',
+                  style: TextStyle(color: R.color.goldLight, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            content: Text(
+              'Waktu sholat $sholatNama telah tiba. Mengumandangkan adzan...',
+              style: TextStyle(color: R.color.textJadwal),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  _audioPlayer.stop();
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  'Matikan Suara',
+                  style: TextStyle(color: R.color.error, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   // Format jam menit (HH:mm)

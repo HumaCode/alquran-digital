@@ -6,6 +6,7 @@ import 'package:flutter_compass/flutter_compass.dart';
 import '../../../data/repositories/jadwal_sholat_repository.dart';
 import '../../../data/models/jadwal_sholat_model.dart';
 import '../../../data/providers/database_helper.dart';
+import '../../../data/providers/notification_helper.dart';
 
 class JadwalSholatController extends GetxController {
   final JadwalSholatRepository _repository;
@@ -41,6 +42,9 @@ class JadwalSholatController extends GetxController {
   
   // Today's schedule data
   final todayJadwal = Rxn<Jadwal>();
+
+  // Notification status state
+  final isNotifEnabled = true.obs;
 
   // Compass state variables
   final deviceHeading = 0.0.obs;
@@ -137,6 +141,11 @@ class JadwalSholatController extends GetxController {
       final dbHelper = DatabaseHelper.instance;
       final savedProv = await dbHelper.getMetadata('jadwal_sholat_selected_provinsi');
       final savedKab = await dbHelper.getMetadata('jadwal_sholat_selected_kabkota');
+      final savedNotif = await dbHelper.getMetadata('jadwal_sholat_notif_enabled');
+
+      if (savedNotif != null) {
+        isNotifEnabled.value = savedNotif == 'true';
+      }
 
       if (savedProv != null && savedKab != null) {
         selectedProvinsi.value = savedProv;
@@ -370,10 +379,30 @@ class JadwalSholatController extends GetxController {
 
       // Update data hari ini
       updateTodayJadwal();
+
+      // Schedule local notifications if enabled
+      if (isNotifEnabled.value && schedule != null) {
+        await NotificationHelper.schedulePrayerNotifications(schedule);
+      }
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> toggleNotification() async {
+    isNotifEnabled.value = !isNotifEnabled.value;
+    await DatabaseHelper.instance.updateMetadata(
+        'jadwal_sholat_notif_enabled', isNotifEnabled.value.toString());
+
+    if (isNotifEnabled.value) {
+      final schedule = jadwalSholat.value;
+      if (schedule != null) {
+        await NotificationHelper.schedulePrayerNotifications(schedule);
+      }
+    } else {
+      await NotificationHelper.cancelAll();
     }
   }
 

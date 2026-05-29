@@ -64,7 +64,6 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
 
   // State local UI
   int? _expandedCard;
-  bool _notifEnabled = true;
   String _tanggal = '';
   String _hijri = '';
 
@@ -363,7 +362,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
   }
 
   Future<void> _playAdhan() async {
-    if (!_notifEnabled) return;
+    if (!_controller.isNotifEnabled.value) return;
     try {
       await _audioPlayer.stop();
       await _audioPlayer.play(AssetSource(R.audio.adzhan));
@@ -373,7 +372,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
   }
 
   void _playAdhanDialog(String sholatNama) {
-    if (!_notifEnabled) return;
+    if (!_controller.isNotifEnabled.value) return;
     _playAdhan();
 
     showDialog(
@@ -696,9 +695,9 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                   SliverToBoxAdapter(
                     child: _JadwalSholatAppBar(
                       kota: _controller.selectedKabKota.value,
-                      notifEnabled: _notifEnabled,
+                      notifEnabled: _controller.isNotifEnabled.value,
                       onNotifToggle: () {
-                        setState(() => _notifEnabled = !_notifEnabled);
+                        _controller.toggleNotification();
                         HapticFeedback.lightImpact();
                       },
                       onLocationTap: () => _showLocationBottomSheet(context),

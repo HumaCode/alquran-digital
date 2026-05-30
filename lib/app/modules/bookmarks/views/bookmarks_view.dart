@@ -207,17 +207,9 @@ class BookmarksView extends GetView<BookmarksController> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _red.withValues(alpha: 0.1),
-                ),
-                child: Icon(
-                  Icons.delete_forever_rounded,
-                  size: 40,
-                  color: _red,
-                ),
+              PulseWaveIcon(
+                icon: Icons.delete_forever_rounded,
+                color: _red,
               ),
               const SizedBox(height: 20),
               Text(
@@ -262,6 +254,11 @@ class BookmarksView extends GetView<BookmarksController> {
                       onPressed: () {
                         controller.deleteBookmark(nomorSurah, nomorAyat);
                         Get.back();
+                        CustomToast.show(
+                          context,
+                          message: 'Bookmark QS. $namaSurah [$nomorSurah:$nomorAyat] berhasil dihapus',
+                          type: ToastType.success,
+                        );
                       },
                       child: Text(
                         'Hapus',

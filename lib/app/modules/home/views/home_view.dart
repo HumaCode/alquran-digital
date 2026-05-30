@@ -1167,17 +1167,9 @@ class _HomeViewState extends State<HomeView>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: R.color.red.withValues(alpha: 0.1),
-                ),
-                child: Icon(
-                  Icons.delete_forever_rounded,
-                  size: 40,
-                  color: R.color.red,
-                ),
+              PulseWaveIcon(
+                icon: Icons.delete_forever_rounded,
+                color: R.color.red,
               ),
               const SizedBox(height: 20),
               Text(
@@ -1222,6 +1214,11 @@ class _HomeViewState extends State<HomeView>
                       onPressed: () {
                         _homeController.deleteAyatBookmark(nomorSurah, nomorAyat);
                         Get.back();
+                        CustomToast.show(
+                          context,
+                          message: 'Bookmark QS. $namaSurah [$nomorSurah:$nomorAyat] berhasil dihapus',
+                          type: ToastType.success,
+                        );
                       },
                       child: Text(
                         'Hapus',

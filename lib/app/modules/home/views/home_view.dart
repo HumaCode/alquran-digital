@@ -338,20 +338,28 @@ class _HomeViewState extends State<HomeView>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              Icon(Icons.track_changes_rounded, color: _gold, size: 20),
-                              const SizedBox(width: 8),
-                              Text(
-                                R.string.tilawahTargetTitle,
-                                style: R.textStyle.medium(
-                                  fontWeight: FontWeight.w600,
-                                  color: _goldLight,
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Icon(Icons.track_changes_rounded, color: _gold, size: 20),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    R.string.tilawahTargetTitle,
+                                    style: R.textStyle.medium(
+                                      fontWeight: FontWeight.w600,
+                                      color: _goldLight,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
+                          const SizedBox(width: 8),
                           Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               // Statistik Detail Button
                               InkWell(

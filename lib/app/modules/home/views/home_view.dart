@@ -228,7 +228,9 @@ class _HomeViewState extends State<HomeView>
                         ),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [_emeraldDark, _emeraldMedium],
+                            colors: R.color.isDark
+                                ? [_emeraldDark, _emeraldMedium]
+                                : [R.color.emerald.withValues(alpha: 0.85), R.color.emeraldLight.withValues(alpha: 0.7)],
                           ),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
@@ -458,10 +460,12 @@ class _HomeViewState extends State<HomeView>
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color: R.color.bg2.withOpacity(0.5),
+                      color: R.color.isDark
+                          ? R.color.bg2.withOpacity(0.5)
+                          : Colors.black.withOpacity(0.06),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: _goldDim.withOpacity(0.15),
+                        color: _goldDim.withOpacity(R.color.isDark ? 0.15 : 0.25),
                         width: 1,
                       ),
                     ),
@@ -602,10 +606,12 @@ class _HomeViewState extends State<HomeView>
                     child: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: _bg2.withValues(alpha: 0.3),
+                        color: R.color.isDark
+                            ? _bg2.withValues(alpha: 0.3)
+                            : Colors.black.withOpacity(0.06),
                         borderRadius: BorderRadius.circular(24),
                         border: Border.all(
-                          color: _goldDim.withValues(alpha: 0.15),
+                          color: _goldDim.withValues(alpha: R.color.isDark ? 0.15 : 0.30),
                           width: 1,
                         ),
                       ),

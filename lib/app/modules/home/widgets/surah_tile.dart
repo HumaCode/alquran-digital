@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../app/constants/r.dart';
 import '../../../data/models/surah_model.dart';
 import 'package:alquran_digital/app/components/widgets/widgets.dart';
@@ -27,20 +28,20 @@ class SurahTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(14.r),
           onTap: onTap,
           splashColor: gold.withValues(alpha: 0.08),
           highlightColor: gold.withValues(alpha: 0.04),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(14.r),
               color: R.color.bg2.withValues(alpha: 0.6),
-              border: Border.all(color: goldDim.withValues(alpha: 0.12), width: 1),
+              border: Border.all(color: goldDim.withValues(alpha: 0.12), width: 1.w),
             ),
             child: Row(
               children: [
@@ -50,7 +51,7 @@ class SurahTile extends StatelessWidget {
                   color: goldDim,
                   textColor: goldLight,
                 ),
-                const SizedBox(width: 14),
+                SizedBox(width: 14.w),
                 // Info
                 Expanded(
                   child: Column(
@@ -63,12 +64,12 @@ class SurahTile extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           color: textSoft,
                         ).copyWith(
-                          fontSize: 15,
+                          fontSize: 15.sp,
                           fontFamily: 'Poppins',
                         ),
                         highlightColor: gold,
                       ),
-                      const SizedBox(height: 2),
+                      SizedBox(height: 2.h),
                       Text(
                         '${item.jumlahAyat} Ayat • ${item.tempatTurun}',
                         style: R.textStyle.small(
@@ -91,16 +92,16 @@ class SurahTile extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ).copyWith(
                         fontFamily: 'Poppins',
-                        fontSize: 18,
+                        fontSize: 18.sp,
                       ),
                     ),
                     if (onBookmarkTapped != null) ...[
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12.w),
                       IconButton(
                         icon: Icon(
                           isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded,
                           color: isBookmarked ? gold : goldDim.withValues(alpha: 0.6),
-                          size: 20,
+                          size: 20.r,
                         ),
                         onPressed: onBookmarkTapped,
                         constraints: const BoxConstraints(),

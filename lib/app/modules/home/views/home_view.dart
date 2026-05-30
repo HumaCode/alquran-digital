@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../constants/r.dart';
 import 'package:alquran_digital/app/routes/app_pages.dart';
@@ -74,7 +75,7 @@ class _HomeViewState extends State<HomeView>
             slivers: [
               // ── App Bar ──────────────────────────────────────────────────
               SliverAppBar(
-                expandedHeight: 200,
+                expandedHeight: 200.h,
                 pinned: true,
                 backgroundColor: _bg,
                 elevation: 0,
@@ -144,26 +145,26 @@ class _HomeViewState extends State<HomeView>
                           ),
                         ),
                         Positioned(
-                          right: -25,
-                          bottom: -25,
+                          right: -25.w,
+                          bottom: -25.h,
                           child: Opacity(
                             opacity: ThemeController.to.isDarkMode.value ? 0.09 : 0.06,
                             child: Transform.rotate(
                               angle: -0.2,
                               child: Icon(
                                 Icons.menu_book_rounded,
-                                size: 160,
+                                size: 160.r,
                                 color: _goldLight,
                               ),
                             ),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(
-                            left: 24,
-                            right: 24,
-                            bottom: 20,
-                            top: 60,
+                          padding: EdgeInsets.only(
+                            left: 24.w,
+                            right: 24.w,
+                            bottom: 20.h,
+                            top: 60.h,
                           ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -181,17 +182,17 @@ class _HomeViewState extends State<HomeView>
                                         color: Colors.white,
                                       )
                                       .copyWith(
-                                        fontSize: 34,
+                                        fontSize: 34.sp,
                                         letterSpacing: 1.5,
                                       ),
                                 ),
                               ),
-                              const SizedBox(height: 4),
+                              SizedBox(height: 4.h),
                               Text(
                                 R.string.homeSubtitle,
                                 style: R.textStyle
                                     .small(color: _textSoft.withOpacity(0.5))
-                                    .copyWith(fontSize: 13, letterSpacing: 1),
+                                    .copyWith(fontSize: 13.sp, letterSpacing: 1),
                               ),
                             ],
                           ),
@@ -211,7 +212,7 @@ class _HomeViewState extends State<HomeView>
                   final surahNo = _homeController.lastReadSurahNomor.value;
 
                   return Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+                    padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 8.h),
                     child: GestureDetector(
                       onTap: () async {
                         if (hasLast) {
@@ -226,9 +227,9 @@ class _HomeViewState extends State<HomeView>
                         _homeController.fetchLastRead();
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 16,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20.w,
+                          vertical: 16.h,
                         ),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
@@ -236,24 +237,24 @@ class _HomeViewState extends State<HomeView>
                                 ? [_emeraldDark, _emeraldMedium]
                                 : [R.color.emerald.withValues(alpha: 0.85), R.color.emeraldLight.withValues(alpha: 0.7)],
                           ),
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(16.r),
                           border: Border.all(
                             color: _goldDim.withValues(alpha: 0.3),
-                            width: 1,
+                            width: 1.w,
                           ),
                           boxShadow: [
                             BoxShadow(
                               color: _gold.withValues(alpha: 0.08),
-                              blurRadius: 20,
-                              spreadRadius: 2,
+                              blurRadius: 20.r,
+                              spreadRadius: 2.r,
                             ),
                           ],
                         ),
                         child: Row(
                           children: [
                             Container(
-                              width: 44,
-                              height: 44,
+                              width: 44.r,
+                              height: 44.r,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 gradient: LinearGradient(
@@ -263,10 +264,10 @@ class _HomeViewState extends State<HomeView>
                               child: Icon(
                                 Icons.bookmark_rounded,
                                 color: _bg,
-                                size: 22,
+                                size: 22.r,
                               ),
                             ),
-                            const SizedBox(width: 14),
+                            SizedBox(width: 14.w),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,11 +281,11 @@ class _HomeViewState extends State<HomeView>
                                           ),
                                         )
                                         .copyWith(
-                                          fontSize: 11,
+                                          fontSize: 11.sp,
                                           letterSpacing: 1.5,
                                         ),
                                   ),
-                                  const SizedBox(height: 2),
+                                  SizedBox(height: 2.h),
                                   Text(
                                     hasLast
                                         ? '$surahNama • Ayat $ayatNo'
@@ -294,7 +295,7 @@ class _HomeViewState extends State<HomeView>
                                           fontWeight: FontWeight.w600,
                                           color: _goldLight,
                                         )
-                                        .copyWith(fontSize: 16),
+                                        .copyWith(fontSize: 16.sp),
                                   ),
                                 ],
                               ),
@@ -302,7 +303,7 @@ class _HomeViewState extends State<HomeView>
                             Icon(
                               Icons.arrow_forward_ios_rounded,
                               color: _goldDim,
-                              size: 16,
+                              size: 16.r,
                             ),
                           ],
                         ),
@@ -315,20 +316,20 @@ class _HomeViewState extends State<HomeView>
               // ── Tilawah Tracker Card ──────────────────────────────────────
               SliverToBoxAdapter(
                 child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  padding: const EdgeInsets.all(20),
+                  margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                  padding: EdgeInsets.all(20.r),
                   decoration: BoxDecoration(
                     color: _bg2,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(20.r),
                     border: Border.all(
                       color: _gold.withValues(alpha: 0.15),
-                      width: 1,
+                      width: 1.w,
                     ),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+                        blurRadius: 10.r,
+                        offset: Offset(0, 4.h),
                       ),
                     ],
                   ),
@@ -342,8 +343,8 @@ class _HomeViewState extends State<HomeView>
                           Expanded(
                             child: Row(
                               children: [
-                                Icon(Icons.track_changes_rounded, color: _gold, size: 20),
-                                const SizedBox(width: 8),
+                                Icon(Icons.track_changes_rounded, color: _gold, size: 20.r),
+                                SizedBox(width: 8.w),
                                 Expanded(
                                   child: Text(
                                     R.string.tilawahTargetTitle,
@@ -358,7 +359,7 @@ class _HomeViewState extends State<HomeView>
                               ],
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          SizedBox(width: 8.w),
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -369,10 +370,10 @@ class _HomeViewState extends State<HomeView>
                                   _homeController.fetchTilawahTracker();
                                 },
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                                   decoration: BoxDecoration(
                                     color: _emeraldLight.withValues(alpha: 0.12),
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(12.r),
                                     border: Border.all(color: _emeraldLight.withValues(alpha: 0.25)),
                                   ),
                                   child: Row(
@@ -381,21 +382,21 @@ class _HomeViewState extends State<HomeView>
                                         "Detail",
                                         style: R.textStyle.small(color: _emeraldLight, fontWeight: FontWeight.bold),
                                       ),
-                                      const SizedBox(width: 4),
-                                      Icon(Icons.bar_chart_rounded, color: _emeraldLight, size: 12),
+                                      SizedBox(width: 4.w),
+                                      Icon(Icons.bar_chart_rounded, color: _emeraldLight, size: 12.r),
                                     ],
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              SizedBox(width: 8.w),
                               // Interactive target selector
                               InkWell(
                                 onTap: () => _showTargetDialog(context),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                                   decoration: BoxDecoration(
                                     color: _gold.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(12.r),
                                     border: Border.all(color: _gold.withValues(alpha: 0.2)),
                                   ),
                                   child: Row(
@@ -404,8 +405,8 @@ class _HomeViewState extends State<HomeView>
                                         "${_homeController.tilawahTarget.value} ${R.string.tilawahAyatSuffix}",
                                         style: R.textStyle.small(color: _goldLight, fontWeight: FontWeight.bold),
                                       )),
-                                      const SizedBox(width: 4),
-                                      Icon(Icons.edit_rounded, color: _gold, size: 12),
+                                      SizedBox(width: 4.w),
+                                      Icon(Icons.edit_rounded, color: _gold, size: 12.r),
                                     ],
                                   ),
                                 ),
@@ -414,7 +415,7 @@ class _HomeViewState extends State<HomeView>
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       
                       // Progress indicator & streak
                       Row(
@@ -428,13 +429,13 @@ class _HomeViewState extends State<HomeView>
                                     ? (_homeController.tilawahToday.value / _homeController.tilawahTarget.value).clamp(0.0, 1.0)
                                     : 0.0;
                                 return SizedBox(
-                                  width: 60,
-                                  height: 60,
+                                  width: 60.r,
+                                  height: 60.r,
                                   child: CircularProgressIndicator(
                                     value: ratio,
                                     backgroundColor: R.color.isDark ? _bg.withValues(alpha: 0.15) : Colors.black.withOpacity(0.06),
                                     color: R.color.emerald,
-                                    strokeWidth: 6,
+                                    strokeWidth: 6.w,
                                   ),
                                 );
                               }),
@@ -447,7 +448,7 @@ class _HomeViewState extends State<HomeView>
                               )),
                             ],
                           ),
-                          const SizedBox(width: 16),
+                          SizedBox(width: 16.w),
                           
                           // Streak and summary text
                           Expanded(
@@ -464,7 +465,7 @@ class _HomeViewState extends State<HomeView>
                                     ),
                                   );
                                 }),
-                                const SizedBox(height: 4),
+                                SizedBox(height: 4.h),
                                 Obx(() {
                                   final left = _homeController.tilawahTarget.value - _homeController.tilawahToday.value;
                                   return Text(
@@ -479,14 +480,14 @@ class _HomeViewState extends State<HomeView>
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.h),
                       
                       // 7-day progress bar chart
                       Text(
                         R.string.tilawahWeeklyProgress,
-                        style: R.textStyle.small(color: _textSoft.withValues(alpha: 0.6)).copyWith(fontSize: 12),
+                        style: R.textStyle.small(color: _textSoft.withValues(alpha: 0.6)).copyWith(fontSize: 12.sp),
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       
                       // The chart widget
                       _buildWeeklyChart(),
@@ -505,20 +506,20 @@ class _HomeViewState extends State<HomeView>
                   final target = _homeController.tilawahTarget.value;
                   
                   return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    padding: const EdgeInsets.all(20),
+                    margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                    padding: EdgeInsets.all(20.r),
                     decoration: BoxDecoration(
                       color: _bg2,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
                         color: _gold.withValues(alpha: 0.15),
-                        width: 1,
+                        width: 1.w,
                       ),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
+                          blurRadius: 10.r,
+                          offset: Offset(0, 4.h),
                         ),
                       ],
                     ),
@@ -532,8 +533,8 @@ class _HomeViewState extends State<HomeView>
                             Expanded(
                               child: Row(
                                 children: [
-                                  Icon(Icons.emoji_events_rounded, color: _gold, size: 20),
-                                  const SizedBox(width: 8),
+                                  Icon(Icons.emoji_events_rounded, color: _gold, size: 20.r),
+                                  SizedBox(width: 8.w),
                                   Expanded(
                                     child: Text(
                                       "Progres Khatam Al-Quran",
@@ -548,13 +549,13 @@ class _HomeViewState extends State<HomeView>
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 8),
+                            SizedBox(width: 8.w),
                             // Completed Pill
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                               decoration: BoxDecoration(
                                 color: _emeraldLight.withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(12.r),
                                 border: Border.all(color: _emeraldLight.withValues(alpha: 0.25)),
                               ),
                               child: Text(
@@ -564,7 +565,7 @@ class _HomeViewState extends State<HomeView>
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16.h),
                         
                         // Progress row
                         Row(
@@ -574,25 +575,25 @@ class _HomeViewState extends State<HomeView>
                               alignment: Alignment.center,
                               children: [
                                 SizedBox(
-                                  width: 60,
-                                  height: 60,
+                                  width: 60.r,
+                                  height: 60.r,
                                   child: CircularProgressIndicator(
                                     value: progressPercent,
                                     backgroundColor: R.color.isDark ? _bg.withValues(alpha: 0.15) : Colors.black.withOpacity(0.06),
                                     color: _emerald,
-                                    strokeWidth: 6,
+                                    strokeWidth: 6.w,
                                   ),
                                 ),
                                 Text(
                                   "${(progressPercent * 100).toStringAsFixed(0)}%",
                                   style: R.textStyle.smallBold.copyWith(
                                     color: _goldLight,
-                                    fontSize: 12,
+                                    fontSize: 12.sp,
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(width: 16),
+                            SizedBox(width: 16.w),
                             
                             // Estimation and details
                             Expanded(
@@ -603,9 +604,9 @@ class _HomeViewState extends State<HomeView>
                                     "Estimasi Tanggal Khatam",
                                     style: R.textStyle.small(
                                       color: _textSoft.withValues(alpha: 0.6),
-                                    ).copyWith(fontSize: 12),
+                                    ).copyWith(fontSize: 12.sp),
                                   ),
-                                  const SizedBox(height: 2),
+                                  SizedBox(height: 2.h),
                                   Text(
                                     estimationDate,
                                     style: R.textStyle.medium(
@@ -613,14 +614,14 @@ class _HomeViewState extends State<HomeView>
                                       color: R.color.orange,
                                     ),
                                   ),
-                                  const SizedBox(height: 4),
+                                  SizedBox(height: 4.h),
                                   Text(
                                     avg > 0.5 
                                         ? "Rata-rata tilawah: ${avg.toStringAsFixed(1)} ayat/hari"
                                         : "Estimasi berdasarkan target harian: $target ayat/hari",
                                     style: R.textStyle.small(
                                       color: _textSoft.withValues(alpha: 0.6),
-                                    ).copyWith(fontSize: 11),
+                                    ).copyWith(fontSize: 11.sp),
                                   ),
                                 ],
                               ),
@@ -636,17 +637,17 @@ class _HomeViewState extends State<HomeView>
               // ── Tab Bar ──────────────────────────────────────────────────
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+                  padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 16.h),
                   child: Container(
-                    padding: const EdgeInsets.all(4),
+                    padding: EdgeInsets.all(4.r),
                     decoration: BoxDecoration(
                       color: R.color.isDark
                           ? R.color.bg2.withOpacity(0.5)
                           : Colors.black.withOpacity(0.06),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(
                         color: _goldDim.withOpacity(R.color.isDark ? 0.15 : 0.25),
-                        width: 1,
+                        width: 1.w,
                       ),
                     ),
                     child: Row(
@@ -664,9 +665,9 @@ class _HomeViewState extends State<HomeView>
                             },
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 250),
-                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              padding: EdgeInsets.symmetric(vertical: 10.h),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(8.r),
                                 gradient: isSelected
                                     ? LinearGradient(colors: [_goldDim, _gold])
                                     : null,
@@ -683,7 +684,7 @@ class _HomeViewState extends State<HomeView>
                                           ? _bg
                                           : _textSoft.withOpacity(0.6),
                                     )
-                                    .copyWith(fontSize: 13),
+                                    .copyWith(fontSize: 13.sp),
                               ),
                             ),
                           ),
@@ -698,17 +699,17 @@ class _HomeViewState extends State<HomeView>
               if (_activeTab == 0)
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 8,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 8.h,
                     ),
                     child: Container(
                       decoration: BoxDecoration(
                         color: _bg2.withValues(alpha: 0.5),
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(30.r),
                         border: Border.all(
                           color: _goldDim.withValues(alpha: 0.3),
-                          width: 1,
+                          width: 1.w,
                         ),
                       ),
                       child: Obx(
@@ -718,16 +719,16 @@ class _HomeViewState extends State<HomeView>
                               _homeController.onSearchChanged(val),
                           style: R.textStyle
                               .medium(color: _goldLight)
-                              .copyWith(fontSize: 14),
+                              .copyWith(fontSize: 14.sp),
                           decoration: InputDecoration(
                             hintText: R.string.searchHint,
                             hintStyle: R.textStyle
                                 .medium(color: _textSoft.withValues(alpha: 0.4))
-                                .copyWith(fontSize: 14),
+                                .copyWith(fontSize: 14.sp),
                             prefixIcon: Icon(
                               Icons.search_rounded,
                               color: _goldDim,
-                              size: 20,
+                              size: 20.r,
                             ),
                             suffixIcon: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -738,7 +739,7 @@ class _HomeViewState extends State<HomeView>
                                     icon: Icon(
                                       Icons.clear_rounded,
                                       color: _goldDim,
-                                      size: 20,
+                                      size: 20.r,
                                     ),
                                     onPressed: () =>
                                         _homeController.clearSearch(),
@@ -750,7 +751,7 @@ class _HomeViewState extends State<HomeView>
                                     icon: Icon(
                                       Icons.tune_rounded,
                                       color: hasFilters ? _gold : _goldDim,
-                                      size: 20,
+                                      size: 20.r,
                                     ),
                                     onPressed: () {
                                       setState(() {
@@ -759,13 +760,13 @@ class _HomeViewState extends State<HomeView>
                                     },
                                   );
                                 }),
-                                const SizedBox(width: 8),
+                                SizedBox(width: 8.w),
                               ],
                             ),
                             border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 14,
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 20.w,
+                              vertical: 14.h,
                             ),
                           ),
                         ),
@@ -782,21 +783,21 @@ class _HomeViewState extends State<HomeView>
               if (_activeTab == 0)
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                    padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 8.h),
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: EdgeInsets.all(4.r),
                       decoration: BoxDecoration(
                         color: _bg2.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(24.r),
                         border: Border.all(
                           color: _goldDim.withValues(alpha: 0.15),
-                          width: 1,
+                          width: 1.w,
                         ),
                       ),
                       child: Row(
                         children: [
                           Expanded(child: _buildSearchTypeTab('surah', 'Cari Surah')),
-                          const SizedBox(width: 4),
+                          SizedBox(width: 4.w),
                           Expanded(child: _buildSearchTypeTab('ayat', 'Cari Ayat (Global)')),
                         ],
                       ),

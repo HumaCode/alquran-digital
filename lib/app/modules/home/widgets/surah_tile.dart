@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../app/constants/r.dart';
 import '../../../data/models/surah_model.dart';
-import 'diamond_number_painter.dart';
+import 'package:alquran_digital/app/components/widgets/widgets.dart';
 
 class SurahTile extends StatelessWidget {
   final DataSurah item;
@@ -45,18 +45,10 @@ class SurahTile extends StatelessWidget {
             child: Row(
               children: [
                 // Nomor surah
-                Container(
-                  width: 40,
-                  height: 40,
-                  alignment: Alignment.center,
-                  child: CustomPaint(
-                    size: const Size(40, 40),
-                    painter: DiamondNumberPainter(
-                      number: item.nomor,
-                      color: goldDim,
-                      textColor: goldLight,
-                    ),
-                  ),
+                DiamondNumber(
+                  number: item.nomor,
+                  color: goldDim,
+                  textColor: goldLight,
                 ),
                 const SizedBox(width: 14),
                 // Info

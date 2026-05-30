@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/detail_surah_model.dart';
@@ -77,6 +78,9 @@ class DatabaseHelper {
             PRIMARY KEY (nomorSurah, nomorAyat)
           )
         ''');
+        await db.execute('CREATE INDEX IF NOT EXISTS idx_bookmarks_surah_ayat ON bookmarks (nomorSurah, nomorAyat)');
+        await db.execute('CREATE INDEX IF NOT EXISTS idx_notes_surah_ayat ON notes (nomorSurah, nomorAyat)');
+        await db.execute('CREATE INDEX IF NOT EXISTS idx_hafalan_progress_surah_ayat ON hafalan_progress (nomorSurah, nomorAyat)');
       },
     );
   }
@@ -161,6 +165,9 @@ class DatabaseHelper {
         isCompleted INTEGER NOT NULL
       )
     ''');
+
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_bookmarks_surah_ayat ON bookmarks (nomorSurah, nomorAyat)');
+    await db.execute('CREATE INDEX IF NOT EXISTS idx_notes_surah_ayat ON notes (nomorSurah, nomorAyat)');
   }
 
   // ── Operations for Surahs ──────────────────────────────────────────────────
@@ -880,7 +887,15 @@ class DatabaseHelper {
 
   Future<Map<String, dynamic>?> getRandomAyat() async {
     final db = await instance.database;
-    final result = await db.rawQuery('SELECT * FROM ayats ORDER BY RANDOM() LIMIT 1');
+    final countResult = await db.rawQuery('SELECT COUNT(*) as count FROM ayats');
+    final count = Sqflite.firstIntValue(countResult) ?? 0;
+    if (count == 0) return null;
+    
+    final randomOffset = Random().nextInt(count);
+    final result = await db.rawQuery(
+      'SELECT * FROM ayats LIMIT 1 OFFSET ?',
+      [randomOffset],
+    );
     if (result.isNotEmpty) {
       return result.first;
     }

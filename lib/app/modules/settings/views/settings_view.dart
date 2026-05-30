@@ -68,7 +68,7 @@ class _SettingsViewState extends State<SettingsView> {
             onPressed: () => Get.back(),
           ),
           title: Text(
-            'Pengaturan',
+            R.string.settingsTitle,
             style: R.textStyle.mediumBold.copyWith(color: _goldLight, fontSize: 18),
           ),
         ),
@@ -81,7 +81,7 @@ class _SettingsViewState extends State<SettingsView> {
               children: [
                 // 1. Live Preview Section
                 Text(
-                  'Pratinjau Langsung (Live Preview)',
+                  R.string.settingsLivePreview,
                   style: R.textStyle.medium(fontWeight: FontWeight.bold, color: _goldLight),
                 ),
                 const SizedBox(height: 12),
@@ -90,7 +90,7 @@ class _SettingsViewState extends State<SettingsView> {
 
                 // 2. Theme Selection Section
                 Text(
-                  'Tema Warna Kustom',
+                  R.string.settingsCustomTheme,
                   style: R.textStyle.medium(fontWeight: FontWeight.bold, color: _goldLight),
                 ),
                 const SizedBox(height: 12),
@@ -119,11 +119,11 @@ class _SettingsViewState extends State<SettingsView> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Mode Gelap',
+                                    R.string.settingsDarkMode,
                                     style: R.textStyle.mediumBold.copyWith(color: _textSoft),
                                   ),
                                   Text(
-                                    'Ubah kecerahan tampilan aplikasi',
+                                    R.string.settingsDarkModeDesc,
                                     style: R.textStyle.small(color: _textMuted),
                                   ),
                                 ],
@@ -208,7 +208,7 @@ class _SettingsViewState extends State<SettingsView> {
                                         borderRadius: BorderRadius.circular(20),
                                       ),
                                       child: Text(
-                                        'Aktif',
+                                        R.string.settingsActive,
                                         style: R.textStyle.smallBold.copyWith(
                                           color: option['lightColor'] as Color,
                                           fontSize: 10,
@@ -228,7 +228,7 @@ class _SettingsViewState extends State<SettingsView> {
 
                 // 3. Tilawah Tracker settings
                 Text(
-                  'Pengaturan Tilawah Harian',
+                  R.string.settingsDailyTilawahTitle,
                   style: R.textStyle.medium(fontWeight: FontWeight.bold, color: _goldLight),
                 ),
                 const SizedBox(height: 12),
@@ -250,11 +250,11 @@ class _SettingsViewState extends State<SettingsView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Target Tilawah',
+                                R.string.tilawahTargetTitle,
                                 style: R.textStyle.mediumBold.copyWith(color: _textSoft),
                               ),
                               Text(
-                                'Jumlah target ayat dibaca per hari',
+                                R.string.settingsDailyTilawahDesc,
                                 style: R.textStyle.small(color: _textMuted),
                               ),
                             ],
@@ -288,11 +288,11 @@ class _SettingsViewState extends State<SettingsView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Pengingat Tilawah',
+                                R.string.settingsReminderTitle,
                                 style: R.textStyle.mediumBold.copyWith(color: _textSoft),
                               ),
                               Text(
-                                'Dapatkan notifikasi pengingat harian',
+                                R.string.settingsReminderDesc,
                                 style: R.textStyle.small(color: _textMuted),
                               ),
                             ],
@@ -320,11 +320,11 @@ class _SettingsViewState extends State<SettingsView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Waktu Pengingat',
+                                  R.string.settingsReminderTimeTitle,
                                   style: R.textStyle.mediumBold.copyWith(color: _textSoft),
                                 ),
                                 Text(
-                                  'Jam dikirimnya notifikasi pengingat',
+                                  R.string.settingsReminderTimeDesc,
                                   style: R.textStyle.small(color: _textMuted),
                                 ),
                               ],
@@ -523,7 +523,7 @@ class _SettingsViewState extends State<SettingsView> {
                 final target = int.tryParse(controller.text) ?? 10;
                 _homeController.updateDailyTarget(target);
                 Navigator.of(context).pop();
-                CustomToast.show(context, message: 'Target tilawah berhasil disimpan.');
+                CustomToast.show(context, message: R.string.settingsToastTargetSaved);
               },
               child: Text(
                 R.string.save,
@@ -552,7 +552,9 @@ class _SettingsViewState extends State<SettingsView> {
               surface: _bg2,
               onSurface: _textSoft,
             ),
-            dialogBackgroundColor: _bg,
+            dialogTheme: DialogTheme(
+              backgroundColor: _bg,
+            ),
           ),
           child: child!,
         );
@@ -562,7 +564,7 @@ class _SettingsViewState extends State<SettingsView> {
     if (picked != null) {
       _homeController.updateTilawahReminderTime(picked.hour, picked.minute);
       if (!context.mounted) return;
-      CustomToast.show(context, message: 'Waktu pengingat berhasil diubah.');
+      CustomToast.show(context, message: R.string.settingsToastReminderSaved);
     }
   }
 

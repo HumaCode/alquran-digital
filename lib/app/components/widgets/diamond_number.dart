@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../app/constants/r.dart';
+import '../../constants/r.dart';
 
 class DiamondNumberPainter extends CustomPainter {
   final int number;
@@ -52,4 +52,36 @@ class DiamondNumberPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(DiamondNumberPainter old) => old.number != number;
+}
+
+class DiamondNumber extends StatelessWidget {
+  final int number;
+  final Color color;
+  final Color textColor;
+  final double size;
+
+  const DiamondNumber({
+    super.key,
+    required this.number,
+    required this.color,
+    required this.textColor,
+    this.size = 40.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      alignment: Alignment.center,
+      child: CustomPaint(
+        size: Size(size, size),
+        painter: DiamondNumberPainter(
+          number: number,
+          color: color,
+          textColor: textColor,
+        ),
+      ),
+    );
+  }
 }

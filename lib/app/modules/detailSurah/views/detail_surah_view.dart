@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../../app/constants/r.dart';
 import '../../../data/models/detail_surah_model.dart';
-import '../../home/widgets/diamond_number_painter.dart';
 import '../controllers/detail_surah_controller.dart';
 import 'package:alquran_digital/app/components/widgets/widgets.dart';
 import '../../../data/providers/theme_controller.dart';
@@ -511,18 +510,11 @@ class DetailSurahView extends GetView<DetailSurahController> {
                               ),
                               child: Row(
                                 children: [
-                                  Container(
-                                    width: 36,
-                                    height: 36,
-                                    alignment: Alignment.center,
-                                    child: CustomPaint(
-                                      size: const Size(36, 36),
-                                      painter: DiamondNumberPainter(
-                                        number: ayat.nomorAyat,
-                                        color: _goldDim,
-                                        textColor: _goldLight,
-                                      ),
-                                    ),
+                                  DiamondNumber(
+                                    number: ayat.nomorAyat,
+                                    color: _goldDim,
+                                    textColor: _goldLight,
+                                    size: 36,
                                   ),
                                   Obx(() {
                                     final status = controller.hafalanProgress[ayat.nomorAyat];

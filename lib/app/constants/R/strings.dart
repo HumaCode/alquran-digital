@@ -155,4 +155,20 @@ class Strings {
       'Kamu kurang $left ayat lagi untuk mencapai target tilawah hari ini. Semangat!';
   final String tilawahReminderNotifBodyDone =
       'Alhamdulillah! Target tilawah hari ini sudah tercapai. 🎉';
+
+  // settings
+  final String settingsTitle = 'Pengaturan';
+  final String settingsLivePreview = 'Pratinjau Langsung (Live Preview)';
+  final String settingsCustomTheme = 'Tema Warna Kustom';
+  final String settingsDarkMode = 'Mode Gelap';
+  final String settingsDarkModeDesc = 'Ubah kecerahan tampilan aplikasi';
+  final String settingsDailyTilawahTitle = 'Pengaturan Tilawah Harian';
+  final String settingsDailyTilawahDesc = 'Jumlah target ayat dibaca per hari';
+  final String settingsReminderTitle = 'Pengingat Tilawah';
+  final String settingsReminderDesc = 'Dapatkan notifikasi pengingat harian';
+  final String settingsReminderTimeTitle = 'Waktu Pengingat';
+  final String settingsReminderTimeDesc = 'Jam dikirimnya notifikasi pengingat';
+  final String settingsActive = 'Aktif';
+  final String settingsToastTargetSaved = 'Target tilawah berhasil disimpan.';
+  final String settingsToastReminderSaved = 'Waktu pengingat berhasil diubah.';
 }

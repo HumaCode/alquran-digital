@@ -697,6 +697,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
     showModalBottomSheet(
       context: context,
       backgroundColor: R.color.bgJadwal,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(24),
@@ -705,7 +706,12 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
       ),
       builder: (context) {
         return Container(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.only(
+            left: 24,
+            right: 24,
+            top: 24,
+            bottom: 24 + MediaQuery.of(context).padding.bottom,
+          ),
           decoration: BoxDecoration(
             color: R.color.bgJadwal,
             borderRadius: const BorderRadius.only(
@@ -757,11 +763,21 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                 ),
               ),
               const SizedBox(height: 16),
-              _buildPrayerSettingTile('Subuh', _controller.isSubuhNotifEnabled),
-              _buildPrayerSettingTile('Dzuhur', _controller.isDzuhurNotifEnabled),
-              _buildPrayerSettingTile('Ashar', _controller.isAsharNotifEnabled),
-              _buildPrayerSettingTile('Maghrib', _controller.isMaghribNotifEnabled),
-              _buildPrayerSettingTile('Isya', _controller.isIsyaNotifEnabled),
+              Flexible(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildPrayerSettingTile('Subuh', _controller.isSubuhNotifEnabled),
+                      _buildPrayerSettingTile('Dzuhur', _controller.isDzuhurNotifEnabled),
+                      _buildPrayerSettingTile('Ashar', _controller.isAsharNotifEnabled),
+                      _buildPrayerSettingTile('Maghrib', _controller.isMaghribNotifEnabled),
+                      _buildPrayerSettingTile('Isya', _controller.isIsyaNotifEnabled),
+                    ],
+                  ),
+                ),
+              ),
               const SizedBox(height: 10),
             ],
           ),

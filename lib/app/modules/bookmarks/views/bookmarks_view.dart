@@ -44,7 +44,7 @@ class BookmarksView extends GetView<BookmarksController> {
             unselectedLabelColor: _textMuted,
             labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
             unselectedLabelStyle: const TextStyle(fontFamily: 'Poppins'),
-            tabs: const [
+            tabs: [
               Tab(text: R.string.tabBookmarkAyat),
               Tab(text: R.string.tabCatatanTadabbur),
             ],

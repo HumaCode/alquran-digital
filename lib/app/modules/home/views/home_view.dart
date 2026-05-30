@@ -423,6 +423,21 @@ class _HomeViewState extends State<HomeView>
                   ),
                 ),
 
+              // ── Search Type Selector ───────────────────────────────────────
+              if (_activeTab == 0)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                    child: Row(
+                      children: [
+                        _buildSearchTypeTab('surah', 'Cari Surah'),
+                        const SizedBox(width: 10),
+                        _buildSearchTypeTab('ayat', 'Cari Ayat (Global)'),
+                      ],
+                    ),
+                  ),
+                ),
+
               // ── Bookmark Sub-Tab Selector ──────────────────────────────────
               if (_activeTab == 2)
                 SliverToBoxAdapter(
@@ -443,8 +458,134 @@ class _HomeViewState extends State<HomeView>
 
               // ── Tab Content ──────────────────────────────────────────────
               if (_activeTab == 0) ...[
-                // Daftar Surah (Dynamic from API)
+                // Daftar Surah (Dynamic from API) / Hasil Pencarian Ayat Global
                 Obx(() {
+                  final isAyatSearch = _homeController.searchType.value == 'ayat' && _homeController.searchQuery.value.isNotEmpty;
+
+                  if (isAyatSearch) {
+                    if (_homeController.isSearchLoading.value) {
+                      return SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 80),
+                          child: Center(child: CustomLoader(size: 44)),
+                        ),
+                      );
+                    }
+
+                    final results = _homeController.searchedAyats;
+                    if (results.isEmpty) {
+                      return SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 80),
+                          child: Center(
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.search_off_rounded,
+                                  size: 48,
+                                  color: _goldDim.withValues(alpha: 0.4),
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  'Ayat tidak ditemukan',
+                                  style: R.textStyle.medium(
+                                    fontWeight: FontWeight.w600,
+                                    color: _textSoft,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Coba cari kata kunci lain seperti "sabar" atau "sholat".',
+                                  style: R.textStyle.small(
+                                    color: _textSoft.withValues(alpha: 0.4),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    return SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final item = results[index];
+                        final nomorSurah = item['nomorSurah'] as int;
+                        final namaSurah = item['namaSurah'] as String;
+                        final nomorAyat = item['nomorAyat'] as int;
+                        final teksArab = item['teksArab'] as String;
+                        final teksIndonesia = item['teksIndonesia'] as String;
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: _bg2.withValues(alpha: 0.6),
+                              borderRadius: BorderRadius.circular(18),
+                              border: Border.all(color: _goldDim.withValues(alpha: 0.12)),
+                            ),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(18),
+                              onTap: () async {
+                                await Get.toNamed(
+                                  Routes.DETAIL_SURAH,
+                                  arguments: {
+                                    'nomor': nomorSurah,
+                                    'ayat': nomorAyat,
+                                  },
+                                );
+                                _homeController.fetchLastRead();
+                                _homeController.fetchBookmarks();
+                                _homeController.fetchBookmarkedAyats();
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                        decoration: BoxDecoration(
+                                          color: _goldDim.withValues(alpha: 0.15),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Text(
+                                          'QS. $namaSurah [$nomorSurah:$nomorAyat]',
+                                          style: R.textStyle.smallBold.copyWith(color: _goldLight),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      teksArab,
+                                      textAlign: TextAlign.right,
+                                      style: R.textStyle.large(
+                                        color: _goldLight,
+                                        fontWeight: FontWeight.w500,
+                                      ).copyWith(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 20,
+                                        height: 1.8,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      teksIndonesia,
+                                      textAlign: TextAlign.left,
+                                      style: R.textStyle.medium(color: _textSoft),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }, childCount: results.length),
+                    );
+                  }
+
                   if (_homeController.isLoading.value) {
                     return SliverToBoxAdapter(
                       child: Padding(
@@ -1296,5 +1437,34 @@ class _HomeViewState extends State<HomeView>
         ),
       ),
     );
+  }
+
+  Widget _buildSearchTypeTab(String type, String label) {
+    return Obx(() {
+      final isSelected = _homeController.searchType.value == type;
+      return GestureDetector(
+        onTap: () {
+          _homeController.changeSearchType(type);
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+          decoration: BoxDecoration(
+            color: isSelected ? _gold : _bg2.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected ? _gold : _goldDim.withValues(alpha: 0.15),
+              width: 1,
+            ),
+          ),
+          child: Text(
+            label,
+            style: R.textStyle.medium(
+              color: isSelected ? _bg : _textSoft,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+            ).copyWith(fontSize: 12),
+          ),
+        ),
+      );
+    });
   }
 }

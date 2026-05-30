@@ -429,4 +429,23 @@ class DatabaseHelper {
       whereArgs: [surahNomor, qoriId],
     );
   }
+
+  // ── Global Search for Ayats ────────────────────────────────────────────────
+  Future<List<Map<String, dynamic>>> searchAyat(String query) async {
+    final db = await instance.database;
+    final likeQuery = '%$query%';
+    return await db.rawQuery('''
+      SELECT 
+        a.nomorSurah, 
+        a.nomorAyat, 
+        a.teksArab, 
+        a.teksLatin, 
+        a.teksIndonesia, 
+        s.namaLatin AS namaSurah 
+      FROM ayats a 
+      JOIN surahs s ON a.nomorSurah = s.nomor 
+      WHERE a.teksLatin LIKE ? OR a.teksIndonesia LIKE ?
+      ORDER BY a.nomorSurah ASC, a.nomorAyat ASC
+    ''', [likeQuery, likeQuery]);
+  }
 }

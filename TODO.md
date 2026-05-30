@@ -15,12 +15,12 @@ Memungkinkan pengguna untuk menyimpan beberapa ayat pilihan dari berbagai surah 
 
 ### 2. 🔍 Pencarian Ayat Global (Teks & Terjemahan)
 Mempermudah pengguna mencari ayat berdasarkan kata kunci tertentu secara cepat di seluruh Al-Qur'an.
-*   [ ] Tambahkan fitur pencarian teks di repositori lokal menggunakan query database SQLite `LIKE %query%`.
-*   [ ] Sediakan UI Pencarian di halaman utama atau tab pencarian khusus.
-*   [ ] Tampilkan hasil pencarian berupa daftar ayat lengkap dengan informasi Nama Surah & Nomor Ayat.
-*   [ ] Implementasikan pencarian untuk:
-    *   [ ] Terjemahan Bahasa Indonesia (misal: "sabar", "sholat").
-    *   [ ] Teks Latin/Transliterasi.
+*   [x] Tambahkan fitur pencarian teks di repositori lokal menggunakan query database SQLite `LIKE %query%`.
+*   [x] Sediakan UI Pencarian di halaman utama atau tab pencarian khusus.
+*   [x] Tampilkan hasil pencarian berupa daftar ayat lengkap dengan informasi Nama Surah & Nomor Ayat.
+*   [x] Implementasikan pencarian untuk:
+    *   [x] Terjemahan Bahasa Indonesia (misal: "sabar", "sholat").
+    *   [x] Teks Latin/Transliterasi.
 
 ### 3. ⚙️ Pengaturan Notifikasi Adzan Kustom
 Meningkatkan fleksibilitas dan personalisasi waktu sholat bagi masing-masing pengguna.

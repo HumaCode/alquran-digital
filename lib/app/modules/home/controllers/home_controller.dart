@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import '../../../data/models/surah_model.dart';
 import '../../../data/repositories/surah_repository.dart';
+import '../../../data/providers/database_helper.dart';
 
 class HomeController extends GetxController {
   final SurahRepository _repository;
@@ -20,6 +22,10 @@ class HomeController extends GetxController {
   // Search states
   final searchQuery = ''.obs;
   final searchController = TextEditingController();
+  final searchType = 'surah'.obs; // 'surah' or 'ayat'
+  final searchedAyats = <Map<String, dynamic>>[].obs;
+  final isSearchLoading = false.obs;
+  Timer? _searchDebounce;
 
   // Last Read states
   final lastReadSurahNomor = 0.obs;
@@ -31,15 +37,15 @@ class HomeController extends GetxController {
   final bookmarkedSurahIds = <int>[].obs;
   final bookmarkedAyats = <Map<String, dynamic>>[].obs;
 
+  int _loadedCount = 0;
+  final int _pageSize = 10;
   List<DataSurah> _allSurahs = [];
   List<DataSurah> get allSurahs => _allSurahs;
-  int _loadedCount = 0;
-  static const int _pageSize = 10;
 
   @override
   void onInit() {
     super.onInit();
-    scrollController.addListener(_onScroll);
+    scrollController.addListener(_scrollListener);
     fetchSurahs();
     fetchLastRead();
     fetchBookmarks();
@@ -48,14 +54,19 @@ class HomeController extends GetxController {
 
   @override
   void onClose() {
+    _searchDebounce?.cancel();
     scrollController.dispose();
     searchController.dispose();
     super.onClose();
   }
 
-  void _onScroll() {
-    // Show back to top button if scrolled past 300px
-    showScrollToTop.value = scrollController.position.pixels > 300;
+  void _scrollListener() {
+    // Show back-to-top button
+    if (scrollController.offset > 400 && !showScrollToTop.value) {
+      showScrollToTop.value = true;
+    } else if (scrollController.offset <= 400 && showScrollToTop.value) {
+      showScrollToTop.value = false;
+    }
 
     // Load more when scrolled near bottom (only if not searching)
     if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - 200) {
@@ -94,23 +105,46 @@ class HomeController extends GetxController {
 
   void onSearchChanged(String query) {
     searchQuery.value = query;
+    _searchDebounce?.cancel();
+
     if (query.trim().isEmpty) {
+      searchedAyats.clear();
       surahs.clear();
       _loadedCount = 0;
       loadNextPage();
     } else {
-      final normalizedQuery = query.toLowerCase();
-      final filtered = _allSurahs.where((s) {
-        return s.namaLatin.toLowerCase().contains(normalizedQuery) ||
-            s.nama.toLowerCase().contains(normalizedQuery) ||
-            s.arti.toLowerCase().contains(normalizedQuery);
-      }).toList();
-      surahs.assignAll(filtered);
+      if (searchType.value == 'surah') {
+        final normalizedQuery = query.toLowerCase();
+        final filtered = _allSurahs.where((s) {
+          return s.namaLatin.toLowerCase().contains(normalizedQuery) ||
+              s.nama.toLowerCase().contains(normalizedQuery) ||
+              s.arti.toLowerCase().contains(normalizedQuery);
+        }).toList();
+        surahs.assignAll(filtered);
+      } else {
+        isSearchLoading.value = true;
+        _searchDebounce = Timer(const Duration(milliseconds: 300), () async {
+          try {
+            final results = await DatabaseHelper.instance.searchAyat(query);
+            searchedAyats.assignAll(results);
+          } catch (e) {
+            debugPrint('Error searching ayat: $e');
+          } finally {
+            isSearchLoading.value = false;
+          }
+        });
+      }
     }
+  }
+
+  void changeSearchType(String type) {
+    searchType.value = type;
+    onSearchChanged(searchQuery.value);
   }
 
   void clearSearch() {
     searchController.clear();
+    _searchDebounce?.cancel();
     onSearchChanged('');
   }
 

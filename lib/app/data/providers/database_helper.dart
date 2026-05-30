@@ -61,6 +61,14 @@ class DatabaseHelper {
             jumlahAyatDibaca INTEGER NOT NULL
           )
         ''');
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS surah_read_history (
+            nomorSurah INTEGER PRIMARY KEY,
+            namaSurah TEXT NOT NULL,
+            tanggalSelesai TEXT NOT NULL,
+            isCompleted INTEGER NOT NULL
+          )
+        ''');
       },
     );
   }
@@ -133,6 +141,16 @@ class DatabaseHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         tanggal TEXT UNIQUE NOT NULL,
         jumlahAyatDibaca INTEGER NOT NULL
+      )
+    ''');
+
+    // 7. Tabel Surah Read History baru
+    await db.execute('''
+      CREATE TABLE surah_read_history (
+        nomorSurah INTEGER PRIMARY KEY,
+        namaSurah TEXT NOT NULL,
+        tanggalSelesai TEXT NOT NULL,
+        isCompleted INTEGER NOT NULL
       )
     ''');
   }
@@ -737,6 +755,54 @@ class DatabaseHelper {
       whereArgs: [startDateStr],
       orderBy: 'tanggal ASC',
     );
+  }
+
+  Future<void> markSurahAsCompleted(int nomorSurah, String namaSurah, bool completed) async {
+    final db = await instance.database;
+    if (completed) {
+      final nowStr = _formatDate(DateTime.now());
+      await db.insert(
+        'surah_read_history',
+        {
+          'nomorSurah': nomorSurah,
+          'namaSurah': namaSurah,
+          'tanggalSelesai': nowStr,
+          'isCompleted': 1,
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } else {
+      await db.delete(
+        'surah_read_history',
+        where: 'nomorSurah = ?',
+        whereArgs: [nomorSurah],
+      );
+    }
+  }
+
+  Future<bool> isSurahCompleted(int nomorSurah) async {
+    final db = await instance.database;
+    final maps = await db.query(
+      'surah_read_history',
+      where: 'nomorSurah = ? AND isCompleted = 1',
+      whereArgs: [nomorSurah],
+    );
+    return maps.isNotEmpty;
+  }
+
+  Future<List<Map<String, dynamic>>> getCompletedSurahs() async {
+    final db = await instance.database;
+    return await db.query(
+      'surah_read_history',
+      where: 'isCompleted = 1',
+      orderBy: 'nomorSurah ASC',
+    );
+  }
+
+  Future<int> getCompletedSurahsCount() async {
+    final db = await instance.database;
+    final result = await db.rawQuery('SELECT COUNT(*) as count FROM surah_read_history WHERE isCompleted = 1');
+    return Sqflite.firstIntValue(result) ?? 0;
   }
 
   String _formatDate(DateTime date) {

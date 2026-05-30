@@ -207,5 +207,21 @@ class SurahRepository {
   Future<List<Map<String, dynamic>>> getMonthlyProgress() async {
     return await DatabaseHelper.instance.getMonthlyProgress();
   }
+
+  Future<void> markSurahAsCompleted(int nomorSurah, String namaSurah, bool completed) async {
+    await DatabaseHelper.instance.markSurahAsCompleted(nomorSurah, namaSurah, completed);
+  }
+
+  Future<bool> isSurahCompleted(int nomorSurah) async {
+    return await DatabaseHelper.instance.isSurahCompleted(nomorSurah);
+  }
+
+  Future<List<Map<String, dynamic>>> getCompletedSurahs() async {
+    return await DatabaseHelper.instance.getCompletedSurahs();
+  }
+
+  Future<int> getCompletedSurahsCount() async {
+    return await DatabaseHelper.instance.getCompletedSurahsCount();
+  }
 }
 

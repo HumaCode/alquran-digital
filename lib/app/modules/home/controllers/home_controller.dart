@@ -44,6 +44,12 @@ class HomeController extends GetxController {
   final tilawahTarget = 10.obs;
   final tilawahProgress = <Map<String, dynamic>>[].obs;
 
+  // Khatam Tracker states
+  final completedSurahsCount = 0.obs;
+  final khatamProgressPercent = 0.0.obs;
+  final khatamEstimationDate = ''.obs;
+  final averageDailyTilawah = 0.0.obs;
+
   // Tilawah Reminder states
   final tilawahReminderEnabled = false.obs;
   final tilawahReminderHour = 20.obs;   // default 20:00
@@ -63,6 +69,7 @@ class HomeController extends GetxController {
     fetchBookmarks();
     fetchBookmarkedAyats();
     fetchTilawahTracker();
+    fetchKhatamProgress();
     _loadReminderSettings();
   }
 
@@ -323,5 +330,38 @@ class HomeController extends GetxController {
       target: tilawahTarget.value,
       todayCount: tilawahToday.value,
     );
+  }
+
+  Future<void> fetchKhatamProgress() async {
+    try {
+      final count = await _repository.getCompletedSurahsCount();
+      completedSurahsCount.value = count;
+      khatamProgressPercent.value = (count / 114.0).clamp(0.0, 1.0);
+
+      final stats = await _repository.getTilawahStats();
+      final totalAyatRead = stats['totalAyat'] as int? ?? 0;
+      final avg = stats['rataRata'] as double? ?? 0.0;
+      averageDailyTilawah.value = avg;
+
+      const totalQuranAyats = 6236;
+      final remainingAyats = (totalQuranAyats - totalAyatRead).clamp(0, totalQuranAyats);
+
+      if (remainingAyats == 0) {
+        khatamEstimationDate.value = "Sudah Khatam! 🎉";
+      } else {
+        final double dailyRate = avg > 0.5 ? avg : tilawahTarget.value.toDouble();
+        final double doubleDays = remainingAyats / dailyRate;
+        final int daysNeeded = doubleDays.ceil().clamp(1, 9999);
+        
+        final estimationDate = DateTime.now().add(Duration(days: daysNeeded));
+        final months = [
+          'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 
+          'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'
+        ];
+        khatamEstimationDate.value = "${estimationDate.day} ${months[estimationDate.month - 1]} ${estimationDate.year}";
+      }
+    } catch (e) {
+      print('Gagal memuat progres khatam: $e');
+    }
   }
 }

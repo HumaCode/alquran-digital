@@ -16,6 +16,7 @@ class DetailSurahController extends GetxController {
   final detailSurah = Rxn<DetailSurah>();
   final errorMessage = ''.obs;
   final tafsirSurah = Rxn<TafsirSurah>();
+  final isCompleted = false.obs;
 
   // View Settings states
   final arabicFontSize = 26.0.obs;
@@ -182,6 +183,9 @@ class DetailSurahController extends GetxController {
 
       // Ambil data catatan ayat untuk surah ini
       await loadVerseNotes();
+
+      // Ambil status khatam untuk surah ini
+      await checkIfCompleted();
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {
@@ -424,6 +428,42 @@ class DetailSurahController extends GetxController {
       await prefs.setBool('night_mode_enabled', isNightMode.value);
     } catch (e) {
       print('Gagal menyimpan preferensi Mode Malam: $e');
+    }
+  }
+
+  Future<void> checkIfCompleted() async {
+    try {
+      final status = await _repository.isSurahCompleted(nomorSurah);
+      isCompleted.value = status;
+    } catch (e) {
+      print('Gagal memuat status khatam surah: $e');
+    }
+  }
+
+  Future<void> toggleCompleted() async {
+    try {
+      final detail = detailSurah.value?.data;
+      if (detail == null) return;
+      
+      final nextStatus = !isCompleted.value;
+      await _repository.markSurahAsCompleted(nomorSurah, detail.namaLatin, nextStatus);
+      isCompleted.value = nextStatus;
+      
+      if (Get.isRegistered<HomeController>()) {
+        Get.find<HomeController>().fetchKhatamProgress();
+      }
+
+      Get.snackbar(
+        nextStatus ? 'Surah Selesai Dibaca 🎉' : 'Batal Tandai Selesai',
+        nextStatus 
+            ? 'Alhamdulillah, Anda telah menyelesaikan Surah ${detail.namaLatin}.'
+            : 'Surah ${detail.namaLatin} kembali ditandai belum selesai.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: nextStatus ? R.color.emerald.withValues(alpha: 0.9) : R.color.gold.withValues(alpha: 0.9),
+        colorText: Colors.black,
+      );
+    } catch (e) {
+      print('Gagal mengubah status khatam surah: $e');
     }
   }
 }

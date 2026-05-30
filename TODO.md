@@ -93,10 +93,10 @@ Memberikan gambaran menyeluruh tentang konsistensi ibadah tilawah pengguna.
 
 #### 12. 🎯 Tracker Khatam Al-Quran
 Memotivasi pengguna untuk menyelesaikan seluruh bacaan Al-Quran.
-*   [ ] Tracking surah mana saja yang sudah dan belum dibaca (buat tabel `surah_read_history`).
-*   [ ] Tampilkan progress global di Beranda: "Sudah membaca X dari 114 Surah (Y%)".
-*   [ ] Estimasi tanggal khatam berdasarkan rata-rata tilawah harian.
-*   [ ] Tombol "Tandai Surah Ini Selesai" di halaman Detail Surah.
+*   [x] Tracking surah mana saja yang sudah dan belum dibaca (buat tabel `surah_read_history`).
+*   [x] Tampilkan progress global di Beranda: "Sudah membaca X dari 114 Surah (Y%)".
+*   [x] Estimasi tanggal khatam berdasarkan rata-rata tilawah harian.
+*   [x] Tombol "Tandai Surah Ini Selesai" di halaman Detail Surah.
 
 #### 13. 📤 Export & Share Catatan Tadabbur
 Memudahkan pengguna berbagi refleksi ayat Al-Quran.

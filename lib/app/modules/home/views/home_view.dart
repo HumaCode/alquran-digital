@@ -494,6 +494,144 @@ class _HomeViewState extends State<HomeView>
                 ),
               ),
 
+              // ── Khatam Tracker Card ──────────────────────────────────────
+              SliverToBoxAdapter(
+                child: Obx(() {
+                  final completedCount = _homeController.completedSurahsCount.value;
+                  final progressPercent = _homeController.khatamProgressPercent.value;
+                  final estimationDate = _homeController.khatamEstimationDate.value;
+                  final avg = _homeController.averageDailyTilawah.value;
+                  final target = _homeController.tilawahTarget.value;
+                  
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: _bg2,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: _gold.withValues(alpha: 0.15),
+                        width: 1,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Title row: Tracker icon + Text
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  Icon(Icons.emoji_events_rounded, color: _gold, size: 20),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      "Progres Khatam Al-Quran",
+                                      style: R.textStyle.medium(
+                                        fontWeight: FontWeight.w600,
+                                        color: _goldLight,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            // Completed Pill
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: _emeraldLight.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: _emeraldLight.withValues(alpha: 0.25)),
+                              ),
+                              child: Text(
+                                "$completedCount / 114 Surah",
+                                style: R.textStyle.small(color: _emeraldLight, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        
+                        // Progress row
+                        Row(
+                          children: [
+                            // Circular Progress for Khatam
+                            Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 60,
+                                  height: 60,
+                                  child: CircularProgressIndicator(
+                                    value: progressPercent,
+                                    backgroundColor: R.color.isDark ? _bg.withValues(alpha: 0.15) : Colors.black.withOpacity(0.06),
+                                    color: _emerald,
+                                    strokeWidth: 6,
+                                  ),
+                                ),
+                                Text(
+                                  "${(progressPercent * 100).toStringAsFixed(0)}%",
+                                  style: R.textStyle.smallBold.copyWith(
+                                    color: _goldLight,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 16),
+                            
+                            // Estimation and details
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Estimasi Tanggal Khatam",
+                                    style: R.textStyle.small(
+                                      color: _textSoft.withValues(alpha: 0.6),
+                                    ).copyWith(fontSize: 12),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    estimationDate,
+                                    style: R.textStyle.medium(
+                                      fontWeight: FontWeight.bold,
+                                      color: R.color.orange,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    avg > 0.5 
+                                        ? "Rata-rata tilawah: ${avg.toStringAsFixed(1)} ayat/hari"
+                                        : "Estimasi berdasarkan target harian: $target ayat/hari",
+                                    style: R.textStyle.small(
+                                      color: _textSoft.withValues(alpha: 0.6),
+                                    ).copyWith(fontSize: 11),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ),
+
               // ── Tab Bar ──────────────────────────────────────────────────
               SliverToBoxAdapter(
                 child: Padding(

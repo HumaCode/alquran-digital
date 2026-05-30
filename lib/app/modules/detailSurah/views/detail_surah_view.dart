@@ -272,41 +272,78 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                   controller.isPlayingFullSurah.value;
                               final currentAyat =
                                   controller.currentlyPlayingAyat.value;
+                              final isComp = controller.isCompleted.value;
                               return Column(
                                 children: [
-                                  ElevatedButton.icon(
-                                    onPressed: () {
-                                      controller.togglePlayFullSurah();
-                                    },
-                                    icon: Icon(
-                                      isPlaying
-                                          ? Icons.pause_circle_filled_rounded
-                                          : Icons.play_circle_fill_rounded,
-                                      color: const Color(0xFF0D1F17),
-                                      size: 20,
-                                    ),
-                                    label: Text(
-                                      isPlaying
-                                          ? 'JEDA MURATTAL PENUH'
-                                          : 'PUTAR MURATTAL PENUH',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF0D1F17),
-                                        letterSpacing: 1.2,
-                                        fontSize: 12,
-                                        fontFamily: 'Poppins',
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ElevatedButton.icon(
+                                        onPressed: () {
+                                          controller.togglePlayFullSurah();
+                                        },
+                                        icon: Icon(
+                                          isPlaying
+                                              ? Icons.pause_circle_filled_rounded
+                                              : Icons.play_circle_fill_rounded,
+                                          color: const Color(0xFF0D1F17),
+                                          size: 16,
+                                        ),
+                                        label: Text(
+                                          isPlaying ? 'JEDA' : 'PUTAR',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFF0D1F17),
+                                            letterSpacing: 1.0,
+                                            fontSize: 11,
+                                            fontFamily: 'Poppins',
+                                          ),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: _gold,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(20),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 10,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: _gold,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(30),
+                                      const SizedBox(width: 12),
+                                      ElevatedButton.icon(
+                                        onPressed: () {
+                                          controller.toggleCompleted();
+                                        },
+                                        icon: Icon(
+                                          isComp
+                                              ? Icons.check_circle_rounded
+                                              : Icons.check_circle_outline_rounded,
+                                          color: isComp ? Colors.white : const Color(0xFF0D1F17),
+                                          size: 16,
+                                        ),
+                                        label: Text(
+                                          isComp ? 'SELESAI' : 'TANDAI SELESAI',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: isComp ? Colors.white : const Color(0xFF0D1F17),
+                                            letterSpacing: 1.0,
+                                            fontSize: 11,
+                                            fontFamily: 'Poppins',
+                                          ),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: isComp ? R.color.emerald : _gold,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(20),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 10,
+                                          ),
+                                        ),
                                       ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 24,
-                                        vertical: 12,
-                                      ),
-                                    ),
+                                    ],
                                   ),
                                   if (isPlaying && currentAyat != null) ...[
                                     const SizedBox(height: 8),

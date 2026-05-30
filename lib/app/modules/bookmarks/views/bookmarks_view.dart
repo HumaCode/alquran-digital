@@ -267,101 +267,158 @@ class BookmarksView extends GetView<BookmarksController> {
         );
       }
 
-      return ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemCount: controller.notesList.length,
-        itemBuilder: (context, index) {
-          final item = controller.notesList[index];
-          final nomorSurah = item['nomorSurah'] as int;
-          final namaSurah = item['namaSurah'] as String;
-          final nomorAyat = item['nomorAyat'] as int;
-          final teksCatatan = item['teksCatatan'] as String;
-
-          return Container(
-            margin: const EdgeInsets.only(bottom: 16.0),
-            decoration: BoxDecoration(
-              color: _surface,
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: _goldDim.withValues(alpha: 0.12)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
+      return Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Total: ${controller.notesList.length} Catatan',
+                  style: R.textStyle.medium(color: _textMuted).copyWith(fontWeight: FontWeight.w500),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    final path = await controller.exportNotesToTxt();
+                    if (path != null && context.mounted) {
+                      CustomToast.show(
+                        context,
+                        message: 'Catatan berhasil diekspor ke txt',
+                        type: ToastType.success,
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.ios_share_rounded, size: 14, color: Colors.white),
+                  label: const Text(
+                    'Export Semua',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _gold,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 2,
+                  ),
                 ),
               ],
             ),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(18),
-              onTap: () {
-                Get.toNamed(
-                  Routes.DETAIL_SURAH,
-                  arguments: {
-                    'nomor': nomorSurah,
-                    'ayat': nomorAyat,
-                  },
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Header Card (QS & Actions)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: _goldDim.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(10),
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
+              itemCount: controller.notesList.length,
+              itemBuilder: (context, index) {
+                final item = controller.notesList[index];
+                final nomorSurah = item['nomorSurah'] as int;
+                final namaSurah = item['namaSurah'] as String;
+                final nomorAyat = item['nomorAyat'] as int;
+                final teksCatatan = item['teksCatatan'] as String;
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 16.0),
+                  decoration: BoxDecoration(
+                    color: _surface,
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(color: _goldDim.withValues(alpha: 0.12)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.2),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(18),
+                    onTap: () {
+                      Get.toNamed(
+                        Routes.DETAIL_SURAH,
+                        arguments: {
+                          'nomor': nomorSurah,
+                          'ayat': nomorAyat,
+                        },
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // Header Card (QS & Actions)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: _goldDim.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  'QS. $namaSurah [$nomorSurah:$nomorAyat]',
+                                  style: R.textStyle.smallBold.copyWith(color: _goldLight),
+                                ),
+                              ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.share_rounded, color: _gold, size: 20),
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () {
+                                      controller.shareNote(item);
+                                    },
+                                  ),
+                                  const SizedBox(width: 14),
+                                  IconButton(
+                                    icon: Icon(Icons.edit_rounded, color: _gold, size: 20),
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () {
+                                      _showEditNoteDialog(context, item);
+                                    },
+                                  ),
+                                  const SizedBox(width: 14),
+                                  IconButton(
+                                    icon: Icon(Icons.delete_outline_rounded, color: _red, size: 20),
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () {
+                                      _showDeleteNoteConfirmation(context, nomorSurah, namaSurah, nomorAyat);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                          child: Text(
-                            'QS. $namaSurah [$nomorSurah:$nomorAyat]',
-                            style: R.textStyle.smallBold.copyWith(color: _goldLight),
+                          const SizedBox(height: 12),
+                          // Teks Catatan
+                          Text(
+                            teksCatatan,
+                            textAlign: TextAlign.left,
+                            style: R.textStyle.medium(color: _text).copyWith(
+                              fontFamily: 'Poppins',
+                              height: 1.4,
+                            ),
                           ),
-                        ),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.edit_rounded, color: _gold, size: 20),
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                              onPressed: () {
-                                _showEditNoteDialog(context, item);
-                              },
-                            ),
-                            const SizedBox(width: 14),
-                            IconButton(
-                              icon: Icon(Icons.delete_outline_rounded, color: _red, size: 20),
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                              onPressed: () {
-                                _showDeleteNoteConfirmation(context, nomorSurah, namaSurah, nomorAyat);
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    // Teks Catatan
-                    Text(
-                      teksCatatan,
-                      textAlign: TextAlign.left,
-                      style: R.textStyle.medium(color: _text).copyWith(
-                        fontFamily: 'Poppins',
-                        height: 1.4,
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
-          );
-        },
+          ),
+        ],
       );
     });
   }

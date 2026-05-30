@@ -501,6 +501,19 @@ class DatabaseHelper {
     );
   }
 
+  Future<Map<String, dynamic>?> getAyat(int nomorSurah, int nomorAyat) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'ayats',
+      where: 'nomorSurah = ? AND nomorAyat = ?',
+      whereArgs: [nomorSurah, nomorAyat],
+      limit: 1,
+    );
+    if (result.isEmpty) return null;
+    return result.first;
+  }
+
+
   Future<void> clearAllData() async {
     final db = await instance.database;
     await db.delete('ayats');

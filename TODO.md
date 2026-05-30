@@ -100,8 +100,8 @@ Memotivasi pengguna untuk menyelesaikan seluruh bacaan Al-Quran.
 
 #### 13. 📤 Export & Share Catatan Tadabbur
 Memudahkan pengguna berbagi refleksi ayat Al-Quran.
-*   [ ] Tombol share per catatan → format teks siap kirim WhatsApp (teks Arab + terjemahan + catatan).
-*   [ ] Export semua catatan ke file `.txt` yang dapat disimpan ke penyimpanan lokal.
+*   [x] Tombol share per catatan → format teks siap kirim WhatsApp (teks Arab + terjemahan + catatan).
+*   [x] Export semua catatan ke file `.txt` yang dapat disimpan ke penyimpanan lokal.
 
 ---
 

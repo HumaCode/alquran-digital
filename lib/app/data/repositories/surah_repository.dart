@@ -179,6 +179,10 @@ class SurahRepository {
     return await DatabaseHelper.instance.deleteNote(nomorSurah, nomorAyat);
   }
 
+  Future<Map<String, dynamic>?> getAyat(int nomorSurah, int nomorAyat) async {
+    return await DatabaseHelper.instance.getAyat(nomorSurah, nomorAyat);
+  }
+
   // ── Tilawah Progress ───────────────────────────────────────────────────────
   Future<void> logTilawah(String tanggal, int count) async {
     await DatabaseHelper.instance.logTilawah(tanggal, count);

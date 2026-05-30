@@ -1,4 +1,7 @@
+import 'dart:io';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../../data/repositories/surah_repository.dart';
 
 class BookmarksController extends GetxController {
@@ -68,6 +71,74 @@ class BookmarksController extends GetxController {
           item['nomorSurah'] == nomorSurah && item['nomorAyat'] == nomorAyat);
     } catch (e) {
       print('Gagal menghapus catatan: $e');
+    }
+  }
+
+  Future<void> shareNote(Map<String, dynamic> note) async {
+    try {
+      final nomorSurah = note['nomorSurah'] as int;
+      final namaSurah = note['namaSurah'] as String;
+      final nomorAyat = note['nomorAyat'] as int;
+      final teksCatatan = note['teksCatatan'] as String;
+
+      final ayatMap = await _repository.getAyat(nomorSurah, nomorAyat);
+      final teksArab = ayatMap?['teksArab'] ?? '';
+      final teksIndonesia = ayatMap?['teksIndonesia'] ?? '';
+
+      final formattedText = '📝 *Catatan Tadabbur Al-Quran*\n\n'
+          '*QS. $namaSurah [$nomorSurah:$nomorAyat]*\n\n'
+          '*Ayat Arab:*\n$teksArab\n\n'
+          '*Terjemahan:*\n"$teksIndonesia"\n\n'
+          '*Catatan Saya:*\n$teksCatatan\n\n'
+          '_Dibagikan via Aplikasi Al-Quran Digital_';
+
+      await Share.share(formattedText);
+    } catch (e) {
+      print('Gagal membagikan catatan: $e');
+    }
+  }
+
+  Future<String?> exportNotesToTxt() async {
+    try {
+      if (notesList.isEmpty) return null;
+
+      final buffer = StringBuffer();
+      buffer.writeln('==================================================');
+      buffer.writeln('          CATATAN TADABBUR AL-QURAN SAYA          ');
+      buffer.writeln('==================================================\n');
+
+      for (var note in notesList) {
+        final nomorSurah = note['nomorSurah'] as int;
+        final namaSurah = note['namaSurah'] as String;
+        final nomorAyat = note['nomorAyat'] as int;
+        final teksCatatan = note['teksCatatan'] as String;
+        final updatedAt = note['updatedAt'] as String;
+
+        final ayatMap = await _repository.getAyat(nomorSurah, nomorAyat);
+        final teksArab = ayatMap?['teksArab'] ?? '';
+        final teksIndonesia = ayatMap?['teksIndonesia'] ?? '';
+
+        buffer.writeln('QS. $namaSurah [$nomorSurah:$nomorAyat]');
+        buffer.writeln('Waktu Update: $updatedAt');
+        buffer.writeln('--------------------------------------------------');
+        buffer.writeln('Teks Arab:');
+        buffer.writeln(teksArab);
+        buffer.writeln('\nTerjemahan:');
+        buffer.writeln(teksIndonesia);
+        buffer.writeln('\nCatatan Tadabbur:');
+        buffer.writeln(teksCatatan);
+        buffer.writeln('\n==================================================\n');
+      }
+
+      final directory = await getTemporaryDirectory();
+      final file = File('${directory.path}/Catatan_Tadabbur_AlQuran.txt');
+      await file.writeAsString(buffer.toString());
+
+      await Share.shareXFiles([XFile(file.path)], text: 'Semua Catatan Tadabbur Al-Quran');
+      return file.path;
+    } catch (e) {
+      print('Gagal mengekspor catatan: $e');
+      return null;
     }
   }
 }

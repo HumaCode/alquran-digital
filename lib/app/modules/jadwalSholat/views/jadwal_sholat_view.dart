@@ -355,7 +355,16 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
   void _checkAndPlayPrayerTime() {
     for (final s in _sholat) {
       if (_now.hour == s.waktu.hour && _now.minute == s.waktu.minute && _now.second == 0) {
-        _playAdhanDialog(s.nama);
+        bool isEnabled = true;
+        if (s.nama == 'Subuh') isEnabled = _controller.isSubuhNotifEnabled.value;
+        else if (s.nama == 'Dzuhur') isEnabled = _controller.isDzuhurNotifEnabled.value;
+        else if (s.nama == 'Ashar') isEnabled = _controller.isAsharNotifEnabled.value;
+        else if (s.nama == 'Maghrib') isEnabled = _controller.isMaghribNotifEnabled.value;
+        else if (s.nama == 'Isya') isEnabled = _controller.isIsyaNotifEnabled.value;
+
+        if (isEnabled) {
+          _playAdhanDialog(s.nama);
+        }
         break;
       }
     }
@@ -373,6 +382,16 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
 
   void _playAdhanDialog(String sholatNama) {
     if (!_controller.isNotifEnabled.value) return;
+
+    bool isEnabled = true;
+    if (sholatNama == 'Subuh') isEnabled = _controller.isSubuhNotifEnabled.value;
+    else if (sholatNama == 'Dzuhur') isEnabled = _controller.isDzuhurNotifEnabled.value;
+    else if (sholatNama == 'Ashar') isEnabled = _controller.isAsharNotifEnabled.value;
+    else if (sholatNama == 'Maghrib') isEnabled = _controller.isMaghribNotifEnabled.value;
+    else if (sholatNama == 'Isya') isEnabled = _controller.isIsyaNotifEnabled.value;
+
+    if (!isEnabled) return;
+
     _playAdhan();
 
     showDialog(
@@ -674,6 +693,145 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
     );
   }
 
+  void _showSettingsBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: R.color.bgJadwal,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
+      ),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: R.color.bgJadwal,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(24),
+              topRight: Radius.circular(24),
+            ),
+            border: Border(
+              top: BorderSide(color: R.color.goldDim.withOpacity(0.15)),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 20),
+                  decoration: BoxDecoration(
+                    color: R.color.textMutedJadwal.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Pengaturan Adzan',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: R.color.goldLight,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Icon(Icons.close_rounded, color: R.color.textMutedJadwal, size: 22),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Mute/Aktifkan Notifikasi per Waktu Sholat',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: R.color.textMutedJadwal,
+                ),
+              ),
+              const SizedBox(height: 16),
+              _buildPrayerSettingTile('Subuh', _controller.isSubuhNotifEnabled),
+              _buildPrayerSettingTile('Dzuhur', _controller.isDzuhurNotifEnabled),
+              _buildPrayerSettingTile('Ashar', _controller.isAsharNotifEnabled),
+              _buildPrayerSettingTile('Maghrib', _controller.isMaghribNotifEnabled),
+              _buildPrayerSettingTile('Isya', _controller.isIsyaNotifEnabled),
+              const SizedBox(height: 10),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildPrayerSettingTile(String name, RxBool isEnabledObs) {
+    return Obx(() {
+      final isEnabled = isEnabledObs.value;
+      return Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: R.color.surface2Jadwal,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isEnabled
+                ? R.color.emerald.withOpacity(0.15)
+                : R.color.goldDim.withOpacity(0.08),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: isEnabled
+                        ? R.color.emerald.withOpacity(0.1)
+                        : R.color.textMutedJadwal.withOpacity(0.05),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    isEnabled ? Icons.volume_up_rounded : Icons.volume_off_rounded,
+                    color: isEnabled ? R.color.emeraldLight : R.color.textMutedJadwal,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Text(
+                  'Adzan $name',
+                  style: TextStyle(
+                    color: isEnabled ? R.color.textJadwal : R.color.textMutedJadwal,
+                    fontWeight: isEnabled ? FontWeight.bold : FontWeight.normal,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+            Switch(
+              value: isEnabled,
+              activeColor: R.color.emeraldLight,
+              activeTrackColor: R.color.emerald.withOpacity(0.3),
+              inactiveThumbColor: R.color.textMutedJadwal,
+              inactiveTrackColor: R.color.surfaceJadwal,
+              onChanged: (_) {
+                _controller.togglePrayerNotification(name);
+                HapticFeedback.lightImpact();
+              },
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -701,6 +859,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                         HapticFeedback.lightImpact();
                       },
                       onLocationTap: () => _showLocationBottomSheet(context),
+                      onSettingsTap: () => _showSettingsBottomSheet(context),
                       entranceCtrl: _entranceCtrl,
                     ),
                   ),
@@ -873,6 +1032,7 @@ class _JadwalSholatAppBar extends StatelessWidget {
   final bool notifEnabled;
   final VoidCallback onNotifToggle;
   final VoidCallback onLocationTap;
+  final VoidCallback onSettingsTap;
   final AnimationController entranceCtrl;
 
   const _JadwalSholatAppBar({
@@ -880,6 +1040,7 @@ class _JadwalSholatAppBar extends StatelessWidget {
     required this.notifEnabled,
     required this.onNotifToggle,
     required this.onLocationTap,
+    required this.onSettingsTap,
     required this.entranceCtrl,
   });
 
@@ -980,6 +1141,26 @@ class _JadwalSholatAppBar extends StatelessWidget {
                       ? Icons.notifications_active_rounded
                       : Icons.notifications_off_outlined,
                   color: notifEnabled ? R.color.emeraldLight : R.color.textMutedJadwal,
+                  size: 18,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: onSettingsTap,
+              child: Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: R.color.surface2Jadwal,
+                  border: Border.all(
+                    color: R.color.goldDim.withOpacity(0.2),
+                  ),
+                ),
+                child: Icon(
+                  Icons.settings_rounded,
+                  color: R.color.goldLight,
                   size: 18,
                 ),
               ),

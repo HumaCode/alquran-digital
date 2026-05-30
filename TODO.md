@@ -24,18 +24,13 @@ Mempermudah pengguna mencari ayat berdasarkan kata kunci tertentu secara cepat d
 
 ### 3. ⚙️ Pengaturan Notifikasi Adzan Kustom
 Meningkatkan fleksibilitas dan personalisasi waktu sholat bagi masing-masing pengguna.
-*   [ ] Tambahkan halaman Pengaturan Jadwal Sholat/Adzan.
-*   [ ] **Pilihan Suara Adzan**:
-    *   [ ] Adzan Makkah
-    *   [ ] Adzan Madinah
-    *   [ ] Adzan Mesir
-    *   [ ] Beep/Notifikasi Standar
-*   [ ] **Mute per Waktu Sholat**:
-    *   [ ] Sakelar ON/OFF Adzan Subuh
-    *   [ ] Sakelar ON/OFF Adzan Dzuhur
-    *   [ ] Sakelar ON/OFF Adzan Ashar
-    *   [ ] Sakelar ON/OFF Adzan Maghrib
-    *   [ ] Sakelar ON/OFF Adzan Isya
+*   [x] Tambahkan halaman Pengaturan Jadwal Sholat/Adzan.
+*   [x] **Mute per Waktu Sholat**:
+    *   [x] Sakelar ON/OFF Adzan Subuh
+    *   [x] Sakelar ON/OFF Adzan Dzuhur
+    *   [x] Sakelar ON/OFF Adzan Ashar
+    *   [x] Sakelar ON/OFF Adzan Maghrib
+    *   [x] Sakelar ON/OFF Adzan Isya
 
 ### 4. 🕒 Pengingat Pra-Waktu Sholat (Sebelum Adzan)
 Memberikan waktu persiapan wudhu sebelum masuknya waktu sholat utama.

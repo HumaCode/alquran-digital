@@ -2,6 +2,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import '../models/jadwal_sholat_model.dart';
+import './database_helper.dart';
 
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse notificationResponse) {
@@ -61,7 +62,7 @@ class NotificationHelper {
 
     // Request permissions for Android 13+
     await _localNotifications
-        .resolvePlatformSpecificImplementation<
+         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
 
@@ -74,6 +75,14 @@ class NotificationHelper {
   static Future<void> schedulePrayerNotifications(JadwalSholat schedule) async {
     // 1. Batalkan semua alarm lama terlebih dahulu
     await cancelAll();
+
+    // 2. Muat preferensi status aktif adzan per waktu sholat dari database
+    final dbHelper = DatabaseHelper.instance;
+    final isSubuhOn = (await dbHelper.getMetadata('adzan_subuh')) != '0';
+    final isDzuhurOn = (await dbHelper.getMetadata('adzan_dzuhur')) != '0';
+    final isAsharOn = (await dbHelper.getMetadata('adzan_ashar')) != '0';
+    final isMaghribOn = (await dbHelper.getMetadata('adzan_maghrib')) != '0';
+    final isIsyaOn = (await dbHelper.getMetadata('adzan_isya')) != '0';
 
     final now = DateTime.now();
     final androidDetails = AndroidNotificationDetails(
@@ -116,6 +125,18 @@ class NotificationHelper {
 
       int prayerIdx = 1;
       prayers.forEach((name, timeStr) async {
+        bool isEnabled = true;
+        if (name == 'Subuh') isEnabled = isSubuhOn;
+        else if (name == 'Dzuhur') isEnabled = isDzuhurOn;
+        else if (name == 'Ashar') isEnabled = isAsharOn;
+        else if (name == 'Maghrib') isEnabled = isMaghribOn;
+        else if (name == 'Isya') isEnabled = isIsyaOn;
+
+        if (!isEnabled) {
+          prayerIdx++;
+          return;
+        }
+
         try {
           final parts = timeStr.trim().split(':');
           final hour = int.parse(parts[0]);

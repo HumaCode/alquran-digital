@@ -46,6 +46,13 @@ class JadwalSholatController extends GetxController {
   // Notification status state
   final isNotifEnabled = true.obs;
 
+  // Specific prayer notification states
+  final isSubuhNotifEnabled = true.obs;
+  final isDzuhurNotifEnabled = true.obs;
+  final isAsharNotifEnabled = true.obs;
+  final isMaghribNotifEnabled = true.obs;
+  final isIsyaNotifEnabled = true.obs;
+
   // Compass state variables
   final deviceHeading = 0.0.obs;
   final qiblaDirection = 291.5.obs; // Default fallback for Indonesia / Pekalongan
@@ -142,6 +149,17 @@ class JadwalSholatController extends GetxController {
       final savedProv = await dbHelper.getMetadata('jadwal_sholat_selected_provinsi');
       final savedKab = await dbHelper.getMetadata('jadwal_sholat_selected_kabkota');
       final savedNotif = await dbHelper.getMetadata('jadwal_sholat_notif_enabled');
+      final savedSubuh = await dbHelper.getMetadata('adzan_subuh');
+      final savedDzuhur = await dbHelper.getMetadata('adzan_dzuhur');
+      final savedAshar = await dbHelper.getMetadata('adzan_ashar');
+      final savedMaghrib = await dbHelper.getMetadata('adzan_maghrib');
+      final savedIsya = await dbHelper.getMetadata('adzan_isya');
+
+      isSubuhNotifEnabled.value = savedSubuh != '0';
+      isDzuhurNotifEnabled.value = savedDzuhur != '0';
+      isAsharNotifEnabled.value = savedAshar != '0';
+      isMaghribNotifEnabled.value = savedMaghrib != '0';
+      isIsyaNotifEnabled.value = savedIsya != '0';
 
       if (savedNotif != null) {
         isNotifEnabled.value = savedNotif == 'true';
@@ -421,5 +439,33 @@ class JadwalSholatController extends GetxController {
     );
 
     todayJadwal.value = today ?? (schedule.data.jadwal.isNotEmpty ? schedule.data.jadwal.first : null);
+  }
+
+  Future<void> togglePrayerNotification(String name) async {
+    final dbHelper = DatabaseHelper.instance;
+    if (name == 'Subuh') {
+      isSubuhNotifEnabled.value = !isSubuhNotifEnabled.value;
+      await dbHelper.updateMetadata('adzan_subuh', isSubuhNotifEnabled.value ? '1' : '0');
+    } else if (name == 'Dzuhur') {
+      isDzuhurNotifEnabled.value = !isDzuhurNotifEnabled.value;
+      await dbHelper.updateMetadata('adzan_dzuhur', isDzuhurNotifEnabled.value ? '1' : '0');
+    } else if (name == 'Ashar') {
+      isAsharNotifEnabled.value = !isAsharNotifEnabled.value;
+      await dbHelper.updateMetadata('adzan_ashar', isAsharNotifEnabled.value ? '1' : '0');
+    } else if (name == 'Maghrib') {
+      isMaghribNotifEnabled.value = !isMaghribNotifEnabled.value;
+      await dbHelper.updateMetadata('adzan_maghrib', isMaghribNotifEnabled.value ? '1' : '0');
+    } else if (name == 'Isya') {
+      isIsyaNotifEnabled.value = !isIsyaNotifEnabled.value;
+      await dbHelper.updateMetadata('adzan_isya', isIsyaNotifEnabled.value ? '1' : '0');
+    }
+
+    // Pemicu jadwal ulang notifikasi jika notifikasi global aktif
+    if (isNotifEnabled.value) {
+      final schedule = jadwalSholat.value;
+      if (schedule != null) {
+        await NotificationHelper.schedulePrayerNotifications(schedule);
+      }
+    }
   }
 }

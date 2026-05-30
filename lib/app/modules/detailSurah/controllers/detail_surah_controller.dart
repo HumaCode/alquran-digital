@@ -6,6 +6,7 @@ import '../../../data/models/detail_surah_model.dart';
 import '../../../data/models/tafsir_model.dart';
 import '../../../data/repositories/surah_repository.dart';
 import '../../home/controllers/home_controller.dart';
+import '../../../constants/r.dart';
 
 class DetailSurahController extends GetxController {
   final SurahRepository _repository;

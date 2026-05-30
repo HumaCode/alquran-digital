@@ -245,6 +245,7 @@ class _DynamicIslandToastWidgetState extends State<_DynamicIslandToastWidget>
                         child: FadeTransition(
                           opacity: _contentOpacity,
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
@@ -253,9 +254,10 @@ class _DynamicIslandToastWidgetState extends State<_DynamicIslandToastWidget>
                                 size: 22,
                               ),
                               const SizedBox(width: 12),
-                              Expanded(
+                              Flexible(
                                 child: Text(
                                   widget.message,
+                                  textAlign: TextAlign.center,
                                   style: R.textStyle.medium(
                                     color: const Color(0xFFD8E8D8),
                                     fontWeight: FontWeight.w600,

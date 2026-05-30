@@ -87,9 +87,9 @@ Memberikan kenyamanan membaca Al-Quran di malam hari tanpa menyilaukan mata.
 
 #### 11. 📊 Statistik & Riwayat Tilawah Lengkap
 Memberikan gambaran menyeluruh tentang konsistensi ibadah tilawah pengguna.
-*   [ ] Halaman khusus Statistik: total ayat dibaca sepanjang masa, rata-rata harian, streak terpanjang pernah dicapai.
-*   [ ] Grafik bulanan (30 hari terakhir).
-*   [ ] Sistem badge/achievement: "Khatam Pertama 🏆", "Streak 7 Hari 🔥", "Baca 1000 Ayat ⭐" dll.
+*   [x] Halaman khusus Statistik: total ayat dibaca sepanjang masa, rata-rata harian, streak terpanjang pernah dicapai.
+*   [x] Grafik bulanan (30 hari terakhir).
+*   [x] Sistem badge/achievement: "Khatam Pertama 🏆", "Streak 7 Hari 🔥", "Baca 1000 Ayat ⭐" dll.
 
 #### 12. 🎯 Tracker Khatam Al-Quran
 Memotivasi pengguna untuk menyelesaikan seluruh bacaan Al-Quran.

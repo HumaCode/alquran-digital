@@ -348,27 +348,57 @@ class _HomeViewState extends State<HomeView>
                               ),
                             ],
                           ),
-                          // Interactive target selector
-                          InkWell(
-                            onTap: () => _showTargetDialog(context),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: _gold.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: _gold.withValues(alpha: 0.2)),
+                          Row(
+                            children: [
+                              // Statistik Detail Button
+                              InkWell(
+                                onTap: () async {
+                                  await Get.toNamed(Routes.STATISTIK);
+                                  _homeController.fetchTilawahTracker();
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: _emeraldLight.withValues(alpha: 0.12),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: _emeraldLight.withValues(alpha: 0.25)),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "Detail",
+                                        style: R.textStyle.small(color: _emeraldLight, fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Icon(Icons.bar_chart_rounded, color: _emeraldLight, size: 12),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              child: Row(
-                                children: [
-                                  Obx(() => Text(
-                                    "${_homeController.tilawahTarget.value} ${R.string.tilawahAyatSuffix}",
-                                    style: R.textStyle.small(color: _goldLight, fontWeight: FontWeight.bold),
-                                  )),
-                                  const SizedBox(width: 4),
-                                  Icon(Icons.edit_rounded, color: _gold, size: 12),
-                                ],
+                              const SizedBox(width: 8),
+                              // Interactive target selector
+                              InkWell(
+                                onTap: () => _showTargetDialog(context),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: _gold.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: _gold.withValues(alpha: 0.2)),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Obx(() => Text(
+                                        "${_homeController.tilawahTarget.value} ${R.string.tilawahAyatSuffix}",
+                                        style: R.textStyle.small(color: _goldLight, fontWeight: FontWeight.bold),
+                                      )),
+                                      const SizedBox(width: 4),
+                                      Icon(Icons.edit_rounded, color: _gold, size: 12),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ],
                       ),
@@ -1430,6 +1460,17 @@ class _HomeViewState extends State<HomeView>
                         await Get.toNamed(Routes.BOOKMARKS);
                         _homeController.fetchBookmarks();
                         _homeController.fetchBookmarkedAyats();
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    _buildDrawerItem(
+                      icon: Icons.bar_chart_rounded,
+                      title: R.string.sidebarStatistik,
+                      subtitle: R.string.sidebarStatistikSubtitle,
+                      onTap: () async {
+                        Navigator.pop(context);
+                        await Get.toNamed(Routes.STATISTIK);
+                        _homeController.fetchTilawahTracker();
                       },
                     ),
                   ],

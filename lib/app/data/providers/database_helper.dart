@@ -652,6 +652,93 @@ class DatabaseHelper {
     return streak;
   }
 
+  Future<Map<String, dynamic>> getTilawahStats() async {
+    final db = await instance.database;
+    final target = await getDailyTarget();
+    final list = await db.query(
+      'tilawah_progress',
+      orderBy: 'tanggal ASC',
+    );
+
+    if (list.isEmpty) {
+      return {
+        'totalAyat': 0,
+        'rataRata': 0.0,
+        'longestStreak': 0,
+        'currentStreak': 0,
+      };
+    }
+
+    int totalAyat = 0;
+    for (var item in list) {
+      totalAyat += item['jumlahAyatDibaca'] as int;
+    }
+
+    double rataRata = totalAyat / list.length;
+
+    // Hitung streak terpanjang
+    int longestStreak = 0;
+    int tempStreak = 0;
+    DateTime? prevDate;
+
+    for (var item in list) {
+      final String dateStr = item['tanggal'] as String;
+      final int count = item['jumlahAyatDibaca'] as int;
+      final DateTime currentDate = DateTime.parse(dateStr);
+
+      if (count >= target) {
+        if (prevDate == null) {
+          tempStreak = 1;
+        } else {
+          final d1 = DateTime(currentDate.year, currentDate.month, currentDate.day);
+          final d2 = DateTime(prevDate.year, prevDate.month, prevDate.day);
+          final difference = d1.difference(d2).inDays;
+          if (difference == 1) {
+            tempStreak++;
+          } else if (difference > 1) {
+            if (tempStreak > longestStreak) {
+              longestStreak = tempStreak;
+            }
+            tempStreak = 1;
+          }
+        }
+        prevDate = currentDate;
+      } else {
+        if (tempStreak > longestStreak) {
+          longestStreak = tempStreak;
+        }
+        tempStreak = 0;
+        prevDate = null;
+      }
+    }
+    if (tempStreak > longestStreak) {
+      longestStreak = tempStreak;
+    }
+
+    final curStreak = await getTilawahStreak();
+
+    return {
+      'totalAyat': totalAyat,
+      'rataRata': rataRata,
+      'longestStreak': longestStreak,
+      'currentStreak': curStreak,
+    };
+  }
+
+  Future<List<Map<String, dynamic>>> getMonthlyProgress() async {
+    final db = await instance.database;
+    final now = DateTime.now();
+    final startDate = now.subtract(const Duration(days: 29));
+    final startDateStr = _formatDate(startDate);
+    
+    return await db.query(
+      'tilawah_progress',
+      where: 'tanggal >= ?',
+      whereArgs: [startDateStr],
+      orderBy: 'tanggal ASC',
+    );
+  }
+
   String _formatDate(DateTime date) {
     return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
   }

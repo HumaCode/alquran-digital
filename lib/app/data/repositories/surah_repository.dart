@@ -199,5 +199,13 @@ class SurahRepository {
   Future<int> getTilawahStreak() async {
     return await DatabaseHelper.instance.getTilawahStreak();
   }
+
+  Future<Map<String, dynamic>> getTilawahStats() async {
+    return await DatabaseHelper.instance.getTilawahStats();
+  }
+
+  Future<List<Map<String, dynamic>>> getMonthlyProgress() async {
+    return await DatabaseHelper.instance.getMonthlyProgress();
+  }
 }
 

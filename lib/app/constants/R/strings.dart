@@ -54,8 +54,10 @@ class Strings {
   final String qiblaDirection = 'Arah Kiblat';
   final String makkahKabah = "Ka'bah, Makkah";
   final String otherTimes = 'Waktu Lainnya';
-  final String haditsArabic = 'إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَوْقُوتًا';
-  final String haditsTranslation = '"Sesungguhnya sholat itu adalah kewajiban yang ditentukan waktunya atas orang-orang yang beriman."';
+  final String haditsArabic =
+      'إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَوْقُوتًا';
+  final String haditsTranslation =
+      '"Sesungguhnya sholat itu adalah kewajiban yang ditentukan waktunya atas orang-orang yang beriman."';
   final String haditsReference = "— QS. An-Nisa' : 103";
 
   // imsakiyah / location
@@ -102,43 +104,53 @@ class Strings {
   final String tabCatatanTadabbur = 'Catatan Tadabbur';
   final String notesTadabburSaya = 'Catatan Tadabbur Saya';
   final String notesAyatTitle = 'Catatan Ayat';
-  final String notesHintText = 'Tulis tadabbur, refleksi, atau catatan penting mengenai ayat ini...';
+  final String notesHintText =
+      'Tulis tadabbur, refleksi, atau catatan penting mengenai ayat ini...';
   final String notesDeleteSuccess = 'Catatan ayat berhasil dihapus';
   final String notesSaveSuccess = 'Catatan ayat berhasil disimpan';
   final String loadingNotes = 'Memuat catatan...';
   final String noNotesTitle = 'Belum Ada Catatan';
-  final String noNotesSubtitle = 'Anda bisa menulis refleksi atau catatan pribadi pada ayat Al-Qur\'an dengan menekan tombol catatan pada halaman baca surah.';
+  final String noNotesSubtitle =
+      'Anda bisa menulis refleksi atau catatan pribadi pada ayat Al-Qur\'an dengan menekan tombol catatan pada halaman baca surah.';
   final String deleteNoteTitle = 'Hapus Catatan';
-  final String editNoteHint = 'Tulis tadabbur, refleksi, atau catatan penting...';
+  final String editNoteHint =
+      'Tulis tadabbur, refleksi, atau catatan penting...';
   final String editNoteSuccess = 'Catatan ayat berhasil diubah';
 
   String notesAyatTitleWithNo(int no) => 'Catatan Ayat $no';
   String notesDeleteSuccessMsg(int no) => 'Catatan ayat $no berhasil dihapus';
   String notesSaveSuccessMsg(int no) => 'Catatan ayat $no berhasil disimpan';
   String notesEditSuccessMsg(int no) => 'Catatan ayat $no berhasil diubah';
-  String deleteNoteConfirmMsg(String name, int surahNo, int ayatNo) => 'Apakah Anda yakin ingin menghapus catatan untuk QS. $name [$surahNo:$ayatNo]?';
-  String deleteNoteSuccessMsg(String name, int surahNo, int ayatNo) => 'Catatan QS. $name [$surahNo:$ayatNo] berhasil dihapus';
+  String deleteNoteConfirmMsg(String name, int surahNo, int ayatNo) =>
+      'Apakah Anda yakin ingin menghapus catatan untuk QS. $name [$surahNo:$ayatNo]?';
+  String deleteNoteSuccessMsg(String name, int surahNo, int ayatNo) =>
+      'Catatan QS. $name [$surahNo:$ayatNo] berhasil dihapus';
 
   // Daily Tilawah Tracker
   final String tilawahTargetTitle = 'Target Tilawah Harian';
   final String tilawahAyatSuffix = 'Ayat';
-  final String tilawahStatusDone = 'Selamat! Target harian Anda telah tercapai! 🎉';
+  final String tilawahStatusDone =
+      'Selamat! Target harian Anda telah tercapai! 🎉';
   final String tilawahWeeklyProgress = 'Progres 7 Hari Terakhir';
   final String tilawahSetTargetTitle = 'Atur Target Harian';
-  final String tilawahSetTargetSubtitle = 'Masukkan jumlah target ayat yang ingin Anda baca setiap hari:';
+  final String tilawahSetTargetSubtitle =
+      'Masukkan jumlah target ayat yang ingin Anda baca setiap hari:';
   final String tilawahTargetLabel = 'Target Ayat';
   final String tilawahStreakEmpty = 'Mulai Tilawah Hari Ini! 🌟';
 
-  String tilawahStatusPending(int left) => 'Kurang $left ayat lagi untuk mencapai target hari ini.';
+  String tilawahStatusPending(int left) =>
+      'Kurang $left ayat lagi untuk mencapai target hari ini.';
   String tilawahStreakText(int streak) => 'Streak: $streak Hari Beruntun! 🔥';
 
   // Tilawah Reminder
   final String tilawahReminderTitle = 'Reminder Tilawah Harian';
   final String tilawahReminderSectionLabel = 'Reminder Tilawah Harian 📖';
-  final String tilawahReminderDesc = 'Ingatkan saya jika target tilawah hari ini belum tercapai.';
+  final String tilawahReminderDesc =
+      'Ingatkan saya jika target tilawah hari ini belum tercapai.';
   final String tilawahReminderTimeLabel = 'Jam Pengingat';
   final String tilawahReminderNotifTitle = 'Yuk, Tilawah Hari Ini! 📖';
   String tilawahReminderNotifBody(int left) =>
       'Kamu kurang $left ayat lagi untuk mencapai target tilawah hari ini. Semangat!';
-  final String tilawahReminderNotifBodyDone = 'Alhamdulillah! Target tilawah hari ini sudah tercapai. 🎉';
+  final String tilawahReminderNotifBodyDone =
+      'Alhamdulillah! Target tilawah hari ini sudah tercapai. 🎉';
 }

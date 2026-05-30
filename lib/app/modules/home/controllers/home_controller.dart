@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../../data/models/surah_model.dart';
 import '../../../data/repositories/surah_repository.dart';
 import '../../../data/providers/database_helper.dart';
+import '../../../data/providers/notification_helper.dart';
 
 class HomeController extends GetxController {
   final SurahRepository _repository;
@@ -43,6 +44,11 @@ class HomeController extends GetxController {
   final tilawahTarget = 10.obs;
   final tilawahProgress = <Map<String, dynamic>>[].obs;
 
+  // Tilawah Reminder states
+  final tilawahReminderEnabled = false.obs;
+  final tilawahReminderHour = 20.obs;   // default 20:00
+  final tilawahReminderMinute = 0.obs;
+
   int _loadedCount = 0;
   final int _pageSize = 10;
   List<DataSurah> _allSurahs = [];
@@ -57,6 +63,7 @@ class HomeController extends GetxController {
     fetchBookmarks();
     fetchBookmarkedAyats();
     fetchTilawahTracker();
+    _loadReminderSettings();
   }
 
   @override
@@ -255,6 +262,8 @@ class HomeController extends GetxController {
         }
       }
       tilawahToday.value = todayCount;
+      // Perbarui body notifikasi reminder agar selalu menampilkan sisa ayat terkini
+      _rescheduleReminderIfNeeded();
     } catch (e) {
       print('Gagal mengambil data tilawah tracker: $e');
     }
@@ -267,5 +276,52 @@ class HomeController extends GetxController {
     } catch (e) {
       print('Gagal memperbarui target tilawah: $e');
     }
+  }
+
+  // ── Tilawah Reminder ──────────────────────────────────────────────────────
+
+  Future<void> _loadReminderSettings() async {
+    final db = DatabaseHelper.instance;
+    final enabled = await db.getMetadata('tilawah_reminder_enabled');
+    final hour = await db.getMetadata('tilawah_reminder_hour');
+    final minute = await db.getMetadata('tilawah_reminder_minute');
+    tilawahReminderEnabled.value = enabled == '1';
+    tilawahReminderHour.value = int.tryParse(hour ?? '20') ?? 20;
+    tilawahReminderMinute.value = int.tryParse(minute ?? '0') ?? 0;
+  }
+
+  Future<void> updateTilawahReminder({
+    required bool enabled,
+    required int hour,
+    required int minute,
+  }) async {
+    tilawahReminderEnabled.value = enabled;
+    tilawahReminderHour.value = hour;
+    tilawahReminderMinute.value = minute;
+    final db = DatabaseHelper.instance;
+    await db.updateMetadata('tilawah_reminder_enabled', enabled ? '1' : '0');
+    await db.updateMetadata('tilawah_reminder_hour', hour.toString());
+    await db.updateMetadata('tilawah_reminder_minute', minute.toString());
+    if (enabled) {
+      await NotificationHelper.scheduleTilawahReminder(
+        hour: hour,
+        minute: minute,
+        target: tilawahTarget.value,
+        todayCount: tilawahToday.value,
+      );
+    } else {
+      await NotificationHelper.cancelTilawahReminder();
+    }
+  }
+
+  /// Dipanggil setelah fetchTilawahTracker agar body notif selalu fresh.
+  Future<void> _rescheduleReminderIfNeeded() async {
+    if (!tilawahReminderEnabled.value) return;
+    await NotificationHelper.scheduleTilawahReminder(
+      hour: tilawahReminderHour.value,
+      minute: tilawahReminderMinute.value,
+      target: tilawahTarget.value,
+      todayCount: tilawahToday.value,
+    );
   }
 }

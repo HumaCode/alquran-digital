@@ -10,6 +10,7 @@ import '../../../data/models/jadwal_sholat_model.dart';
 import 'package:alquran_digital/app/constants/r.dart';
 import 'package:alquran_digital/app/routes/app_pages.dart';
 import '../../../data/providers/widget_helper.dart';
+import '../../home/controllers/home_controller.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // MODEL WAKTU SHOLAT
@@ -868,6 +869,169 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                   ),
                 ),
               ),
+              const SizedBox(height: 10),
+              const Divider(height: 1),
+              const SizedBox(height: 20),
+              // ── Tilawah Reminder Section ─────────────────────────────────
+              Text(
+                'Reminder Tilawah Harian 📖',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: R.color.goldLight.withOpacity(0.9),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Builder(builder: (context) {
+                final homeCtrl = Get.find<HomeController>();
+                return Obx(() {
+                  final enabled = homeCtrl.tilawahReminderEnabled.value;
+                  final hour = homeCtrl.tilawahReminderHour.value;
+                  final minute = homeCtrl.tilawahReminderMinute.value;
+                  return Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: R.color.surface2Jadwal,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: enabled
+                                ? R.color.gold.withOpacity(0.2)
+                                : R.color.goldDim.withOpacity(0.08),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: enabled
+                                        ? R.color.gold.withOpacity(0.1)
+                                        : R.color.textMutedJadwal.withOpacity(0.05),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    enabled ? Icons.notifications_active_rounded : Icons.notifications_off_rounded,
+                                    color: enabled ? R.color.gold : R.color.textMutedJadwal,
+                                    size: 20,
+                                  ),
+                                ),
+                                const SizedBox(width: 14),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Reminder Tilawah',
+                                      style: TextStyle(
+                                        color: enabled ? R.color.textJadwal : R.color.textMutedJadwal,
+                                        fontWeight: enabled ? FontWeight.bold : FontWeight.normal,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    if (enabled)
+                                      Text(
+                                        'Setiap hari pukul ${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}',
+                                        style: TextStyle(
+                                          color: R.color.goldDim,
+                                          fontSize: 11,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Switch(
+                              value: enabled,
+                              activeColor: R.color.gold,
+                              activeTrackColor: R.color.gold.withOpacity(0.3),
+                              inactiveThumbColor: R.color.textMutedJadwal,
+                              inactiveTrackColor: R.color.surfaceJadwal,
+                              onChanged: (val) async {
+                                HapticFeedback.lightImpact();
+                                await homeCtrl.updateTilawahReminder(
+                                  enabled: val,
+                                  hour: hour,
+                                  minute: minute,
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (enabled) ...[
+                        const SizedBox(height: 10),
+                        GestureDetector(
+                          onTap: () async {
+                            final picked = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay(hour: hour, minute: minute),
+                              helpText: 'Pilih Jam Reminder Tilawah',
+                              builder: (ctx, child) => Theme(
+                                data: Theme.of(ctx).copyWith(
+                                  timePickerTheme: TimePickerThemeData(
+                                    backgroundColor: R.color.bgJadwal,
+                                    hourMinuteColor: R.color.surface2Jadwal,
+                                    dialBackgroundColor: R.color.surface2Jadwal,
+                                    dayPeriodColor: R.color.surface2Jadwal,
+                                  ),
+                                  colorScheme: ColorScheme.dark(
+                                    primary: R.color.gold,
+                                    onPrimary: Colors.black,
+                                    surface: R.color.bgJadwal,
+                                    onSurface: R.color.textJadwal,
+                                  ),
+                                ),
+                                child: child!,
+                              ),
+                            );
+                            if (picked != null) {
+                              HapticFeedback.lightImpact();
+                              await homeCtrl.updateTilawahReminder(
+                                enabled: true,
+                                hour: picked.hour,
+                                minute: picked.minute,
+                              );
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                            decoration: BoxDecoration(
+                              color: R.color.surface2Jadwal,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: R.color.gold.withOpacity(0.15)),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.access_time_rounded, color: R.color.gold, size: 20),
+                                const SizedBox(width: 12),
+                                Text(
+                                  'Jam Pengingat',
+                                  style: TextStyle(color: R.color.textJadwal, fontSize: 13),
+                                ),
+                                const Spacer(),
+                                Text(
+                                  '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}',
+                                  style: TextStyle(
+                                    color: R.color.gold,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Icon(Icons.chevron_right_rounded, color: R.color.goldDim, size: 18),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  );
+                });
+              }),
               const SizedBox(height: 10),
             ],
           ),

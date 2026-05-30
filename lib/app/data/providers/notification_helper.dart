@@ -214,4 +214,60 @@ class NotificationHelper {
     await _localNotifications.cancelAll();
     print('Semua notifikasi waktu sholat dibatalkan.');
   }
+
+  /// ID tetap untuk notifikasi tilawah reminder
+  static const int _tilawahReminderId = 50000;
+
+  /// Jadwalkan notifikasi reminder tilawah harian secara berulang.
+  /// Notifikasi dijadwalkan setiap hari pada [hour]:[minute].
+  /// Logika cek target vs pencapaian dilakukan di dalam notif action,
+  /// namun body sudah dihitung saat penjadwalan ulang.
+  static Future<void> scheduleTilawahReminder({
+    required int hour,
+    required int minute,
+    required int target,
+    required int todayCount,
+  }) async {
+    // Batalkan reminder lama dulu
+    await cancelTilawahReminder();
+
+    final channel = AndroidNotificationDetails(
+      'tilawah_reminder_channel',
+      'Reminder Tilawah Harian',
+      channelDescription: 'Pengingat untuk memenuhi target tilawah Al-Quran harian',
+      importance: Importance.high,
+      priority: Priority.high,
+      playSound: true,
+      enableVibration: true,
+    );
+
+    final int left = (target - todayCount).clamp(0, target);
+    final String body = left > 0
+        ? 'Kamu kurang $left ayat lagi untuk mencapai target tilawah hari ini. Semangat!'
+        : 'Alhamdulillah! Target tilawah hari ini sudah tercapai. 🎉';
+
+    // Hitung waktu jadwal berikutnya
+    final now = DateTime.now();
+    var scheduledTime = DateTime(now.year, now.month, now.day, hour, minute);
+    if (scheduledTime.isBefore(now)) {
+      scheduledTime = scheduledTime.add(const Duration(days: 1));
+    }
+
+    await _localNotifications.zonedSchedule(
+      id: _tilawahReminderId,
+      title: 'Yuk, Tilawah Hari Ini! 📖',
+      body: body,
+      scheduledDate: tz.TZDateTime.from(scheduledTime, tz.local),
+      notificationDetails: NotificationDetails(android: channel),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.time, // Ulangi setiap hari
+    );
+    print('Tilawah reminder dijadwalkan setiap hari pukul $hour:${minute.toString().padLeft(2, '0')}.');
+  }
+
+  /// Batalkan notifikasi tilawah reminder.
+  static Future<void> cancelTilawahReminder() async {
+    await _localNotifications.cancel(id: _tilawahReminderId);
+    print('Tilawah reminder dibatalkan.');
+  }
 }

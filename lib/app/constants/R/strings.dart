@@ -131,4 +131,14 @@ class Strings {
 
   String tilawahStatusPending(int left) => 'Kurang $left ayat lagi untuk mencapai target hari ini.';
   String tilawahStreakText(int streak) => 'Streak: $streak Hari Beruntun! 🔥';
+
+  // Tilawah Reminder
+  final String tilawahReminderTitle = 'Reminder Tilawah Harian';
+  final String tilawahReminderSectionLabel = 'Reminder Tilawah Harian 📖';
+  final String tilawahReminderDesc = 'Ingatkan saya jika target tilawah hari ini belum tercapai.';
+  final String tilawahReminderTimeLabel = 'Jam Pengingat';
+  final String tilawahReminderNotifTitle = 'Yuk, Tilawah Hari Ini! 📖';
+  String tilawahReminderNotifBody(int left) =>
+      'Kamu kurang $left ayat lagi untuk mencapai target tilawah hari ini. Semangat!';
+  final String tilawahReminderNotifBodyDone = 'Alhamdulillah! Target tilawah hari ini sudah tercapai. 🎉';
 }

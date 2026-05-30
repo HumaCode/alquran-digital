@@ -595,14 +595,22 @@ class _StatistikViewState extends State<StatistikView> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Status Pencapaian',
-                        style: R.textStyle.small(color: _textSoft.withValues(alpha: 0.5)),
+                      Expanded(
+                        child: Text(
+                          'Status Pencapaian',
+                          style: R.textStyle.small(color: _textSoft.withValues(alpha: 0.5)),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      Text(
-                        badge.isUnlocked ? 'Terbuka 🎉' : 'Terkunci 🔒 (${badge.progressString})',
-                        style: R.textStyle.smallBold.copyWith(
-                          color: badge.isUnlocked ? _emeraldLight : R.color.orange,
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          badge.isUnlocked ? 'Terbuka 🎉' : 'Terkunci 🔒 (${badge.progressString})',
+                          style: R.textStyle.smallBold.copyWith(
+                            color: badge.isUnlocked ? _emeraldLight : R.color.orange,
+                          ),
+                          textAlign: TextAlign.end,
                         ),
                       ),
                     ],

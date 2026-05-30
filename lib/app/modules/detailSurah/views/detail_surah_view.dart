@@ -336,121 +336,148 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                   ),
                                   const Spacer(),
                                   // Play Audio Button
-                                  IconButton(
-                                    padding: const EdgeInsets.all(6),
-                                    constraints: const BoxConstraints(),
-                                    icon: Obx(() {
-                                      final isPlaying = controller.currentlyPlayingAyat.value == ayat.nomorAyat &&
-                                          controller.isAudioPlaying.value;
-                                      return Icon(
-                                        isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                                        color: isPlaying ? _gold : _goldDim,
-                                        size: 22,
-                                      );
-                                    }),
-                                    onPressed: () {
-                                      controller.togglePlayAudio(ayat);
-                                    },
-                                  ),
+                                  Obx(() {
+                                    final isPlaying = controller.currentlyPlayingAyat.value == ayat.nomorAyat &&
+                                        controller.isAudioPlaying.value;
+                                    return Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(8),
+                                        onTap: () => controller.togglePlayAudio(ayat),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(6),
+                                          child: Icon(
+                                            isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                                            color: isPlaying ? _gold : _goldDim,
+                                            size: 22,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }),
                                   const SizedBox(width: 4),
                                   // Tandai Terakhir Dibaca Button
-                                  IconButton(
-                                    padding: const EdgeInsets.all(6),
-                                    constraints: const BoxConstraints(),
-                                    icon: Obx(() => Icon(
-                                          controller.lastReadAyatNomor.value == ayat.nomorAyat
-                                              ? Icons.bookmark_added_rounded
-                                              : Icons.bookmark_add_outlined,
-                                          color: controller.lastReadAyatNomor.value == ayat.nomorAyat
-                                              ? _gold
-                                              : _goldDim,
-                                          size: 20,
-                                        )),
-                                    onPressed: () {
-                                      controller.markAsLastRead(
-                                        detail.nomor,
-                                        detail.namaLatin,
-                                        ayat.nomorAyat,
-                                      );
-                                      CustomToast.show(
-                                        context,
-                                        message: 'Ayat ${ayat.nomorAyat} ditandai sebagai terakhir dibaca',
-                                        type: ToastType.success,
-                                      );
-                                    },
-                                  ),
+                                  Obx(() => Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          borderRadius: BorderRadius.circular(8),
+                                          onTap: () {
+                                            controller.markAsLastRead(
+                                              detail.nomor,
+                                              detail.namaLatin,
+                                              ayat.nomorAyat,
+                                            );
+                                            CustomToast.show(
+                                              context,
+                                              message: 'Ayat ${ayat.nomorAyat} ditandai sebagai terakhir dibaca',
+                                              type: ToastType.success,
+                                            );
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(6),
+                                            child: Icon(
+                                              controller.lastReadAyatNomor.value == ayat.nomorAyat
+                                                  ? Icons.bookmark_added_rounded
+                                                  : Icons.bookmark_add_outlined,
+                                              color: controller.lastReadAyatNomor.value == ayat.nomorAyat
+                                                  ? _gold
+                                                  : _goldDim,
+                                              size: 20,
+                                            ),
+                                          ),
+                                        ),
+                                      )),
                                   const SizedBox(width: 4),
                                   // Simpan Bookmark Button
-                                  IconButton(
-                                    padding: const EdgeInsets.all(6),
-                                    constraints: const BoxConstraints(),
-                                    icon: Obx(() => Icon(
-                                          controller.bookmarkedAyats.contains(ayat.nomorAyat)
-                                              ? Icons.bookmark_rounded
-                                              : Icons.bookmark_border_rounded,
-                                          color: controller.bookmarkedAyats.contains(ayat.nomorAyat)
-                                              ? _gold
-                                              : _goldDim,
-                                          size: 20,
-                                        )),
-                                    onPressed: () async {
-                                      await controller.toggleBookmark(ayat);
-                                      final isAdded = controller.bookmarkedAyats.contains(ayat.nomorAyat);
-                                      CustomToast.show(
-                                        context,
-                                        message: isAdded
-                                            ? 'Ayat ${ayat.nomorAyat} disimpan ke Bookmark'
-                                            : 'Ayat ${ayat.nomorAyat} dihapus dari Bookmark',
-                                        type: ToastType.success,
-                                      );
-                                    },
-                                  ),
+                                  Obx(() => Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          borderRadius: BorderRadius.circular(8),
+                                          onTap: () async {
+                                            await controller.toggleBookmark(ayat);
+                                            final isAdded = controller.bookmarkedAyats.contains(ayat.nomorAyat);
+                                            CustomToast.show(
+                                              context,
+                                              message: isAdded
+                                                  ? 'Ayat ${ayat.nomorAyat} disimpan ke Bookmark'
+                                                  : 'Ayat ${ayat.nomorAyat} dihapus dari Bookmark',
+                                              type: ToastType.success,
+                                            );
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(6),
+                                            child: Icon(
+                                              controller.bookmarkedAyats.contains(ayat.nomorAyat)
+                                                  ? Icons.bookmark_rounded
+                                                  : Icons.bookmark_border_rounded,
+                                              color: controller.bookmarkedAyats.contains(ayat.nomorAyat)
+                                                  ? _gold
+                                                  : _goldDim,
+                                              size: 20,
+                                            ),
+                                          ),
+                                        ),
+                                      )),
                                   const SizedBox(width: 4),
                                   // Copy Button
-                                  IconButton(
-                                    padding: const EdgeInsets.all(6),
-                                    constraints: const BoxConstraints(),
-                                    icon: Icon(Icons.copy_rounded, color: _goldDim, size: 20),
-                                    onPressed: () {
-                                      Clipboard.setData(ClipboardData(
-                                        text: '${ayat.teksArab}\n${ayat.teksLatin}\n${ayat.teksIndonesia}',
-                                      ));
-                                      CustomToast.show(
-                                        context,
-                                        message: 'Ayat ${ayat.nomorAyat} ${R.string.copySuccess.toLowerCase()}',
-                                        type: ToastType.success,
-                                      );
-                                    },
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(8),
+                                      onTap: () {
+                                        Clipboard.setData(ClipboardData(
+                                          text: '${ayat.teksArab}\n${ayat.teksLatin}\n${ayat.teksIndonesia}',
+                                        ));
+                                        CustomToast.show(
+                                          context,
+                                          message: 'Ayat ${ayat.nomorAyat} ${R.string.copySuccess.toLowerCase()}',
+                                          type: ToastType.success,
+                                        );
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(6),
+                                        child: Icon(Icons.copy_rounded, color: _goldDim, size: 20),
+                                      ),
+                                    ),
                                   ),
                                   const SizedBox(width: 4),
                                   // Share Button
-                                  IconButton(
-                                    padding: const EdgeInsets.all(6),
-                                    constraints: const BoxConstraints(),
-                                    icon: Icon(Icons.share_rounded, color: _goldDim, size: 20),
-                                    onPressed: () {
-                                      // Share content (simple copy notification as fallback)
-                                      Clipboard.setData(ClipboardData(
-                                        text: 'QS. ${detail.namaLatin} [${detail.nomor}:${ayat.nomorAyat}]\n\n'
-                                            '${ayat.teksArab}\n\n'
-                                            'Artinya: "${ayat.teksIndonesia}"',
-                                      ));
-                                      CustomToast.show(
-                                        context,
-                                        message: R.string.shareText,
-                                        type: ToastType.success,
-                                      );
-                                    },
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(8),
+                                      onTap: () {
+                                        Clipboard.setData(ClipboardData(
+                                          text: 'QS. ${detail.namaLatin} [${detail.nomor}:${ayat.nomorAyat}]\n\n'
+                                              '${ayat.teksArab}\n\n'
+                                              'Artinya: "${ayat.teksIndonesia}"',
+                                        ));
+                                        CustomToast.show(
+                                          context,
+                                          message: R.string.shareText,
+                                          type: ToastType.success,
+                                        );
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(6),
+                                        child: Icon(Icons.share_rounded, color: _goldDim, size: 20),
+                                      ),
+                                    ),
                                   ),
                                   const SizedBox(width: 4),
                                   // Tafsir Button
-                                  IconButton(
-                                    padding: const EdgeInsets.all(6),
-                                    constraints: const BoxConstraints(),
-                                    icon: Icon(Icons.menu_book_rounded, color: _goldDim, size: 20),
-                                    onPressed: () {
-                                      _showTafsirBottomSheet(context, detail, ayat.nomorAyat);
-                                    },
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(8),
+                                      onTap: () {
+                                        _showTafsirBottomSheet(context, detail, ayat.nomorAyat);
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(6),
+                                        child: Icon(Icons.menu_book_rounded, color: _goldDim, size: 20),
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),

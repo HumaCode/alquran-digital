@@ -84,6 +84,9 @@ class NotificationHelper {
     final isMaghribOn = (await dbHelper.getMetadata('adzan_maghrib')) != '0';
     final isIsyaOn = (await dbHelper.getMetadata('adzan_isya')) != '0';
 
+    final savedReminder = await dbHelper.getMetadata('adzan_pre_reminder_minutes');
+    final preReminderMin = int.tryParse(savedReminder ?? '0') ?? 0;
+
     final now = DateTime.now();
     final androidDetails = AndroidNotificationDetails(
       'sholat_channel_v3', // Diubah ke v3 untuk memaksa registrasi ulang custom sound adzan
@@ -104,6 +107,18 @@ class NotificationHelper {
     );
 
     final notificationDetails = NotificationDetails(android: androidDetails);
+
+    final reminderAndroidDetails = AndroidNotificationDetails(
+      'pre_sholat_reminder_channel',
+      'Pengingat Sebelum Adzan',
+      channelDescription: 'Pengingat bersiap wudhu sebelum masuk waktu sholat',
+      importance: Importance.defaultImportance,
+      priority: Priority.defaultPriority,
+      playSound: true,
+      enableVibration: true,
+    );
+
+    final reminderDetails = NotificationDetails(android: reminderAndroidDetails);
 
     int count = 0;
     // Loop jadwal sholat untuk hari-hari tersisa di bulan ini
@@ -163,6 +178,23 @@ class NotificationHelper {
               androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
             );
             count++;
+          }
+
+          // Jadwalkan pengingat pra-waktu sholat jika diaktifkan
+          if (preReminderMin > 0) {
+            final reminderTime = scheduledTime.subtract(Duration(minutes: preReminderMin));
+            if (reminderTime.isAfter(now)) {
+              final reminderId = 10000 + date.day * 100 + prayerIdx;
+              await _localNotifications.zonedSchedule(
+                id: reminderId,
+                title: 'Persiapan Sholat $name',
+                body: '$preReminderMin menit lagi masuk waktu sholat $name. Mari bersiap mengambil air wudhu.',
+                scheduledDate: tz.TZDateTime.from(reminderTime, tz.local),
+                notificationDetails: reminderDetails,
+                androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+              );
+              count++;
+            }
           }
         } catch (e) {
           print('Gagal menjadwalkan sholat $name pada tanggal ${date.day}: $e');

@@ -34,8 +34,8 @@ Meningkatkan fleksibilitas dan personalisasi waktu sholat bagi masing-masing pen
 
 ### 4. 🕒 Pengingat Pra-Waktu Sholat (Sebelum Adzan)
 Memberikan waktu persiapan wudhu sebelum masuknya waktu sholat utama.
-*   [ ] Tambahkan pengaturan opsi pengingat (misal: 10 menit atau 15 menit sebelum sholat).
-*   [ ] Jadwalkan alarm pengingat pra-sholat menggunakan `flutter_local_notifications`.
+*   [x] Tambahkan pengaturan opsi pengingat (misal: 10 menit atau 15 menit sebelum sholat).
+*   [x] Jadwalkan alarm pengingat pra-sholat menggunakan `flutter_local_notifications`.
 
 ### 5. 📱 Widget Layar Utama (Home Screen Widget)
 Menampilkan jadwal sholat hari ini di halaman depan ponsel pengguna.

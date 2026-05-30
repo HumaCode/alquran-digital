@@ -754,15 +754,64 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 18),
               Text(
-                'Mute/Aktifkan Notifikasi per Waktu Sholat',
+                'Pengingat Sebelum Adzan (Persiapan Wudhu)',
                 style: TextStyle(
-                  fontSize: 13,
-                  color: R.color.textMutedJadwal,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: R.color.goldLight.withOpacity(0.9),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
+              Obx(() {
+                final currentVal = _controller.preReminderMinutes.value;
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: R.color.surface2Jadwal,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: currentVal > 0
+                          ? R.color.emerald.withOpacity(0.15)
+                          : R.color.goldDim.withOpacity(0.08),
+                    ),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<int>(
+                      value: currentVal,
+                      isExpanded: true,
+                      dropdownColor: R.color.surface2Jadwal,
+                      style: TextStyle(color: R.color.textJadwal, fontSize: 13),
+                      icon: Icon(Icons.keyboard_arrow_down_rounded, color: R.color.goldLight),
+                      items: const [
+                        DropdownMenuItem<int>(value: 0, child: Text('Nonaktif (Tanpa Pengingat)')),
+                        DropdownMenuItem<int>(value: 5, child: Text('5 Menit Sebelum Adzan')),
+                        DropdownMenuItem<int>(value: 10, child: Text('10 Menit Sebelum Adzan')),
+                        DropdownMenuItem<int>(value: 15, child: Text('15 Menit Sebelum Adzan')),
+                        DropdownMenuItem<int>(value: 20, child: Text('20 Menit Sebelum Adzan')),
+                        DropdownMenuItem<int>(value: 30, child: Text('30 Menit Sebelum Adzan')),
+                      ],
+                      onChanged: (newVal) {
+                        if (newVal != null) {
+                          _controller.updatePreReminder(newVal);
+                          HapticFeedback.lightImpact();
+                        }
+                      },
+                    ),
+                  ),
+                );
+              }),
+              const SizedBox(height: 24),
+              Text(
+                'Mute / Aktifkan Adzan per Waktu Sholat',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: R.color.goldLight.withOpacity(0.9),
+                ),
+              ),
+              const SizedBox(height: 12),
               Flexible(
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),

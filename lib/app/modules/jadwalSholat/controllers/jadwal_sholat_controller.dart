@@ -53,6 +53,9 @@ class JadwalSholatController extends GetxController {
   final isMaghribNotifEnabled = true.obs;
   final isIsyaNotifEnabled = true.obs;
 
+  // Pre-prayer reminder state (in minutes, 0 means disabled)
+  final preReminderMinutes = 0.obs;
+
   // Compass state variables
   final deviceHeading = 0.0.obs;
   final qiblaDirection = 291.5.obs; // Default fallback for Indonesia / Pekalongan
@@ -160,6 +163,9 @@ class JadwalSholatController extends GetxController {
       isAsharNotifEnabled.value = savedAshar != '0';
       isMaghribNotifEnabled.value = savedMaghrib != '0';
       isIsyaNotifEnabled.value = savedIsya != '0';
+
+      final savedReminder = await dbHelper.getMetadata('adzan_pre_reminder_minutes');
+      preReminderMinutes.value = int.tryParse(savedReminder ?? '0') ?? 0;
 
       if (savedNotif != null) {
         isNotifEnabled.value = savedNotif == 'true';
@@ -459,6 +465,19 @@ class JadwalSholatController extends GetxController {
       isIsyaNotifEnabled.value = !isIsyaNotifEnabled.value;
       await dbHelper.updateMetadata('adzan_isya', isIsyaNotifEnabled.value ? '1' : '0');
     }
+
+    // Pemicu jadwal ulang notifikasi jika notifikasi global aktif
+    if (isNotifEnabled.value) {
+      final schedule = jadwalSholat.value;
+      if (schedule != null) {
+        await NotificationHelper.schedulePrayerNotifications(schedule);
+      }
+    }
+  }
+
+  Future<void> updatePreReminder(int minutes) async {
+    preReminderMinutes.value = minutes;
+    await DatabaseHelper.instance.updateMetadata('adzan_pre_reminder_minutes', minutes.toString());
 
     // Pemicu jadwal ulang notifikasi jika notifikasi global aktif
     if (isNotifEnabled.value) {

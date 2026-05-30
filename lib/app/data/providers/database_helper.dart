@@ -44,6 +44,16 @@ class DatabaseHelper {
             createdAt TEXT NOT NULL
           )
         ''');
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS notes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nomorSurah INTEGER NOT NULL,
+            namaSurah TEXT NOT NULL,
+            nomorAyat INTEGER NOT NULL,
+            teksCatatan TEXT NOT NULL,
+            updatedAt TEXT NOT NULL
+          )
+        ''');
       },
     );
   }
@@ -95,6 +105,18 @@ class DatabaseHelper {
         teksArab TEXT NOT NULL,
         teksIndonesia TEXT NOT NULL,
         createdAt TEXT NOT NULL
+      )
+    ''');
+
+    // 5. Tabel Notes baru
+    await db.execute('''
+      CREATE TABLE notes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nomorSurah INTEGER NOT NULL,
+        namaSurah TEXT NOT NULL,
+        nomorAyat INTEGER NOT NULL,
+        teksCatatan TEXT NOT NULL,
+        updatedAt TEXT NOT NULL
       )
     ''');
   }
@@ -379,6 +401,70 @@ class DatabaseHelper {
       limit: 1,
     );
     return result.isNotEmpty;
+  }
+
+  // ── Operations for Notes Table ──────────────────────────────────────────────
+  
+  Future<int> saveNote(int nomorSurah, String namaSurah, int nomorAyat, String teksCatatan) async {
+    final db = await instance.database;
+    final nowStr = DateTime.now().toIso8601String();
+    
+    final existing = await db.query(
+      'notes',
+      where: 'nomorSurah = ? AND nomorAyat = ?',
+      whereArgs: [nomorSurah, nomorAyat],
+      limit: 1,
+    );
+    
+    if (existing.isNotEmpty) {
+      return await db.update(
+        'notes',
+        {
+          'teksCatatan': teksCatatan,
+          'updatedAt': nowStr,
+        },
+        where: 'nomorSurah = ? AND nomorAyat = ?',
+        whereArgs: [nomorSurah, nomorAyat],
+      );
+    } else {
+      return await db.insert(
+        'notes',
+        {
+          'nomorSurah': nomorSurah,
+          'namaSurah': namaSurah,
+          'nomorAyat': nomorAyat,
+          'teksCatatan': teksCatatan,
+          'updatedAt': nowStr,
+        },
+      );
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getNotesList() async {
+    final db = await instance.database;
+    return await db.query('notes', orderBy: 'updatedAt DESC');
+  }
+
+  Future<String?> getNoteText(int nomorSurah, int nomorAyat) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'notes',
+      columns: ['teksCatatan'],
+      where: 'nomorSurah = ? AND nomorAyat = ?',
+      whereArgs: [nomorSurah, nomorAyat],
+      limit: 1,
+    );
+    if (result.isEmpty) return null;
+    return result.first['teksCatatan'] as String?;
+  }
+
+  Future<int> deleteNote(int nomorSurah, int nomorAyat) async {
+    final db = await instance.database;
+    return await db.delete(
+      'notes',
+      where: 'nomorSurah = ? AND nomorAyat = ?',
+      whereArgs: [nomorSurah, nomorAyat],
+    );
   }
 
   Future<void> clearAllData() async {

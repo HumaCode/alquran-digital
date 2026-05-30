@@ -25,6 +25,8 @@ class DetailSurahController extends GetxController {
   int? targetAyat;
   final lastReadAyatNomor = 0.obs;
   final bookmarkedAyats = <int>{}.obs;
+  final versesWithNotes = <int>{}.obs;
+  final verseNotes = <int, String>{}.obs;
 
   // Qori Selection for verses
   final selectedQori = '05'.obs; // Default to Misyari Rasyid Al-Afasy
@@ -170,6 +172,9 @@ class DetailSurahController extends GetxController {
 
       // Ambil data bookmark untuk surah ini
       await loadBookmarkedAyats();
+
+      // Ambil data catatan ayat untuk surah ini
+      await loadVerseNotes();
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {
@@ -335,6 +340,50 @@ class DetailSurahController extends GetxController {
       }
     } catch (e) {
       print('Gagal mengubah status bookmark: $e');
+    }
+  }
+
+  Future<void> loadVerseNotes() async {
+    try {
+      final list = await _repository.getNotesList();
+      final currentNotes = list.where((element) => element['nomorSurah'] == nomorSurah);
+      
+      versesWithNotes.clear();
+      verseNotes.clear();
+      for (var item in currentNotes) {
+        final ayatNo = item['nomorAyat'] as int;
+        final noteText = item['teksCatatan'] as String;
+        versesWithNotes.add(ayatNo);
+        verseNotes[ayatNo] = noteText;
+      }
+    } catch (e) {
+      print('Gagal memuat catatan ayat: $e');
+    }
+  }
+
+  Future<void> saveVerseNote(int nomorAyat, String noteText) async {
+    try {
+      final detail = detailSurah.value?.data;
+      if (detail == null) return;
+      if (noteText.trim().isEmpty) {
+        await deleteVerseNote(nomorAyat);
+        return;
+      }
+      await _repository.saveNote(nomorSurah, detail.namaLatin, nomorAyat, noteText);
+      versesWithNotes.add(nomorAyat);
+      verseNotes[nomorAyat] = noteText;
+    } catch (e) {
+      print('Gagal menyimpan catatan ayat: $e');
+    }
+  }
+
+  Future<void> deleteVerseNote(int nomorAyat) async {
+    try {
+      await _repository.deleteNote(nomorSurah, nomorAyat);
+      versesWithNotes.remove(nomorAyat);
+      verseNotes.remove(nomorAyat);
+    } catch (e) {
+      print('Gagal menghapus catatan ayat: $e');
     }
   }
 }

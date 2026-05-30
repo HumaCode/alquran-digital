@@ -44,10 +44,10 @@ Menampilkan jadwal sholat hari ini di halaman depan ponsel pengguna.
 
 ### 6. 📝 Catatan Tafsir Pribadi & Tadabbur (Catatan Ayat)
 Menyediakan wadah bagi pengguna untuk menulis refleksi atau catatan pribadi mengenai isi kandungan ayat tertentu.
-*   [ ] Buat tabel SQLite baru `notes` (kolom: `id`, `nomorSurah`, `namaSurah`, `nomorAyat`, `teksCatatan`, `updatedAt`).
-*   [ ] Tambahkan tombol ikon Catatan (Note) di samping tombol Bookmark pada setiap item ayat di `DetailSurahView`.
-*   [ ] Sediakan Bottom Sheet input catatan dan tampilkan badge indikator visual di ayat yang memiliki catatan.
-*   [ ] Integrasikan daftar Catatan ke dalam modul Bookmarks (dengan struktur 2 Tab: Bookmark & Catatan).
+*   [x] Buat tabel SQLite baru `notes` (kolom: `id`, `nomorSurah`, `namaSurah`, `nomorAyat`, `teksCatatan`, `updatedAt`).
+*   [x] Tambahkan tombol ikon Catatan (Note) di samping tombol Bookmark pada setiap item ayat di `DetailSurahView`.
+*   [x] Sediakan Bottom Sheet input catatan dan tampilkan badge indikator visual di ayat yang memiliki catatan.
+*   [x] Integrasikan daftar Catatan ke dalam modul Bookmarks (dengan struktur 2 Tab: Bookmark & Catatan).
 
 ### 7. 🎛️ Media Kontrol Murottal di Bar Notifikasi (Background Player)
 Mengintegrasikan pemutar audio Murottal dengan kontrol media sistem operasi native agar mudah dikendalikan dari lockscreen.

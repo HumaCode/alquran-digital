@@ -419,6 +419,28 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                         ),
                                       )),
                                   const SizedBox(width: 4),
+                                  // Catatan Ayat (Tadabbur) Button
+                                  Obx(() {
+                                    final hasNote = controller.versesWithNotes.contains(ayat.nomorAyat);
+                                    return Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(8),
+                                        onTap: () {
+                                          _showAddNoteBottomSheet(context, detail, ayat);
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(6),
+                                          child: Icon(
+                                            hasNote ? Icons.edit_note_rounded : Icons.note_add_outlined,
+                                            color: hasNote ? _gold : _goldDim,
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                                  const SizedBox(width: 4),
                                   // Copy Button
                                   Material(
                                     color: Colors.transparent,
@@ -530,6 +552,55 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                 ),
                               ),
                             ],
+                            
+                            // Teks Catatan Tadabbur jika ada
+                            Obx(() {
+                              final noteText = controller.verseNotes[ayat.nomorAyat];
+                              if (noteText == null || noteText.trim().isEmpty) {
+                                return const SizedBox.shrink();
+                              }
+                              return Container(
+                                margin: const EdgeInsets.only(top: 16),
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: _goldDim.withValues(alpha: 0.05),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: _goldDim.withValues(alpha: 0.15),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(Icons.edit_note_rounded, color: _goldLight, size: 16),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          'Catatan Tadabbur Saya',
+                                          style: R.textStyle.small(
+                                            color: _goldLight,
+                                            fontWeight: FontWeight.bold,
+                                          ).copyWith(fontFamily: 'Poppins'),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      noteText,
+                                      style: R.textStyle.small(
+                                        color: _textSoft,
+                                      ).copyWith(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 13,
+                                        height: 1.4,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
                           ],
                         ),
                       ),
@@ -979,6 +1050,150 @@ class DetailSurahView extends GetView<DetailSurahController> {
       )),
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
+    );
+  }
+
+  void _showAddNoteBottomSheet(BuildContext context, Data detail, Ayat ayat) {
+    final textCtrl = TextEditingController(text: controller.verseNotes[ayat.nomorAyat] ?? '');
+    
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.only(
+            left: 24,
+            right: 24,
+            top: 24,
+            bottom: 24 + MediaQuery.of(context).viewInsets.bottom,
+          ),
+          decoration: BoxDecoration(
+            color: _bg,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(24),
+              topRight: Radius.circular(24),
+            ),
+            border: Border(
+              top: BorderSide(color: _goldDim.withValues(alpha: 0.15)),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: _goldDim.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Icon(Icons.edit_note_rounded, color: _goldLight, size: 24),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Catatan Ayat ${ayat.nomorAyat}',
+                    style: R.textStyle.medium(
+                      color: _goldLight,
+                      fontWeight: FontWeight.bold,
+                    ).copyWith(fontFamily: 'Poppins'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'QS. ${detail.namaLatin} : Ayat ${ayat.nomorAyat}',
+                style: R.textStyle.small(color: _textSoft).copyWith(fontFamily: 'Poppins'),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: textCtrl,
+                maxLines: 4,
+                style: TextStyle(color: R.color.text, fontSize: 14, fontFamily: 'Poppins'),
+                decoration: InputDecoration(
+                  hintText: 'Tulis tadabbur, refleksi, atau catatan penting mengenai ayat ini...',
+                  hintStyle: TextStyle(color: _textSoft.withValues(alpha: 0.5), fontSize: 13),
+                  filled: true,
+                  fillColor: _bg2.withValues(alpha: 0.3),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: _goldDim.withValues(alpha: 0.2)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: _gold),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: _goldDim.withValues(alpha: 0.2)),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (controller.versesWithNotes.contains(ayat.nomorAyat))
+                    TextButton.icon(
+                      onPressed: () async {
+                        await controller.deleteVerseNote(ayat.nomorAyat);
+                        Get.back();
+                        CustomToast.show(
+                          context,
+                          message: 'Catatan ayat ${ayat.nomorAyat} berhasil dihapus',
+                          type: ToastType.success,
+                        );
+                      },
+                      icon: Icon(Icons.delete_outline_rounded, color: R.color.error, size: 18),
+                      label: Text(
+                        'Hapus',
+                        style: TextStyle(color: R.color.error, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
+                      ),
+                    ),
+                  const Spacer(),
+                  TextButton(
+                    onPressed: () => Get.back(),
+                    child: Text(
+                      'Batal',
+                      style: TextStyle(color: _textSoft, fontFamily: 'Poppins'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await controller.saveVerseNote(ayat.nomorAyat, textCtrl.text);
+                      Get.back();
+                      CustomToast.show(
+                        context,
+                        message: 'Catatan ayat ${ayat.nomorAyat} berhasil disimpan',
+                        type: ToastType.success,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _gold,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    ),
+                    child: Text(
+                      'Simpan',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -162,5 +162,21 @@ class SurahRepository {
   Future<bool> isBookmarked(int nomorSurah, int nomorAyat) async {
     return await DatabaseHelper.instance.isBookmarked(nomorSurah, nomorAyat);
   }
+
+  Future<int> saveNote(int nomorSurah, String namaSurah, int nomorAyat, String teksCatatan) async {
+    return await DatabaseHelper.instance.saveNote(nomorSurah, namaSurah, nomorAyat, teksCatatan);
+  }
+
+  Future<List<Map<String, dynamic>>> getNotesList() async {
+    return await DatabaseHelper.instance.getNotesList();
+  }
+
+  Future<String?> getNoteText(int nomorSurah, int nomorAyat) async {
+    return await DatabaseHelper.instance.getNoteText(nomorSurah, nomorAyat);
+  }
+
+  Future<int> deleteNote(int nomorSurah, int nomorAyat) async {
+    return await DatabaseHelper.instance.deleteNote(nomorSurah, nomorAyat);
+  }
 }
 

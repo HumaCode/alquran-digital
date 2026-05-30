@@ -70,10 +70,10 @@ Membantu pengguna tetap konsisten dalam membaca Al-Quran dengan target harian da
 
 #### 9. 🔔 Reminder Tilawah Harian
 Mengingatkan pengguna jika target tilawah harian belum tercapai di penghujung hari.
-*   [ ] Jadwalkan notifikasi lokal terjadwal (misal: jam 20:00) menggunakan `flutter_local_notifications` yang sudah ada.
-*   [ ] Notifikasi hanya muncul jika target hari itu belum terpenuhi (cek dari tabel `tilawah_progress`).
-*   [ ] Pesan dinamis: "Kamu kurang X ayat lagi untuk mencapai target hari ini! 📖"
-*   [ ] Tambahkan pengaturan ON/OFF + jam pengiriman reminder di halaman Settings.
+*   [x] Jadwalkan notifikasi lokal terjadwal (misal: jam 20:00) menggunakan `flutter_local_notifications` yang sudah ada.
+*   [x] Notifikasi hanya muncul jika target hari itu belum terpenuhi (cek dari tabel `tilawah_progress`).
+*   [x] Pesan dinamis: "Kamu kurang X ayat lagi untuk mencapai target hari ini! 📖"
+*   [x] Tambahkan pengaturan ON/OFF + jam pengiriman reminder di halaman Settings.
 
 #### 10. 🌙 Mode Baca Malam (Night Reader Mode)
 Memberikan kenyamanan membaca Al-Quran di malam hari tanpa menyilaukan mata.

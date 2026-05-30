@@ -141,8 +141,9 @@ class NotificationHelper {
       int prayerIdx = 1;
       prayers.forEach((name, timeStr) async {
         bool isEnabled = true;
-        if (name == 'Subuh') isEnabled = isSubuhOn;
-        else if (name == 'Dzuhur') isEnabled = isDzuhurOn;
+        if (name == 'Subuh') {
+          isEnabled = isSubuhOn;
+        } else if (name == 'Dzuhur') isEnabled = isDzuhurOn;
         else if (name == 'Ashar') isEnabled = isAsharOn;
         else if (name == 'Maghrib') isEnabled = isMaghribOn;
         else if (name == 'Isya') isEnabled = isIsyaOn;

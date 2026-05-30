@@ -33,13 +33,16 @@ class JadwalSholatController extends GetxController {
       return kabKotaList;
     }
     return kabKotaList
-        .where((city) => city.toLowerCase().contains(searchQuery.value.toLowerCase()))
+        .where(
+          (city) =>
+              city.toLowerCase().contains(searchQuery.value.toLowerCase()),
+        )
         .toList();
   }
 
   // Monthly schedule data
   final jadwalSholat = Rxn<JadwalSholat>();
-  
+
   // Today's schedule data
   final todayJadwal = Rxn<Jadwal>();
 
@@ -58,7 +61,8 @@ class JadwalSholatController extends GetxController {
 
   // Compass state variables
   final deviceHeading = 0.0.obs;
-  final qiblaDirection = 291.5.obs; // Default fallback for Indonesia / Pekalongan
+  final qiblaDirection =
+      291.5.obs; // Default fallback for Indonesia / Pekalongan
   final isCompassAvailable = false.obs;
   final compassError = ''.obs;
   final currentLatitude = (-6.2088).obs;
@@ -89,7 +93,9 @@ class JadwalSholatController extends GetxController {
     double dLon = kaabaLon - userLon;
 
     double y = math.sin(dLon);
-    double x = math.cos(userLat) * math.tan(kaabaLat) - math.sin(userLat) * math.cos(dLon);
+    double x =
+        math.cos(userLat) * math.tan(kaabaLat) -
+        math.sin(userLat) * math.cos(dLon);
 
     double qiblaRad = math.atan2(y, x);
     double qiblaDeg = qiblaRad * 180.0 / math.pi;
@@ -105,7 +111,8 @@ class JadwalSholatController extends GetxController {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (serviceEnabled) {
         LocationPermission permission = await Geolocator.checkPermission();
-        if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
+        if (permission == LocationPermission.always ||
+            permission == LocationPermission.whileInUse) {
           position = await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.low,
             timeLimit: const Duration(seconds: 4),
@@ -124,17 +131,20 @@ class JadwalSholatController extends GetxController {
       qiblaDirection.value = calculateQiblaDirection(lat, lon);
 
       // Listen to compass events
-      _compassSubscription = FlutterCompass.events?.listen((CompassEvent event) {
-        if (event.heading != null) {
-          deviceHeading.value = event.heading!;
-          isCompassAvailable.value = true;
-        } else {
+      _compassSubscription = FlutterCompass.events?.listen(
+        (CompassEvent event) {
+          if (event.heading != null) {
+            deviceHeading.value = event.heading!;
+            isCompassAvailable.value = true;
+          } else {
+            isCompassAvailable.value = false;
+          }
+        },
+        onError: (e) {
+          compassError.value = e.toString();
           isCompassAvailable.value = false;
-        }
-      }, onError: (e) {
-        compassError.value = e.toString();
-        isCompassAvailable.value = false;
-      });
+        },
+      );
     } catch (e) {
       print('Gagal inisialisasi kompas: $e');
       isCompassAvailable.value = false;
@@ -149,9 +159,15 @@ class JadwalSholatController extends GetxController {
       await fetchProvinsi();
 
       final dbHelper = DatabaseHelper.instance;
-      final savedProv = await dbHelper.getMetadata('jadwal_sholat_selected_provinsi');
-      final savedKab = await dbHelper.getMetadata('jadwal_sholat_selected_kabkota');
-      final savedNotif = await dbHelper.getMetadata('jadwal_sholat_notif_enabled');
+      final savedProv = await dbHelper.getMetadata(
+        'jadwal_sholat_selected_provinsi',
+      );
+      final savedKab = await dbHelper.getMetadata(
+        'jadwal_sholat_selected_kabkota',
+      );
+      final savedNotif = await dbHelper.getMetadata(
+        'jadwal_sholat_notif_enabled',
+      );
       final savedSubuh = await dbHelper.getMetadata('adzan_subuh');
       final savedDzuhur = await dbHelper.getMetadata('adzan_dzuhur');
       final savedAshar = await dbHelper.getMetadata('adzan_ashar');
@@ -164,7 +180,9 @@ class JadwalSholatController extends GetxController {
       isMaghribNotifEnabled.value = savedMaghrib != '0';
       isIsyaNotifEnabled.value = savedIsya != '0';
 
-      final savedReminder = await dbHelper.getMetadata('adzan_pre_reminder_minutes');
+      final savedReminder = await dbHelper.getMetadata(
+        'adzan_pre_reminder_minutes',
+      );
       preReminderMinutes.value = int.tryParse(savedReminder ?? '0') ?? 0;
 
       if (savedNotif != null) {
@@ -190,7 +208,7 @@ class JadwalSholatController extends GetxController {
   Future<void> detectLocation() async {
     isLoading.value = true;
     errorMessage.value = '';
-    
+
     double? latitude;
     double? longitude;
 
@@ -202,7 +220,8 @@ class JadwalSholatController extends GetxController {
         if (permission == LocationPermission.denied) {
           permission = await Geolocator.requestPermission();
         }
-        if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
+        if (permission == LocationPermission.always ||
+            permission == LocationPermission.whileInUse) {
           final position = await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.low,
             timeLimit: const Duration(seconds: 5),
@@ -232,7 +251,12 @@ class JadwalSholatController extends GetxController {
         if (response.status.isOk && response.body != null) {
           final addr = response.body['address'];
           if (addr != null) {
-            detectedCityName = addr['city'] ?? addr['municipality'] ?? addr['county'] ?? addr['town'] ?? addr['city_district'];
+            detectedCityName =
+                addr['city'] ??
+                addr['municipality'] ??
+                addr['county'] ??
+                addr['town'] ??
+                addr['city_district'];
             detectedProvinceName = addr['state'];
           }
         }
@@ -246,9 +270,13 @@ class JadwalSholatController extends GetxController {
       try {
         final client = GetConnect();
         final response = await client.get('http://ip-api.com/json');
-        if (response.status.isOk && response.body != null && response.body['status'] == 'success') {
+        if (response.status.isOk &&
+            response.body != null &&
+            response.body['status'] == 'success') {
           detectedCityName = response.body['city'];
-          detectedProvinceName = _translateEnglishProvince(response.body['regionName']);
+          detectedProvinceName = _translateEnglishProvince(
+            response.body['regionName'],
+          );
         }
       } catch (e) {
         print('Gagal mendapatkan lokasi via IP: $e');
@@ -273,7 +301,10 @@ class JadwalSholatController extends GetxController {
 
       if (matchedProvinsi != null) {
         selectedProvinsi.value = matchedProvinsi;
-        await DatabaseHelper.instance.updateMetadata('jadwal_sholat_selected_provinsi', matchedProvinsi);
+        await DatabaseHelper.instance.updateMetadata(
+          'jadwal_sholat_selected_provinsi',
+          matchedProvinsi,
+        );
 
         // Muat kota-kota untuk provinsi tersebut
         await fetchKabKota(matchedProvinsi);
@@ -290,7 +321,10 @@ class JadwalSholatController extends GetxController {
 
         if (matchedKota != null) {
           selectedKabKota.value = matchedKota;
-          await DatabaseHelper.instance.updateMetadata('jadwal_sholat_selected_kabkota', matchedKota);
+          await DatabaseHelper.instance.updateMetadata(
+            'jadwal_sholat_selected_kabkota',
+            matchedKota,
+          );
         }
       }
     }
@@ -354,7 +388,7 @@ class JadwalSholatController extends GetxController {
     try {
       final list = await _repository.getKabKota(provinsi);
       kabKotaList.assignAll(list);
-      
+
       // Auto-select the first city if current selection isn't available in new list
       if (list.isNotEmpty && !list.contains(selectedKabKota.value)) {
         selectedKabKota.value = list.first;
@@ -372,7 +406,10 @@ class JadwalSholatController extends GetxController {
     searchQuery.value = '';
 
     // Simpan pilihan provinsi terakhir
-    await DatabaseHelper.instance.updateMetadata('jadwal_sholat_selected_provinsi', prov);
+    await DatabaseHelper.instance.updateMetadata(
+      'jadwal_sholat_selected_provinsi',
+      prov,
+    );
 
     await fetchKabKota(prov);
     await fetchSchedule();
@@ -383,7 +420,10 @@ class JadwalSholatController extends GetxController {
     selectedKabKota.value = city;
 
     // Simpan pilihan kota terakhir
-    await DatabaseHelper.instance.updateMetadata('jadwal_sholat_selected_kabkota', city);
+    await DatabaseHelper.instance.updateMetadata(
+      'jadwal_sholat_selected_kabkota',
+      city,
+    );
 
     await fetchSchedule();
   }
@@ -405,7 +445,7 @@ class JadwalSholatController extends GetxController {
       updateTodayJadwal();
 
       // Schedule local notifications if enabled
-      if (isNotifEnabled.value && schedule != null) {
+      if (isNotifEnabled.value) {
         await NotificationHelper.schedulePrayerNotifications(schedule);
       }
     } catch (e) {
@@ -418,7 +458,9 @@ class JadwalSholatController extends GetxController {
   Future<void> toggleNotification() async {
     isNotifEnabled.value = !isNotifEnabled.value;
     await DatabaseHelper.instance.updateMetadata(
-        'jadwal_sholat_notif_enabled', isNotifEnabled.value.toString());
+      'jadwal_sholat_notif_enabled',
+      isNotifEnabled.value.toString(),
+    );
 
     if (isNotifEnabled.value) {
       final schedule = jadwalSholat.value;
@@ -439,31 +481,49 @@ class JadwalSholatController extends GetxController {
 
     final now = DateTime.now();
     final today = schedule.data.jadwal.firstWhereOrNull(
-      (j) => j.tanggalLengkap.day == now.day &&
-             j.tanggalLengkap.month == now.month &&
-             j.tanggalLengkap.year == now.year,
+      (j) =>
+          j.tanggalLengkap.day == now.day &&
+          j.tanggalLengkap.month == now.month &&
+          j.tanggalLengkap.year == now.year,
     );
 
-    todayJadwal.value = today ?? (schedule.data.jadwal.isNotEmpty ? schedule.data.jadwal.first : null);
+    todayJadwal.value =
+        today ??
+        (schedule.data.jadwal.isNotEmpty ? schedule.data.jadwal.first : null);
   }
 
   Future<void> togglePrayerNotification(String name) async {
     final dbHelper = DatabaseHelper.instance;
     if (name == 'Subuh') {
       isSubuhNotifEnabled.value = !isSubuhNotifEnabled.value;
-      await dbHelper.updateMetadata('adzan_subuh', isSubuhNotifEnabled.value ? '1' : '0');
+      await dbHelper.updateMetadata(
+        'adzan_subuh',
+        isSubuhNotifEnabled.value ? '1' : '0',
+      );
     } else if (name == 'Dzuhur') {
       isDzuhurNotifEnabled.value = !isDzuhurNotifEnabled.value;
-      await dbHelper.updateMetadata('adzan_dzuhur', isDzuhurNotifEnabled.value ? '1' : '0');
+      await dbHelper.updateMetadata(
+        'adzan_dzuhur',
+        isDzuhurNotifEnabled.value ? '1' : '0',
+      );
     } else if (name == 'Ashar') {
       isAsharNotifEnabled.value = !isAsharNotifEnabled.value;
-      await dbHelper.updateMetadata('adzan_ashar', isAsharNotifEnabled.value ? '1' : '0');
+      await dbHelper.updateMetadata(
+        'adzan_ashar',
+        isAsharNotifEnabled.value ? '1' : '0',
+      );
     } else if (name == 'Maghrib') {
       isMaghribNotifEnabled.value = !isMaghribNotifEnabled.value;
-      await dbHelper.updateMetadata('adzan_maghrib', isMaghribNotifEnabled.value ? '1' : '0');
+      await dbHelper.updateMetadata(
+        'adzan_maghrib',
+        isMaghribNotifEnabled.value ? '1' : '0',
+      );
     } else if (name == 'Isya') {
       isIsyaNotifEnabled.value = !isIsyaNotifEnabled.value;
-      await dbHelper.updateMetadata('adzan_isya', isIsyaNotifEnabled.value ? '1' : '0');
+      await dbHelper.updateMetadata(
+        'adzan_isya',
+        isIsyaNotifEnabled.value ? '1' : '0',
+      );
     }
 
     // Pemicu jadwal ulang notifikasi jika notifikasi global aktif
@@ -477,7 +537,10 @@ class JadwalSholatController extends GetxController {
 
   Future<void> updatePreReminder(int minutes) async {
     preReminderMinutes.value = minutes;
-    await DatabaseHelper.instance.updateMetadata('adzan_pre_reminder_minutes', minutes.toString());
+    await DatabaseHelper.instance.updateMetadata(
+      'adzan_pre_reminder_minutes',
+      minutes.toString(),
+    );
 
     // Pemicu jadwal ulang notifikasi jika notifikasi global aktif
     if (isNotifEnabled.value) {

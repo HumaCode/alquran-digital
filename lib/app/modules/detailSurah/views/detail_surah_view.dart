@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:alquran_digital/app/routes/app_pages.dart';
 import '../../../../app/constants/r.dart';
 import '../../../data/models/detail_surah_model.dart';
 import '../../home/widgets/diamond_number_painter.dart';
@@ -12,14 +11,25 @@ import '../../../data/providers/theme_controller.dart';
 class DetailSurahView extends GetView<DetailSurahController> {
   const DetailSurahView({super.key});
 
-  Color get _bg => controller.isNightMode.value ? const Color(0xFF0A0A0A) : R.color.bg1;
-  Color get _gold => controller.isNightMode.value ? const Color(0xFFB89E67) : R.color.gold;
-  Color get _goldLight => controller.isNightMode.value ? const Color(0xFFB89E67) : R.color.goldLight;
-  Color get _goldDim => controller.isNightMode.value ? const Color(0xFF444444) : R.color.goldDim;
-  Color get _textSoft => controller.isNightMode.value ? const Color(0xFF999999) : R.color.textSoft;
-  Color get _bg2 => controller.isNightMode.value ? const Color(0xFF0A0A0A) : R.color.bg2;
-  Color get _emeraldDark => controller.isNightMode.value ? const Color(0xFF101010) : R.color.emeraldDark;
-  Color get _emeraldMedium => controller.isNightMode.value ? const Color(0xFF161616) : R.color.emeraldMedium;
+  Color get _bg =>
+      controller.isNightMode.value ? const Color(0xFF0A0A0A) : R.color.bg1;
+  Color get _gold =>
+      controller.isNightMode.value ? const Color(0xFFB89E67) : R.color.gold;
+  Color get _goldLight => controller.isNightMode.value
+      ? const Color(0xFFB89E67)
+      : R.color.goldLight;
+  Color get _goldDim =>
+      controller.isNightMode.value ? const Color(0xFF444444) : R.color.goldDim;
+  Color get _textSoft =>
+      controller.isNightMode.value ? const Color(0xFF999999) : R.color.textSoft;
+  Color get _bg2 =>
+      controller.isNightMode.value ? const Color(0xFF0A0A0A) : R.color.bg2;
+  Color get _emeraldDark => controller.isNightMode.value
+      ? const Color(0xFF101010)
+      : R.color.emeraldDark;
+  Color get _emeraldMedium => controller.isNightMode.value
+      ? const Color(0xFF161616)
+      : R.color.emeraldMedium;
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +48,17 @@ class DetailSurahView extends GetView<DetailSurahController> {
           ),
           title: Text(
             controller.detailSurah.value?.data.namaLatin ?? R.string.loading,
-            style: R.textStyle.large(
-              color: _goldLight,
-              fontWeight: FontWeight.bold,
-            ).copyWith(fontSize: 20),
+            style: R.textStyle
+                .large(color: _goldLight, fontWeight: FontWeight.bold)
+                .copyWith(fontSize: 20),
           ),
           centerTitle: true,
           actions: [
             IconButton(
               icon: Icon(
-                controller.isNightMode.value ? Icons.nightlight_round : Icons.nightlight_outlined,
+                controller.isNightMode.value
+                    ? Icons.nightlight_round
+                    : Icons.nightlight_outlined,
                 color: controller.isNightMode.value ? _gold : _goldLight,
               ),
               tooltip: 'Mode Malam',
@@ -57,19 +68,20 @@ class DetailSurahView extends GetView<DetailSurahController> {
             ),
             IconButton(
               icon: AnimatedSwitcher(
-                duration: controller.isNightMode.value ? Duration.zero : const Duration(milliseconds: 500),
+                duration: controller.isNightMode.value
+                    ? Duration.zero
+                    : const Duration(milliseconds: 500),
                 transitionBuilder: (child, animation) {
                   if (controller.isNightMode.value) return child;
                   return RotationTransition(
                     turns: animation,
-                    child: ScaleTransition(
-                      scale: animation,
-                      child: child,
-                    ),
+                    child: ScaleTransition(scale: animation, child: child),
                   );
                 },
                 child: Icon(
-                  ThemeController.to.isDarkMode.value ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                  ThemeController.to.isDarkMode.value
+                      ? Icons.light_mode_rounded
+                      : Icons.dark_mode_rounded,
                   key: ValueKey<bool>(ThemeController.to.isDarkMode.value),
                   color: _goldLight,
                 ),
@@ -88,9 +100,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
         ),
         body: Obx(() {
           if (controller.isLoading.value) {
-            return Center(
-              child: CustomLoader(size: 60),
-            );
+            return Center(child: CustomLoader(size: 60));
           }
 
           if (controller.errorMessage.isNotEmpty) {
@@ -100,7 +110,11 @@ class DetailSurahView extends GetView<DetailSurahController> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.error_outline_rounded, color: R.color.redAccent, size: 60),
+                    Icon(
+                      Icons.error_outline_rounded,
+                      color: R.color.redAccent,
+                      size: 60,
+                    ),
                     const SizedBox(height: 16),
                     Text(
                       controller.errorMessage.value,
@@ -118,7 +132,10 @@ class DetailSurahView extends GetView<DetailSurahController> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
                       ),
                     ),
                   ],
@@ -179,22 +196,29 @@ class DetailSurahView extends GetView<DetailSurahController> {
                       ),
                       // Card Content
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 24,
+                          horizontal: 20,
+                        ),
                         child: Column(
                           children: [
                             Text(
                               detail.namaLatin,
-                              style: R.textStyle.large(
-                                color: _goldLight,
-                                fontWeight: FontWeight.bold,
-                              ).copyWith(fontSize: 24),
+                              style: R.textStyle
+                                  .large(
+                                    color: _goldLight,
+                                    fontWeight: FontWeight.bold,
+                                  )
+                                  .copyWith(fontSize: 24),
                             ),
                             const SizedBox(height: 4),
                             Text(
                               detail.arti,
-                              style: R.textStyle.medium(
-                                color: _textSoft.withValues(alpha: 0.7),
-                              ).copyWith(fontSize: 14),
+                              style: R.textStyle
+                                  .medium(
+                                    color: _textSoft.withValues(alpha: 0.7),
+                                  )
+                                  .copyWith(fontSize: 14),
                             ),
                             const SizedBox(height: 12),
                             Divider(
@@ -207,29 +231,47 @@ class DetailSurahView extends GetView<DetailSurahController> {
                               children: [
                                 Text(
                                   detail.tempatTurun.toUpperCase(),
-                                  style: R.textStyle.small(
-                                    color: _goldLight,
-                                    fontWeight: FontWeight.w600,
-                                  ).copyWith(letterSpacing: 1.5, fontSize: 12),
+                                  style: R.textStyle
+                                      .small(
+                                        color: _goldLight,
+                                        fontWeight: FontWeight.w600,
+                                      )
+                                      .copyWith(
+                                        letterSpacing: 1.5,
+                                        fontSize: 12,
+                                      ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                                  child: Icon(Icons.circle, color: _goldDim, size: 6),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                  ),
+                                  child: Icon(
+                                    Icons.circle,
+                                    color: _goldDim,
+                                    size: 6,
+                                  ),
                                 ),
                                 Text(
                                   '${detail.jumlahAyat} AYAT',
-                                  style: R.textStyle.small(
-                                    color: _goldLight,
-                                    fontWeight: FontWeight.w600,
-                                  ).copyWith(letterSpacing: 1.5, fontSize: 12),
+                                  style: R.textStyle
+                                      .small(
+                                        color: _goldLight,
+                                        fontWeight: FontWeight.w600,
+                                      )
+                                      .copyWith(
+                                        letterSpacing: 1.5,
+                                        fontSize: 12,
+                                      ),
                                 ),
                               ],
                             ),
                             const SizedBox(height: 20),
                             // Full Surah Audio Player Controls (Gabungan)
                             Obx(() {
-                              final isPlaying = controller.isPlayingFullSurah.value;
-                              final currentAyat = controller.currentlyPlayingAyat.value;
+                              final isPlaying =
+                                  controller.isPlayingFullSurah.value;
+                              final currentAyat =
+                                  controller.currentlyPlayingAyat.value;
                               return Column(
                                 children: [
                                   ElevatedButton.icon(
@@ -237,12 +279,16 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                       controller.togglePlayFullSurah();
                                     },
                                     icon: Icon(
-                                      isPlaying ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded,
+                                      isPlaying
+                                          ? Icons.pause_circle_filled_rounded
+                                          : Icons.play_circle_fill_rounded,
                                       color: const Color(0xFF0D1F17),
                                       size: 20,
                                     ),
                                     label: Text(
-                                      isPlaying ? 'JEDA MURATTAL PENUH' : 'PUTAR MURATTAL PENUH',
+                                      isPlaying
+                                          ? 'JEDA MURATTAL PENUH'
+                                          : 'PUTAR MURATTAL PENUH',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Color(0xFF0D1F17),
@@ -256,18 +302,28 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(30),
                                       ),
-                                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24,
+                                        vertical: 12,
+                                      ),
                                     ),
                                   ),
                                   if (isPlaying && currentAyat != null) ...[
                                     const SizedBox(height: 8),
                                     Text(
                                       'Memutar ayat $currentAyat dari ${detail.jumlahAyat}',
-                                      style: R.textStyle.small(
-                                        color: _goldLight.withValues(alpha: 0.8),
-                                      ).copyWith(fontStyle: FontStyle.italic, fontSize: 12),
+                                      style: R.textStyle
+                                          .small(
+                                            color: _goldLight.withValues(
+                                              alpha: 0.8,
+                                            ),
+                                          )
+                                          .copyWith(
+                                            fontStyle: FontStyle.italic,
+                                            fontSize: 12,
+                                          ),
                                     ),
-                                  ]
+                                  ],
                                 ],
                               );
                             }),
@@ -277,12 +333,9 @@ class DetailSurahView extends GetView<DetailSurahController> {
                               Text(
                                 R.string.bismillah,
                                 textAlign: TextAlign.center,
-                                style: R.textStyle.large(
-                                  color: _goldLight,
-                                ).copyWith(
-                                  fontSize: 24,
-                                  letterSpacing: 1,
-                                ),
+                                style: R.textStyle
+                                    .large(color: _goldLight)
+                                    .copyWith(fontSize: 24, letterSpacing: 1),
                               ),
                             ],
                           ],
@@ -307,7 +360,10 @@ class DetailSurahView extends GetView<DetailSurahController> {
                   itemCount: controller.visibleAyat.length,
                   itemBuilder: (context, index) {
                     final ayat = controller.visibleAyat[index];
-                    final key = controller.ayatKeys.putIfAbsent(ayat.nomorAyat, () => GlobalKey());
+                    final key = controller.ayatKeys.putIfAbsent(
+                      ayat.nomorAyat,
+                      () => GlobalKey(),
+                    );
                     return Padding(
                       key: key,
                       padding: const EdgeInsets.only(bottom: 24),
@@ -326,7 +382,10 @@ class DetailSurahView extends GetView<DetailSurahController> {
                           children: [
                             // Ayat Header (Number & Action Bar)
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
                               decoration: BoxDecoration(
                                 color: _bg2.withValues(alpha: 0.6),
                                 borderRadius: BorderRadius.circular(10),
@@ -349,17 +408,22 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                   const Spacer(),
                                   // Play Audio Button
                                   Obx(() {
-                                    final isPlaying = controller.currentlyPlayingAyat.value == ayat.nomorAyat &&
+                                    final isPlaying =
+                                        controller.currentlyPlayingAyat.value ==
+                                            ayat.nomorAyat &&
                                         controller.isAudioPlaying.value;
                                     return Material(
                                       color: Colors.transparent,
                                       child: InkWell(
                                         borderRadius: BorderRadius.circular(8),
-                                        onTap: () => controller.togglePlayAudio(ayat),
+                                        onTap: () =>
+                                            controller.togglePlayAudio(ayat),
                                         child: Padding(
                                           padding: const EdgeInsets.all(6),
                                           child: Icon(
-                                            isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                                            isPlaying
+                                                ? Icons.pause_rounded
+                                                : Icons.play_arrow_rounded,
                                             color: isPlaying ? _gold : _goldDim,
                                             size: 22,
                                           ),
@@ -369,82 +433,107 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                   }),
                                   const SizedBox(width: 4),
                                   // Tandai Terakhir Dibaca Button
-                                  Obx(() => Material(
-                                        color: Colors.transparent,
-                                        child: InkWell(
-                                          borderRadius: BorderRadius.circular(8),
-                                          onTap: () {
-                                            controller.markAsLastRead(
-                                              detail.nomor,
-                                              detail.namaLatin,
-                                              ayat.nomorAyat,
-                                            );
-                                            CustomToast.show(
-                                              context,
-                                              message: 'Ayat ${ayat.nomorAyat} ditandai sebagai terakhir dibaca',
-                                              type: ToastType.success,
-                                            );
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(6),
-                                            child: Icon(
-                                              controller.lastReadAyatNomor.value == ayat.nomorAyat
-                                                  ? Icons.bookmark_added_rounded
-                                                  : Icons.bookmark_add_outlined,
-                                              color: controller.lastReadAyatNomor.value == ayat.nomorAyat
-                                                  ? _gold
-                                                  : _goldDim,
-                                              size: 20,
-                                            ),
+                                  Obx(
+                                    () => Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(8),
+                                        onTap: () {
+                                          controller.markAsLastRead(
+                                            detail.nomor,
+                                            detail.namaLatin,
+                                            ayat.nomorAyat,
+                                          );
+                                          CustomToast.show(
+                                            context,
+                                            message:
+                                                'Ayat ${ayat.nomorAyat} ditandai sebagai terakhir dibaca',
+                                            type: ToastType.success,
+                                          );
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(6),
+                                          child: Icon(
+                                            controller
+                                                        .lastReadAyatNomor
+                                                        .value ==
+                                                    ayat.nomorAyat
+                                                ? Icons.bookmark_added_rounded
+                                                : Icons.bookmark_add_outlined,
+                                            color:
+                                                controller
+                                                        .lastReadAyatNomor
+                                                        .value ==
+                                                    ayat.nomorAyat
+                                                ? _gold
+                                                : _goldDim,
+                                            size: 20,
                                           ),
                                         ),
-                                      )),
+                                      ),
+                                    ),
+                                  ),
                                   const SizedBox(width: 4),
                                   // Simpan Bookmark Button
-                                  Obx(() => Material(
-                                        color: Colors.transparent,
-                                        child: InkWell(
-                                          borderRadius: BorderRadius.circular(8),
-                                          onTap: () async {
-                                            await controller.toggleBookmark(ayat);
-                                            final isAdded = controller.bookmarkedAyats.contains(ayat.nomorAyat);
-                                            CustomToast.show(
-                                              context,
-                                              message: isAdded
-                                                  ? 'Ayat ${ayat.nomorAyat} disimpan ke Bookmark'
-                                                  : 'Ayat ${ayat.nomorAyat} dihapus dari Bookmark',
-                                              type: ToastType.success,
-                                            );
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(6),
-                                            child: Icon(
-                                              controller.bookmarkedAyats.contains(ayat.nomorAyat)
-                                                  ? Icons.bookmark_rounded
-                                                  : Icons.bookmark_border_rounded,
-                                              color: controller.bookmarkedAyats.contains(ayat.nomorAyat)
-                                                  ? _gold
-                                                  : _goldDim,
-                                              size: 20,
-                                            ),
+                                  Obx(
+                                    () => Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(8),
+                                        onTap: () async {
+                                          await controller.toggleBookmark(ayat);
+                                          final isAdded = controller
+                                              .bookmarkedAyats
+                                              .contains(ayat.nomorAyat);
+                                          CustomToast.show(
+                                            context,
+                                            message: isAdded
+                                                ? 'Ayat ${ayat.nomorAyat} disimpan ke Bookmark'
+                                                : 'Ayat ${ayat.nomorAyat} dihapus dari Bookmark',
+                                            type: ToastType.success,
+                                          );
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(6),
+                                          child: Icon(
+                                            controller.bookmarkedAyats.contains(
+                                                  ayat.nomorAyat,
+                                                )
+                                                ? Icons.bookmark_rounded
+                                                : Icons.bookmark_border_rounded,
+                                            color:
+                                                controller.bookmarkedAyats
+                                                    .contains(ayat.nomorAyat)
+                                                ? _gold
+                                                : _goldDim,
+                                            size: 20,
                                           ),
                                         ),
-                                      )),
+                                      ),
+                                    ),
+                                  ),
                                   const SizedBox(width: 4),
                                   // Catatan Ayat (Tadabbur) Button
                                   Obx(() {
-                                    final hasNote = controller.versesWithNotes.contains(ayat.nomorAyat);
+                                    final hasNote = controller.versesWithNotes
+                                        .contains(ayat.nomorAyat);
                                     return Material(
                                       color: Colors.transparent,
                                       child: InkWell(
                                         borderRadius: BorderRadius.circular(8),
                                         onTap: () {
-                                          _showAddNoteBottomSheet(context, detail, ayat);
+                                          _showAddNoteBottomSheet(
+                                            context,
+                                            detail,
+                                            ayat,
+                                          );
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.all(6),
                                           child: Icon(
-                                            hasNote ? Icons.edit_note_rounded : Icons.note_add_outlined,
+                                            hasNote
+                                                ? Icons.edit_note_rounded
+                                                : Icons.note_add_outlined,
                                             color: hasNote ? _gold : _goldDim,
                                             size: 20,
                                           ),
@@ -459,18 +548,26 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(8),
                                       onTap: () {
-                                        Clipboard.setData(ClipboardData(
-                                          text: '${ayat.teksArab}\n${ayat.teksLatin}\n${ayat.teksIndonesia}',
-                                        ));
+                                        Clipboard.setData(
+                                          ClipboardData(
+                                            text:
+                                                '${ayat.teksArab}\n${ayat.teksLatin}\n${ayat.teksIndonesia}',
+                                          ),
+                                        );
                                         CustomToast.show(
                                           context,
-                                          message: 'Ayat ${ayat.nomorAyat} ${R.string.copySuccess.toLowerCase()}',
+                                          message:
+                                              'Ayat ${ayat.nomorAyat} ${R.string.copySuccess.toLowerCase()}',
                                           type: ToastType.success,
                                         );
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.all(6),
-                                        child: Icon(Icons.copy_rounded, color: _goldDim, size: 20),
+                                        child: Icon(
+                                          Icons.copy_rounded,
+                                          color: _goldDim,
+                                          size: 20,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -481,11 +578,14 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(8),
                                       onTap: () {
-                                        Clipboard.setData(ClipboardData(
-                                          text: 'QS. ${detail.namaLatin} [${detail.nomor}:${ayat.nomorAyat}]\n\n'
-                                              '${ayat.teksArab}\n\n'
-                                              'Artinya: "${ayat.teksIndonesia}"',
-                                        ));
+                                        Clipboard.setData(
+                                          ClipboardData(
+                                            text:
+                                                'QS. ${detail.namaLatin} [${detail.nomor}:${ayat.nomorAyat}]\n\n'
+                                                '${ayat.teksArab}\n\n'
+                                                'Artinya: "${ayat.teksIndonesia}"',
+                                          ),
+                                        );
                                         CustomToast.show(
                                           context,
                                           message: R.string.shareText,
@@ -494,7 +594,11 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.all(6),
-                                        child: Icon(Icons.share_rounded, color: _goldDim, size: 20),
+                                        child: Icon(
+                                          Icons.share_rounded,
+                                          color: _goldDim,
+                                          size: 20,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -505,11 +609,19 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(8),
                                       onTap: () {
-                                        _showTafsirBottomSheet(context, detail, ayat.nomorAyat);
+                                        _showTafsirBottomSheet(
+                                          context,
+                                          detail,
+                                          ayat.nomorAyat,
+                                        );
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.all(6),
-                                        child: Icon(Icons.menu_book_rounded, color: _goldDim, size: 20),
+                                        child: Icon(
+                                          Icons.menu_book_rounded,
+                                          color: _goldDim,
+                                          size: 20,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -522,32 +634,37 @@ class DetailSurahView extends GetView<DetailSurahController> {
                             Text(
                               ayat.teksArab,
                               textAlign: TextAlign.right,
-                              style: R.textStyle.large(
-                                color: _goldLight,
-                                fontWeight: FontWeight.w500,
-                              ).copyWith(
-                                fontFamily: 'Poppins',
-                                fontSize: controller.isNightMode.value
-                                    ? controller.arabicFontSize.value + 4
-                                    : controller.arabicFontSize.value,
-                                height: 1.8,
-                              ),
+                              style: R.textStyle
+                                  .large(
+                                    color: _goldLight,
+                                    fontWeight: FontWeight.w500,
+                                  )
+                                  .copyWith(
+                                    fontFamily: 'Poppins',
+                                    fontSize: controller.isNightMode.value
+                                        ? controller.arabicFontSize.value + 4
+                                        : controller.arabicFontSize.value,
+                                    height: 1.8,
+                                  ),
                             ),
-                            if (controller.showLatin.value || controller.showTranslation.value) ...[
+                            if (controller.showLatin.value ||
+                                controller.showTranslation.value) ...[
                               const SizedBox(height: 18),
                             ],
                             if (controller.showLatin.value) ...[
                               Text(
                                 ayat.teksLatin,
                                 textAlign: TextAlign.left,
-                                style: R.textStyle.medium(
-                                  color: _goldLight.withValues(alpha: 0.9),
-                                ).copyWith(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  fontStyle: FontStyle.italic,
-                                  height: 1.4,
-                                ),
+                                style: R.textStyle
+                                    .medium(
+                                      color: _goldLight.withValues(alpha: 0.9),
+                                    )
+                                    .copyWith(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 14,
+                                      fontStyle: FontStyle.italic,
+                                      height: 1.4,
+                                    ),
                               ),
                               if (controller.showTranslation.value) ...[
                                 const SizedBox(height: 10),
@@ -557,19 +674,22 @@ class DetailSurahView extends GetView<DetailSurahController> {
                               Text(
                                 ayat.teksIndonesia,
                                 textAlign: TextAlign.left,
-                                style: R.textStyle.small(
-                                  color: _textSoft.withValues(alpha: 0.8),
-                                ).copyWith(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 14,
-                                  height: 1.4,
-                                ),
+                                style: R.textStyle
+                                    .small(
+                                      color: _textSoft.withValues(alpha: 0.8),
+                                    )
+                                    .copyWith(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 14,
+                                      height: 1.4,
+                                    ),
                               ),
                             ],
-                            
+
                             // Teks Catatan Tadabbur jika ada
                             Obx(() {
-                              final noteText = controller.verseNotes[ayat.nomorAyat];
+                              final noteText =
+                                  controller.verseNotes[ayat.nomorAyat];
                               if (noteText == null || noteText.trim().isEmpty) {
                                 return const SizedBox.shrink();
                               }
@@ -589,27 +709,33 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                   children: [
                                     Row(
                                       children: [
-                                        Icon(Icons.edit_note_rounded, color: _goldLight, size: 16),
+                                        Icon(
+                                          Icons.edit_note_rounded,
+                                          color: _goldLight,
+                                          size: 16,
+                                        ),
                                         const SizedBox(width: 6),
                                         Text(
                                           R.string.notesTadabburSaya,
-                                          style: R.textStyle.small(
-                                            color: _goldLight,
-                                            fontWeight: FontWeight.bold,
-                                          ).copyWith(fontFamily: 'Poppins'),
+                                          style: R.textStyle
+                                              .small(
+                                                color: _goldLight,
+                                                fontWeight: FontWeight.bold,
+                                              )
+                                              .copyWith(fontFamily: 'Poppins'),
                                         ),
                                       ],
                                     ),
                                     const SizedBox(height: 6),
                                     Text(
                                       noteText,
-                                      style: R.textStyle.small(
-                                        color: _textSoft,
-                                      ).copyWith(
-                                        fontFamily: 'Poppins',
-                                        fontSize: 13,
-                                        height: 1.4,
-                                      ),
+                                      style: R.textStyle
+                                          .small(color: _textSoft)
+                                          .copyWith(
+                                            fontFamily: 'Poppins',
+                                            fontSize: 13,
+                                            height: 1.4,
+                                          ),
                                     ),
                                   ],
                                 ),
@@ -653,7 +779,8 @@ class DetailSurahView extends GetView<DetailSurahController> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Icon(
-                      Icons.brightness_7_rounded, // Islamic-style star/flower shape
+                      Icons
+                          .brightness_7_rounded, // Islamic-style star/flower shape
                       color: _goldDim.withValues(alpha: 0.5),
                       size: 20,
                     ),
@@ -682,12 +809,9 @@ class DetailSurahView extends GetView<DetailSurahController> {
               Center(
                 child: Text(
                   '"Maha benar Allah yang Maha Agung"',
-                  style: R.textStyle.small(
-                    color: _textSoft.withValues(alpha: 0.6),
-                  ).copyWith(
-                    fontStyle: FontStyle.italic,
-                    fontSize: 13,
-                  ),
+                  style: R.textStyle
+                      .small(color: _textSoft.withValues(alpha: 0.6))
+                      .copyWith(fontStyle: FontStyle.italic, fontSize: 13),
                 ),
               ),
               const SizedBox(height: 48),
@@ -698,7 +822,11 @@ class DetailSurahView extends GetView<DetailSurahController> {
     });
   }
 
-  void _showTafsirBottomSheet(BuildContext context, Data detail, int nomorAyat) {
+  void _showTafsirBottomSheet(
+    BuildContext context,
+    Data detail,
+    int nomorAyat,
+  ) {
     final Future<String?> tafsirFuture = controller.getAyatTafsir(nomorAyat);
 
     Get.bottomSheet(
@@ -737,17 +865,19 @@ class DetailSurahView extends GetView<DetailSurahController> {
                       children: [
                         Text(
                           'Tafsir QS. ${detail.namaLatin}',
-                          style: R.textStyle.medium(
-                            color: _goldLight,
-                            fontWeight: FontWeight.bold,
-                          ).copyWith(fontSize: 18),
+                          style: R.textStyle
+                              .medium(
+                                color: _goldLight,
+                                fontWeight: FontWeight.bold,
+                              )
+                              .copyWith(fontSize: 18),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           'Ayat ke-$nomorAyat',
-                          style: R.textStyle.small(
-                            color: _textSoft.withValues(alpha: 0.6),
-                          ).copyWith(fontSize: 13),
+                          style: R.textStyle
+                              .small(color: _textSoft.withValues(alpha: 0.6))
+                              .copyWith(fontSize: 13),
                         ),
                       ],
                     ),
@@ -760,10 +890,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
               ),
             ),
             const SizedBox(height: 8),
-            Divider(
-              color: _goldDim.withValues(alpha: 0.15),
-              thickness: 1,
-            ),
+            Divider(color: _goldDim.withValues(alpha: 0.15), thickness: 1),
             // Content
             Expanded(
               child: FutureBuilder<String?>(
@@ -771,9 +898,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
-                      child: CircularProgressIndicator(
-                        color: _gold,
-                      ),
+                      child: CircularProgressIndicator(color: _gold),
                     );
                   }
                   if (snapshot.hasError || snapshot.data == null) {
@@ -788,7 +913,10 @@ class DetailSurahView extends GetView<DetailSurahController> {
                   final tafsirText = snapshot.data!;
 
                   return SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 16,
+                    ),
                     physics: const BouncingScrollPhysics(),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -798,7 +926,10 @@ class DetailSurahView extends GetView<DetailSurahController> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color: _gold.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(6),
@@ -831,30 +962,42 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                 IconButton(
                                   padding: EdgeInsets.zero,
                                   constraints: const BoxConstraints(),
-                                  icon: Icon(Icons.remove_circle_outline_rounded, color: _goldDim, size: 20),
+                                  icon: Icon(
+                                    Icons.remove_circle_outline_rounded,
+                                    color: _goldDim,
+                                    size: 20,
+                                  ),
                                   onPressed: () {
-                                    if (controller.tafsirFontSize.value > 12.0) {
+                                    if (controller.tafsirFontSize.value >
+                                        12.0) {
                                       controller.tafsirFontSize.value -= 1.0;
                                     }
                                   },
                                 ),
                                 const SizedBox(width: 6),
-                                Obx(() => Text(
-                                  '${controller.tafsirFontSize.value.toInt()}',
-                                  style: TextStyle(
-                                    color: _goldLight,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Poppins',
+                                Obx(
+                                  () => Text(
+                                    '${controller.tafsirFontSize.value.toInt()}',
+                                    style: TextStyle(
+                                      color: _goldLight,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Poppins',
+                                    ),
                                   ),
-                                )),
+                                ),
                                 const SizedBox(width: 6),
                                 IconButton(
                                   padding: EdgeInsets.zero,
                                   constraints: const BoxConstraints(),
-                                  icon: Icon(Icons.add_circle_outline_rounded, color: _goldDim, size: 20),
+                                  icon: Icon(
+                                    Icons.add_circle_outline_rounded,
+                                    color: _goldDim,
+                                    size: 20,
+                                  ),
                                   onPressed: () {
-                                    if (controller.tafsirFontSize.value < 26.0) {
+                                    if (controller.tafsirFontSize.value <
+                                        26.0) {
                                       controller.tafsirFontSize.value += 1.0;
                                     }
                                   },
@@ -865,15 +1008,17 @@ class DetailSurahView extends GetView<DetailSurahController> {
                         ),
                         const SizedBox(height: 16),
                         // Tafsir Text
-                        Obx(() => Text(
-                          tafsirText,
-                          style: TextStyle(
-                            color: _textSoft.withValues(alpha: 0.9),
-                            fontSize: controller.tafsirFontSize.value,
-                            height: 1.8,
-                            fontFamily: 'Poppins',
+                        Obx(
+                          () => Text(
+                            tafsirText,
+                            style: TextStyle(
+                              color: _textSoft.withValues(alpha: 0.9),
+                              fontSize: controller.tafsirFontSize.value,
+                              height: 1.8,
+                              fontFamily: 'Poppins',
+                            ),
                           ),
-                        )),
+                        ),
                         const SizedBox(height: 24),
                       ],
                     ),
@@ -891,185 +1036,199 @@ class DetailSurahView extends GetView<DetailSurahController> {
 
   void _showSettingsBottomSheet(BuildContext context) {
     Get.bottomSheet(
-      Obx(() => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        decoration: BoxDecoration(
-          color: _bg,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          border: Border.all(
-            color: _goldDim.withValues(alpha: 0.2),
-            width: 1.5,
+      Obx(
+        () => Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          decoration: BoxDecoration(
+            color: _bg,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            border: Border.all(
+              color: _goldDim.withValues(alpha: 0.2),
+              width: 1.5,
+            ),
           ),
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Handle bar
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: _goldDim.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              const SizedBox(height: 16),
-              // Header
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Pengaturan Tampilan',
-                    style: R.textStyle.medium(
-                      color: _goldLight,
-                      fontWeight: FontWeight.bold,
-                    ).copyWith(fontSize: 18),
+          child: Material(
+            color: Colors.transparent,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Handle bar
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: _goldDim.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.close_rounded, color: _goldDim),
-                    onPressed: () => Get.back(),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Divider(
-                color: _goldDim.withValues(alpha: 0.15),
-                thickness: 1,
-              ),
-              const SizedBox(height: 16),
-              
-              // Slider for Font Size
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Ukuran Font Arab',
-                    style: R.textStyle.small(color: _textSoft).copyWith(fontSize: 14),
-                  ),
-                  Text(
-                    '${controller.arabicFontSize.value.toInt()} px',
-                    style: TextStyle(
-                      color: _goldLight,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-              SliderTheme(
-                data: SliderThemeData(
-                  activeTrackColor: _gold,
-                  inactiveTrackColor: _goldDim.withValues(alpha: 0.2),
-                  thumbColor: _goldLight,
-                  overlayColor: _goldLight.withValues(alpha: 0.2),
-                  valueIndicatorColor: _emeraldDark,
-                  valueIndicatorTextStyle: TextStyle(color: _goldLight),
                 ),
-                child: Slider(
-                  value: controller.arabicFontSize.value,
-                  min: 20.0,
-                  max: 42.0,
-                  divisions: 11,
-                  label: '${controller.arabicFontSize.value.toInt()}px',
-                  onChanged: (value) {
-                    controller.arabicFontSize.value = value;
-                  },
-                ),
-              ),
-              const SizedBox(height: 12),
-              
-              // Toggle Latin Text
-              SwitchListTile.adaptive(
-                title: Text(
-                  'Tampilkan Latin',
-                  style: R.textStyle.small(color: _textSoft).copyWith(fontSize: 14),
-                ),
-                activeColor: _gold,
-                activeTrackColor: _gold.withValues(alpha: 0.3),
-                inactiveThumbColor: _textSoft.withValues(alpha: 0.5),
-                inactiveTrackColor: _bg2.withValues(alpha: 0.5),
-                value: controller.showLatin.value,
-                onChanged: (value) {
-                  controller.showLatin.value = value;
-                },
-              ),
-              
-              // Toggle Translation Text
-              SwitchListTile.adaptive(
-                title: Text(
-                  'Tampilkan Terjemahan',
-                  style: R.textStyle.small(color: _textSoft).copyWith(fontSize: 14),
-                ),
-                activeColor: _gold,
-                activeTrackColor: _gold.withValues(alpha: 0.3),
-                inactiveThumbColor: _textSoft.withValues(alpha: 0.5),
-                inactiveTrackColor: _bg2.withValues(alpha: 0.5),
-                value: controller.showTranslation.value,
-                onChanged: (value) {
-                  controller.showTranslation.value = value;
-                },
-              ),
-              
-
-              // Qori Selector for Verse Audio
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Row(
+                const SizedBox(height: 16),
+                // Header
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Pilih Qari Ayat',
-                      style: R.textStyle.small(color: _textSoft).copyWith(fontSize: 14),
-                    ),
-                    Obx(() {
-                      final currentQoriId = controller.selectedQori.value;
-                      return Theme(
-                        data: Theme.of(context).copyWith(
-                          canvasColor: _bg2,
-                        ),
-                        child: DropdownButton<String>(
-                          value: currentQoriId,
-                          icon: Icon(Icons.keyboard_arrow_down_rounded, color: _gold),
-                          underline: Container(),
-                          style: TextStyle(
+                      'Pengaturan Tampilan',
+                      style: R.textStyle
+                          .medium(
                             color: _goldLight,
                             fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                            fontFamily: 'Poppins',
-                          ),
-                          items: controller.qoriList.map((qori) {
-                            return DropdownMenuItem<String>(
-                              value: qori['id'],
-                              child: Text(qori['name'] ?? ''),
-                            );
-                          }).toList(),
-                          onChanged: (val) {
-                            if (val != null) {
-                              controller.selectedQori.value = val;
-                            }
-                          },
-                        ),
-                      );
-                    }),
+                          )
+                          .copyWith(fontSize: 18),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.close_rounded, color: _goldDim),
+                      onPressed: () => Get.back(),
+                    ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 24),
-            ],
+                const SizedBox(height: 8),
+                Divider(color: _goldDim.withValues(alpha: 0.15), thickness: 1),
+                const SizedBox(height: 16),
+
+                // Slider for Font Size
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Ukuran Font Arab',
+                      style: R.textStyle
+                          .small(color: _textSoft)
+                          .copyWith(fontSize: 14),
+                    ),
+                    Text(
+                      '${controller.arabicFontSize.value.toInt()} px',
+                      style: TextStyle(
+                        color: _goldLight,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+                SliderTheme(
+                  data: SliderThemeData(
+                    activeTrackColor: _gold,
+                    inactiveTrackColor: _goldDim.withValues(alpha: 0.2),
+                    thumbColor: _goldLight,
+                    overlayColor: _goldLight.withValues(alpha: 0.2),
+                    valueIndicatorColor: _emeraldDark,
+                    valueIndicatorTextStyle: TextStyle(color: _goldLight),
+                  ),
+                  child: Slider(
+                    value: controller.arabicFontSize.value,
+                    min: 20.0,
+                    max: 42.0,
+                    divisions: 11,
+                    label: '${controller.arabicFontSize.value.toInt()}px',
+                    onChanged: (value) {
+                      controller.arabicFontSize.value = value;
+                    },
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                // Toggle Latin Text
+                SwitchListTile.adaptive(
+                  title: Text(
+                    'Tampilkan Latin',
+                    style: R.textStyle
+                        .small(color: _textSoft)
+                        .copyWith(fontSize: 14),
+                  ),
+                  activeColor: _gold,
+                  activeTrackColor: _gold.withValues(alpha: 0.3),
+                  inactiveThumbColor: _textSoft.withValues(alpha: 0.5),
+                  inactiveTrackColor: _bg2.withValues(alpha: 0.5),
+                  value: controller.showLatin.value,
+                  onChanged: (value) {
+                    controller.showLatin.value = value;
+                  },
+                ),
+
+                // Toggle Translation Text
+                SwitchListTile.adaptive(
+                  title: Text(
+                    'Tampilkan Terjemahan',
+                    style: R.textStyle
+                        .small(color: _textSoft)
+                        .copyWith(fontSize: 14),
+                  ),
+                  activeColor: _gold,
+                  activeTrackColor: _gold.withValues(alpha: 0.3),
+                  inactiveThumbColor: _textSoft.withValues(alpha: 0.5),
+                  inactiveTrackColor: _bg2.withValues(alpha: 0.5),
+                  value: controller.showTranslation.value,
+                  onChanged: (value) {
+                    controller.showTranslation.value = value;
+                  },
+                ),
+
+                // Qori Selector for Verse Audio
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Pilih Qari Ayat',
+                        style: R.textStyle
+                            .small(color: _textSoft)
+                            .copyWith(fontSize: 14),
+                      ),
+                      Obx(() {
+                        final currentQoriId = controller.selectedQori.value;
+                        return Theme(
+                          data: Theme.of(context).copyWith(canvasColor: _bg2),
+                          child: DropdownButton<String>(
+                            value: currentQoriId,
+                            icon: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: _gold,
+                            ),
+                            underline: Container(),
+                            style: TextStyle(
+                              color: _goldLight,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              fontFamily: 'Poppins',
+                            ),
+                            items: controller.qoriList.map((qori) {
+                              return DropdownMenuItem<String>(
+                                value: qori['id'],
+                                child: Text(qori['name'] ?? ''),
+                              );
+                            }).toList(),
+                            onChanged: (val) {
+                              if (val != null) {
+                                controller.selectedQori.value = val;
+                              }
+                            },
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
-      )),
+      ),
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
     );
   }
 
   void _showAddNoteBottomSheet(BuildContext context, Data detail, Ayat ayat) {
-    final textCtrl = TextEditingController(text: controller.verseNotes[ayat.nomorAyat] ?? '');
-    
+    final textCtrl = TextEditingController(
+      text: controller.verseNotes[ayat.nomorAyat] ?? '',
+    );
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1113,31 +1272,41 @@ class DetailSurahView extends GetView<DetailSurahController> {
                   const SizedBox(width: 8),
                   Text(
                     R.string.notesAyatTitleWithNo(ayat.nomorAyat),
-                    style: R.textStyle.medium(
-                      color: _goldLight,
-                      fontWeight: FontWeight.bold,
-                    ).copyWith(fontFamily: 'Poppins'),
+                    style: R.textStyle
+                        .medium(color: _goldLight, fontWeight: FontWeight.bold)
+                        .copyWith(fontFamily: 'Poppins'),
                   ),
                 ],
               ),
               const SizedBox(height: 6),
               Text(
                 'QS. ${detail.namaLatin} : Ayat ${ayat.nomorAyat}',
-                style: R.textStyle.small(color: _textSoft).copyWith(fontFamily: 'Poppins'),
+                style: R.textStyle
+                    .small(color: _textSoft)
+                    .copyWith(fontFamily: 'Poppins'),
               ),
               const SizedBox(height: 20),
               TextField(
                 controller: textCtrl,
                 maxLines: 4,
-                style: TextStyle(color: _textSoft, fontSize: 14, fontFamily: 'Poppins'),
+                style: TextStyle(
+                  color: _textSoft,
+                  fontSize: 14,
+                  fontFamily: 'Poppins',
+                ),
                 decoration: InputDecoration(
                   hintText: R.string.notesHintText,
-                  hintStyle: TextStyle(color: _textSoft.withValues(alpha: 0.5), fontSize: 13),
+                  hintStyle: TextStyle(
+                    color: _textSoft.withValues(alpha: 0.5),
+                    fontSize: 13,
+                  ),
                   filled: true,
                   fillColor: _bg2.withValues(alpha: 0.3),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: _goldDim.withValues(alpha: 0.2)),
+                    borderSide: BorderSide(
+                      color: _goldDim.withValues(alpha: 0.2),
+                    ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -1145,7 +1314,9 @@ class DetailSurahView extends GetView<DetailSurahController> {
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: _goldDim.withValues(alpha: 0.2)),
+                    borderSide: BorderSide(
+                      color: _goldDim.withValues(alpha: 0.2),
+                    ),
                   ),
                 ),
               ),
@@ -1160,14 +1331,24 @@ class DetailSurahView extends GetView<DetailSurahController> {
                         Get.back();
                         CustomToast.show(
                           context,
-                          message: R.string.notesDeleteSuccessMsg(ayat.nomorAyat),
+                          message: R.string.notesDeleteSuccessMsg(
+                            ayat.nomorAyat,
+                          ),
                           type: ToastType.success,
                         );
                       },
-                      icon: Icon(Icons.delete_outline_rounded, color: R.color.redAccent, size: 18),
+                      icon: Icon(
+                        Icons.delete_outline_rounded,
+                        color: R.color.redAccent,
+                        size: 18,
+                      ),
                       label: Text(
                         'Hapus',
-                        style: TextStyle(color: R.color.redAccent, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
+                        style: TextStyle(
+                          color: R.color.redAccent,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Poppins',
+                        ),
                       ),
                     ),
                   const Spacer(),
@@ -1181,7 +1362,10 @@ class DetailSurahView extends GetView<DetailSurahController> {
                   const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () async {
-                      await controller.saveVerseNote(ayat.nomorAyat, textCtrl.text);
+                      await controller.saveVerseNote(
+                        ayat.nomorAyat,
+                        textCtrl.text,
+                      );
                       Get.back();
                       CustomToast.show(
                         context,
@@ -1195,11 +1379,17 @@ class DetailSurahView extends GetView<DetailSurahController> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
                     ),
                     child: Text(
                       'Simpan',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Poppins',
+                      ),
                     ),
                   ),
                 ],

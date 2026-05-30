@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../data/models/imsakiyah_model.dart';
-import '../../../data/providers/database_helper.dart';
 import 'package:alquran_digital/app/components/widgets/widgets.dart';
 import 'package:alquran_digital/app/constants/r.dart';
 import '../controllers/imsakiyah_controller.dart';
@@ -70,7 +69,11 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                     ),
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
-                      child: Icon(Icons.close_rounded, color: R.color.textMutedJadwal, size: 22),
+                      child: Icon(
+                        Icons.close_rounded,
+                        color: R.color.textMutedJadwal,
+                        size: 22,
+                      ),
                     ),
                   ],
                 ),
@@ -120,7 +123,10 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                 const SizedBox(height: 20),
                 Text(
                   R.string.province,
-                  style: TextStyle(fontSize: 12, color: R.color.textMutedJadwal),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: R.color.textMutedJadwal,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 Container(
@@ -132,13 +138,19 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
-                      value: controller.provinsiList.contains(controller.selectedProvinsi.value)
+                      value:
+                          controller.provinsiList.contains(
+                            controller.selectedProvinsi.value,
+                          )
                           ? controller.selectedProvinsi.value
                           : null,
                       isExpanded: true,
                       dropdownColor: R.color.surface2Jadwal,
                       style: TextStyle(color: R.color.textJadwal, fontSize: 14),
-                      icon: Icon(Icons.keyboard_arrow_down_rounded, color: R.color.goldLight),
+                      icon: Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: R.color.goldLight,
+                      ),
                       items: controller.provinsiList.map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
@@ -156,7 +168,10 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                 const SizedBox(height: 16),
                 Text(
                   R.string.searchCity,
-                  style: TextStyle(fontSize: 12, color: R.color.textMutedJadwal),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: R.color.textMutedJadwal,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 TextField(
@@ -164,18 +179,32 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                   style: TextStyle(color: R.color.textJadwal, fontSize: 14),
                   decoration: InputDecoration(
                     hintText: R.string.enterCityHint,
-                    hintStyle: TextStyle(color: R.color.textMutedJadwal, fontSize: 13),
-                    prefixIcon: Icon(Icons.search_rounded, color: R.color.goldLight, size: 20),
+                    hintStyle: TextStyle(
+                      color: R.color.textMutedJadwal,
+                      fontSize: 13,
+                    ),
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      color: R.color.goldLight,
+                      size: 20,
+                    ),
                     filled: true,
                     fillColor: R.color.surface2Jadwal,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: R.color.goldDim.withOpacity(0.2)),
+                      borderSide: BorderSide(
+                        color: R.color.goldDim.withOpacity(0.2),
+                      ),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: R.color.goldDim.withOpacity(0.2)),
+                      borderSide: BorderSide(
+                        color: R.color.goldDim.withOpacity(0.2),
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -194,7 +223,9 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                             return Center(
                               child: Text(
                                 R.string.cityNotFound,
-                                style: TextStyle(color: R.color.textMutedJadwal),
+                                style: TextStyle(
+                                  color: R.color.textMutedJadwal,
+                                ),
                               ),
                             );
                           }
@@ -204,7 +235,8 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                             itemCount: list.length,
                             itemBuilder: (context, idx) {
                               final city = list[idx];
-                              final isSelected = controller.selectedKabKota.value == city;
+                              final isSelected =
+                                  controller.selectedKabKota.value == city;
                               return Material(
                                 color: Colors.transparent,
                                 child: ListTile(
@@ -212,18 +244,31 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                  tileColor: isSelected ? R.color.emerald.withOpacity(0.1) : Colors.transparent,
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                                  tileColor: isSelected
+                                      ? R.color.emerald.withOpacity(0.1)
+                                      : Colors.transparent,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 0,
+                                  ),
                                   title: Text(
                                     city,
                                     style: TextStyle(
-                                      color: isSelected ? R.color.emeraldLight : R.color.textJadwal,
-                                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                      color: isSelected
+                                          ? R.color.emeraldLight
+                                          : R.color.textJadwal,
+                                      fontWeight: isSelected
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
                                       fontSize: 13,
                                     ),
                                   ),
                                   trailing: isSelected
-                                      ? Icon(Icons.check_circle_rounded, color: R.color.emeraldLight, size: 16)
+                                      ? Icon(
+                                          Icons.check_circle_rounded,
+                                          color: R.color.emeraldLight,
+                                          size: 16,
+                                        )
                                       : null,
                                   onTap: () {
                                     controller.updateCity(city);
@@ -255,7 +300,9 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
 
           SafeArea(
             child: Obx(() {
-              final isDataLoading = controller.isLoading.value && controller.imsakiyahData.value == null;
+              final isDataLoading =
+                  controller.isLoading.value &&
+                  controller.imsakiyahData.value == null;
               final errorMsg = controller.errorMessage.value;
 
               return CustomScrollView(
@@ -269,7 +316,10 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.arrow_back_rounded, color: R.color.goldLight),
+                            icon: Icon(
+                              Icons.arrow_back_rounded,
+                              color: R.color.goldLight,
+                            ),
                             onPressed: () => Get.back(),
                           ),
                           Column(
@@ -289,7 +339,11 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(Icons.location_on_rounded, color: R.color.emeraldLight, size: 12),
+                                    Icon(
+                                      Icons.location_on_rounded,
+                                      color: R.color.emeraldLight,
+                                      size: 12,
+                                    ),
                                     const SizedBox(width: 4),
                                     Text(
                                       controller.selectedKabKota.value,
@@ -299,14 +353,21 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                    Icon(Icons.keyboard_arrow_down_rounded, color: R.color.goldDim, size: 14),
+                                    Icon(
+                                      Icons.keyboard_arrow_down_rounded,
+                                      color: R.color.goldDim,
+                                      size: 14,
+                                    ),
                                   ],
                                 ),
                               ),
                             ],
                           ),
                           IconButton(
-                            icon: Icon(Icons.my_location_rounded, color: R.color.emeraldLight),
+                            icon: Icon(
+                              Icons.my_location_rounded,
+                              color: R.color.emeraldLight,
+                            ),
                             onPressed: () async {
                               HapticFeedback.lightImpact();
                               await controller.detectLocation();
@@ -320,11 +381,10 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                   if (isDataLoading)
                     const SliverFillRemaining(
                       hasScrollBody: false,
-                      child: Center(
-                        child: CustomLoader(size: 60),
-                      ),
+                      child: Center(child: CustomLoader(size: 60)),
                     )
-                  else if (errorMsg.isNotEmpty && controller.imsakiyahData.value == null)
+                  else if (errorMsg.isNotEmpty &&
+                      controller.imsakiyahData.value == null)
                     SliverFillRemaining(
                       hasScrollBody: false,
                       child: Center(
@@ -333,21 +393,33 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.cloud_off_rounded, color: Colors.redAccent, size: 48),
+                              const Icon(
+                                Icons.cloud_off_rounded,
+                                color: Colors.redAccent,
+                                size: 48,
+                              ),
                               const SizedBox(height: 16),
                               Text(
                                 errorMsg,
-                                style: TextStyle(color: R.color.textMutedJadwal),
+                                style: TextStyle(
+                                  color: R.color.textMutedJadwal,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(height: 16),
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: R.color.emerald,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
                                 ),
-                                onPressed: () => controller.fetchImsakiyahData(),
-                                child: Text(R.string.tryAgain, style: const TextStyle(color: Colors.white)),
+                                onPressed: () =>
+                                    controller.fetchImsakiyahData(),
+                                child: Text(
+                                  R.string.tryAgain,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
                               ),
                             ],
                           ),
@@ -362,11 +434,15 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // 1. Hijri & Gregorian Year Banner
-                            _YearBanner(data: controller.imsakiyahData.value!.data),
+                            _YearBanner(
+                              data: controller.imsakiyahData.value!.data,
+                            ),
                             const SizedBox(height: 24),
 
                             // 2. Today's highlight cards
-                            _TodayHighlight(data: controller.imsakiyahData.value!.data),
+                            _TodayHighlight(
+                              data: controller.imsakiyahData.value!.data,
+                            ),
                             const SizedBox(height: 28),
 
                             // 3. Timetable title
@@ -383,11 +459,18 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                                 ),
                                 Row(
                                   children: [
-                                    Icon(Icons.swipe_left_rounded, color: R.color.goldDim.withOpacity(0.6), size: 14),
+                                    Icon(
+                                      Icons.swipe_left_rounded,
+                                      color: R.color.goldDim.withOpacity(0.6),
+                                      size: 14,
+                                    ),
                                     const SizedBox(width: 4),
                                     Text(
                                       R.string.swipeHorizontal,
-                                      style: TextStyle(color: R.color.textMutedJadwal, fontSize: 10),
+                                      style: TextStyle(
+                                        color: R.color.textMutedJadwal,
+                                        fontSize: 10,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -396,7 +479,9 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                             const SizedBox(height: 12),
 
                             // 4. Monthly Timetable Table
-                            _TimetableTable(data: controller.imsakiyahData.value!.data),
+                            _TimetableTable(
+                              data: controller.imsakiyahData.value!.data,
+                            ),
                             const SizedBox(height: 40),
                           ],
                         ),
@@ -442,7 +527,11 @@ class _YearBanner extends StatelessWidget {
               color: R.color.emerald.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(Icons.calendar_month_rounded, color: R.color.emeraldLight, size: 28),
+            child: Icon(
+              Icons.calendar_month_rounded,
+              color: R.color.emeraldLight,
+              size: 28,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -483,7 +572,9 @@ class _TodayHighlight extends StatelessWidget {
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final todayIndex = data.imsakiyah.indexWhere((e) => e.tanggal == now.day);
-    final today = todayIndex != -1 ? data.imsakiyah[todayIndex] : data.imsakiyah.first;
+    final today = todayIndex != -1
+        ? data.imsakiyah[todayIndex]
+        : data.imsakiyah.first;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -644,7 +735,10 @@ class _TimetableTable extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: R.color.emerald.withOpacity(0.15),
                   border: Border(
-                    bottom: BorderSide(color: R.color.goldDim.withOpacity(0.3), width: 1.5),
+                    bottom: BorderSide(
+                      color: R.color.goldDim.withOpacity(0.3),
+                      width: 1.5,
+                    ),
                   ),
                 ),
                 children: [
@@ -666,28 +760,42 @@ class _TimetableTable extends StatelessWidget {
                 final rowBgColor = isToday
                     ? R.color.emerald.withOpacity(0.15)
                     : (element.tanggal % 2 == 0
-                        ? R.color.surface2Jadwal.withOpacity(0.5)
-                        : Colors.transparent);
+                          ? R.color.surface2Jadwal.withOpacity(0.5)
+                          : Colors.transparent);
 
                 return TableRow(
                   decoration: BoxDecoration(
                     color: rowBgColor,
                     border: Border(
                       bottom: BorderSide(
-                        color: isToday ? R.color.goldDim : R.color.goldDim.withOpacity(0.06),
+                        color: isToday
+                            ? R.color.goldDim
+                            : R.color.goldDim.withOpacity(0.06),
                         width: isToday ? 1.5 : 0.8,
                       ),
                     ),
                   ),
                   children: [
-                    _TableCell(text: element.tanggal.toString(), isBold: true, isToday: isToday),
-                    _TableCell(text: element.imsak, isToday: isToday, isFeatured: true),
+                    _TableCell(
+                      text: element.tanggal.toString(),
+                      isBold: true,
+                      isToday: isToday,
+                    ),
+                    _TableCell(
+                      text: element.imsak,
+                      isToday: isToday,
+                      isFeatured: true,
+                    ),
                     _TableCell(text: element.subuh, isToday: isToday),
                     _TableCell(text: element.terbit, isToday: isToday),
                     _TableCell(text: element.dhuha, isToday: isToday),
                     _TableCell(text: element.dzuhur, isToday: isToday),
                     _TableCell(text: element.ashar, isToday: isToday),
-                    _TableCell(text: element.maghrib, isToday: isToday, isFeatured: true),
+                    _TableCell(
+                      text: element.maghrib,
+                      isToday: isToday,
+                      isFeatured: true,
+                    ),
                     _TableCell(text: element.isya, isToday: isToday),
                   ],
                 );
@@ -752,7 +860,9 @@ class _TableCell extends StatelessWidget {
           style: TextStyle(
             color: txtColor,
             fontSize: 11.5,
-            fontWeight: (isBold || isToday || isFeatured) ? FontWeight.bold : FontWeight.normal,
+            fontWeight: (isBold || isToday || isFeatured)
+                ? FontWeight.bold
+                : FontWeight.normal,
           ),
         ),
       ),

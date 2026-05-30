@@ -50,7 +50,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
   final _controller = Get.find<JadwalSholatController>();
   StreamSubscription? _todayJadwalSubscription;
   late AudioPlayer _audioPlayer;
-  
+
   // Timer dan penanggalan
   late Timer _ticker;
   late DateTime _now;
@@ -189,7 +189,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
     super.initState();
     _now = DateTime.now();
     _audioPlayer = AudioPlayer();
-    
+
     // Set initial times if already available
     final initialToday = _controller.todayJadwal.value;
     if (initialToday != null) {
@@ -201,7 +201,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
         }
       });
     }
-    
+
     _buildDates();
     _calcSholatBerikut();
 
@@ -223,7 +223,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
           _now = DateTime.now();
           _calcSholatBerikut();
           _checkAndPlayPrayerTime();
-          
+
           // Perbarui data widget setiap menit
           if (_now.second == 0) {
             _updateWidgetData();
@@ -288,12 +288,31 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
 
   // Membangun teks format tanggal masehi dan hijriah
   void _buildDates() {
-    const hari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-    const bulan = [
-      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    const hari = [
+      'Senin',
+      'Selasa',
+      'Rabu',
+      'Kamis',
+      'Jumat',
+      'Sabtu',
+      'Minggu',
     ];
-    _tanggal = '${hari[_now.weekday - 1]}, ${_now.day} ${bulan[_now.month - 1]} ${_now.year}';
+    const bulan = [
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
+    ];
+    _tanggal =
+        '${hari[_now.weekday - 1]}, ${_now.day} ${bulan[_now.month - 1]} ${_now.year}';
 
     // Konversi penanggalan masehi saat ini ke format Hijriah
     final jd = _toJulian(_now);
@@ -348,7 +367,9 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
         break;
       }
     }
-    if (idx == -1) idx = 0; // Jika waktu sudah melewati Isya, sholat berikutnya adalah Subuh esok hari
+    if (idx == -1)
+      idx =
+          0; // Jika waktu sudah melewati Isya, sholat berikutnya adalah Subuh esok hari
 
     _sholatBerikutIdx = idx;
 
@@ -396,13 +417,20 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
 
   void _checkAndPlayPrayerTime() {
     for (final s in _sholat) {
-      if (_now.hour == s.waktu.hour && _now.minute == s.waktu.minute && _now.second == 0) {
+      if (_now.hour == s.waktu.hour &&
+          _now.minute == s.waktu.minute &&
+          _now.second == 0) {
         bool isEnabled = true;
-        if (s.nama == 'Subuh') isEnabled = _controller.isSubuhNotifEnabled.value;
-        else if (s.nama == 'Dzuhur') isEnabled = _controller.isDzuhurNotifEnabled.value;
-        else if (s.nama == 'Ashar') isEnabled = _controller.isAsharNotifEnabled.value;
-        else if (s.nama == 'Maghrib') isEnabled = _controller.isMaghribNotifEnabled.value;
-        else if (s.nama == 'Isya') isEnabled = _controller.isIsyaNotifEnabled.value;
+        if (s.nama == 'Subuh') {
+          isEnabled = _controller.isSubuhNotifEnabled.value;
+        } else if (s.nama == 'Dzuhur')
+          isEnabled = _controller.isDzuhurNotifEnabled.value;
+        else if (s.nama == 'Ashar')
+          isEnabled = _controller.isAsharNotifEnabled.value;
+        else if (s.nama == 'Maghrib')
+          isEnabled = _controller.isMaghribNotifEnabled.value;
+        else if (s.nama == 'Isya')
+          isEnabled = _controller.isIsyaNotifEnabled.value;
 
         if (isEnabled) {
           _playAdhanDialog(s.nama);
@@ -426,11 +454,16 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
     if (!_controller.isNotifEnabled.value) return;
 
     bool isEnabled = true;
-    if (sholatNama == 'Subuh') isEnabled = _controller.isSubuhNotifEnabled.value;
-    else if (sholatNama == 'Dzuhur') isEnabled = _controller.isDzuhurNotifEnabled.value;
-    else if (sholatNama == 'Ashar') isEnabled = _controller.isAsharNotifEnabled.value;
-    else if (sholatNama == 'Maghrib') isEnabled = _controller.isMaghribNotifEnabled.value;
-    else if (sholatNama == 'Isya') isEnabled = _controller.isIsyaNotifEnabled.value;
+    if (sholatNama == 'Subuh') {
+      isEnabled = _controller.isSubuhNotifEnabled.value;
+    } else if (sholatNama == 'Dzuhur')
+      isEnabled = _controller.isDzuhurNotifEnabled.value;
+    else if (sholatNama == 'Ashar')
+      isEnabled = _controller.isAsharNotifEnabled.value;
+    else if (sholatNama == 'Maghrib')
+      isEnabled = _controller.isMaghribNotifEnabled.value;
+    else if (sholatNama == 'Isya')
+      isEnabled = _controller.isIsyaNotifEnabled.value;
 
     if (!isEnabled) return;
 
@@ -450,11 +483,17 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
             ),
             title: Row(
               children: [
-                Icon(Icons.notifications_active_rounded, color: R.color.goldLight),
+                Icon(
+                  Icons.notifications_active_rounded,
+                  color: R.color.goldLight,
+                ),
                 const SizedBox(width: 10),
                 Text(
                   'Waktu $sholatNama',
-                  style: TextStyle(color: R.color.goldLight, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: R.color.goldLight,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
@@ -470,7 +509,10 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                 },
                 child: Text(
                   'Matikan Suara',
-                  style: TextStyle(color: R.color.error, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: R.color.error,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
@@ -561,7 +603,11 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                     ),
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
-                      child: Icon(Icons.close_rounded, color: R.color.textMutedJadwal, size: 22),
+                      child: Icon(
+                        Icons.close_rounded,
+                        color: R.color.textMutedJadwal,
+                        size: 22,
+                      ),
                     ),
                   ],
                 ),
@@ -595,7 +641,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                           color: Colors.white,
                           size: 18,
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8),
                         Text(
                           'Deteksi Lokasi Otomatis (GPS / IP)',
                           style: TextStyle(
@@ -611,7 +657,10 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                 const SizedBox(height: 20),
                 Text(
                   'Provinsi',
-                  style: TextStyle(fontSize: 12, color: R.color.textMutedJadwal),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: R.color.textMutedJadwal,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 Container(
@@ -623,13 +672,19 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
-                      value: _controller.provinsiList.contains(_controller.selectedProvinsi.value)
+                      value:
+                          _controller.provinsiList.contains(
+                            _controller.selectedProvinsi.value,
+                          )
                           ? _controller.selectedProvinsi.value
                           : null,
                       isExpanded: true,
                       dropdownColor: R.color.surface2Jadwal,
                       style: TextStyle(color: R.color.textJadwal, fontSize: 14),
-                      icon: Icon(Icons.keyboard_arrow_down_rounded, color: R.color.goldLight),
+                      icon: Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: R.color.goldLight,
+                      ),
                       items: _controller.provinsiList.map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
@@ -647,7 +702,10 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                 const SizedBox(height: 16),
                 Text(
                   'Cari Kabupaten / Kota',
-                  style: TextStyle(fontSize: 12, color: R.color.textMutedJadwal),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: R.color.textMutedJadwal,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 TextField(
@@ -655,18 +713,32 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                   style: TextStyle(color: R.color.textJadwal, fontSize: 14),
                   decoration: InputDecoration(
                     hintText: 'Masukkan nama kota...',
-                    hintStyle: TextStyle(color: R.color.textMutedJadwal, fontSize: 13),
-                    prefixIcon: Icon(Icons.search_rounded, color: R.color.goldLight, size: 20),
+                    hintStyle: TextStyle(
+                      color: R.color.textMutedJadwal,
+                      fontSize: 13,
+                    ),
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      color: R.color.goldLight,
+                      size: 20,
+                    ),
                     filled: true,
                     fillColor: R.color.surface2Jadwal,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: R.color.goldDim.withOpacity(0.2)),
+                      borderSide: BorderSide(
+                        color: R.color.goldDim.withOpacity(0.2),
+                      ),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: R.color.goldDim.withOpacity(0.2)),
+                      borderSide: BorderSide(
+                        color: R.color.goldDim.withOpacity(0.2),
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -685,7 +757,9 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                             return Center(
                               child: Text(
                                 'Kota tidak ditemukan',
-                                style: TextStyle(color: R.color.textMutedJadwal),
+                                style: TextStyle(
+                                  color: R.color.textMutedJadwal,
+                                ),
                               ),
                             );
                           }
@@ -695,7 +769,8 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                             itemCount: list.length,
                             itemBuilder: (context, idx) {
                               final city = list[idx];
-                              final isSelected = _controller.selectedKabKota.value == city;
+                              final isSelected =
+                                  _controller.selectedKabKota.value == city;
                               return Material(
                                 color: Colors.transparent,
                                 child: ListTile(
@@ -703,18 +778,31 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                  tileColor: isSelected ? R.color.emerald.withOpacity(0.1) : Colors.transparent,
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                                  tileColor: isSelected
+                                      ? R.color.emerald.withOpacity(0.1)
+                                      : Colors.transparent,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 0,
+                                  ),
                                   title: Text(
                                     city,
                                     style: TextStyle(
-                                      color: isSelected ? R.color.emeraldLight : R.color.textJadwal,
-                                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                      color: isSelected
+                                          ? R.color.emeraldLight
+                                          : R.color.textJadwal,
+                                      fontWeight: isSelected
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
                                       fontSize: 13,
                                     ),
                                   ),
                                   trailing: isSelected
-                                      ? Icon(Icons.check_circle_rounded, color: R.color.emeraldLight, size: 16)
+                                      ? Icon(
+                                          Icons.check_circle_rounded,
+                                          color: R.color.emeraldLight,
+                                          size: 16,
+                                        )
                                       : null,
                                   onTap: () {
                                     _controller.updateCity(city);
@@ -792,7 +880,11 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                   ),
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.close_rounded, color: R.color.textMutedJadwal, size: 22),
+                    child: Icon(
+                      Icons.close_rounded,
+                      color: R.color.textMutedJadwal,
+                      size: 22,
+                    ),
                   ),
                 ],
               ),
@@ -825,14 +917,35 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                       isExpanded: true,
                       dropdownColor: R.color.surface2Jadwal,
                       style: TextStyle(color: R.color.textJadwal, fontSize: 13),
-                      icon: Icon(Icons.keyboard_arrow_down_rounded, color: R.color.goldLight),
+                      icon: Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: R.color.goldLight,
+                      ),
                       items: const [
-                        DropdownMenuItem<int>(value: 0, child: Text('Nonaktif (Tanpa Pengingat)')),
-                        DropdownMenuItem<int>(value: 5, child: Text('5 Menit Sebelum Adzan')),
-                        DropdownMenuItem<int>(value: 10, child: Text('10 Menit Sebelum Adzan')),
-                        DropdownMenuItem<int>(value: 15, child: Text('15 Menit Sebelum Adzan')),
-                        DropdownMenuItem<int>(value: 20, child: Text('20 Menit Sebelum Adzan')),
-                        DropdownMenuItem<int>(value: 30, child: Text('30 Menit Sebelum Adzan')),
+                        DropdownMenuItem<int>(
+                          value: 0,
+                          child: Text('Nonaktif (Tanpa Pengingat)'),
+                        ),
+                        DropdownMenuItem<int>(
+                          value: 5,
+                          child: Text('5 Menit Sebelum Adzan'),
+                        ),
+                        DropdownMenuItem<int>(
+                          value: 10,
+                          child: Text('10 Menit Sebelum Adzan'),
+                        ),
+                        DropdownMenuItem<int>(
+                          value: 15,
+                          child: Text('15 Menit Sebelum Adzan'),
+                        ),
+                        DropdownMenuItem<int>(
+                          value: 20,
+                          child: Text('20 Menit Sebelum Adzan'),
+                        ),
+                        DropdownMenuItem<int>(
+                          value: 30,
+                          child: Text('30 Menit Sebelum Adzan'),
+                        ),
                       ],
                       onChanged: (newVal) {
                         if (newVal != null) {
@@ -860,11 +973,26 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _buildPrayerSettingTile('Subuh', _controller.isSubuhNotifEnabled),
-                      _buildPrayerSettingTile('Dzuhur', _controller.isDzuhurNotifEnabled),
-                      _buildPrayerSettingTile('Ashar', _controller.isAsharNotifEnabled),
-                      _buildPrayerSettingTile('Maghrib', _controller.isMaghribNotifEnabled),
-                      _buildPrayerSettingTile('Isya', _controller.isIsyaNotifEnabled),
+                      _buildPrayerSettingTile(
+                        'Subuh',
+                        _controller.isSubuhNotifEnabled,
+                      ),
+                      _buildPrayerSettingTile(
+                        'Dzuhur',
+                        _controller.isDzuhurNotifEnabled,
+                      ),
+                      _buildPrayerSettingTile(
+                        'Ashar',
+                        _controller.isAsharNotifEnabled,
+                      ),
+                      _buildPrayerSettingTile(
+                        'Maghrib',
+                        _controller.isMaghribNotifEnabled,
+                      ),
+                      _buildPrayerSettingTile(
+                        'Isya',
+                        _controller.isIsyaNotifEnabled,
+                      ),
                     ],
                   ),
                 ),
@@ -882,156 +1010,192 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                 ),
               ),
               const SizedBox(height: 12),
-              Builder(builder: (context) {
-                final homeCtrl = Get.find<HomeController>();
-                return Obx(() {
-                  final enabled = homeCtrl.tilawahReminderEnabled.value;
-                  final hour = homeCtrl.tilawahReminderHour.value;
-                  final minute = homeCtrl.tilawahReminderMinute.value;
-                  return Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: R.color.surface2Jadwal,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: enabled
-                                ? R.color.gold.withOpacity(0.2)
-                                : R.color.goldDim.withOpacity(0.08),
+              Builder(
+                builder: (context) {
+                  final homeCtrl = Get.find<HomeController>();
+                  return Obx(() {
+                    final enabled = homeCtrl.tilawahReminderEnabled.value;
+                    final hour = homeCtrl.tilawahReminderHour.value;
+                    final minute = homeCtrl.tilawahReminderMinute.value;
+                    return Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
                           ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: enabled
-                                        ? R.color.gold.withOpacity(0.1)
-                                        : R.color.textMutedJadwal.withOpacity(0.05),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    enabled ? Icons.notifications_active_rounded : Icons.notifications_off_rounded,
-                                    color: enabled ? R.color.gold : R.color.textMutedJadwal,
-                                    size: 20,
-                                  ),
-                                ),
-                                const SizedBox(width: 14),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Reminder Tilawah',
-                                      style: TextStyle(
-                                        color: enabled ? R.color.textJadwal : R.color.textMutedJadwal,
-                                        fontWeight: enabled ? FontWeight.bold : FontWeight.normal,
-                                        fontSize: 14,
-                                      ),
+                          decoration: BoxDecoration(
+                            color: R.color.surface2Jadwal,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: enabled
+                                  ? R.color.gold.withOpacity(0.2)
+                                  : R.color.goldDim.withOpacity(0.08),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: enabled
+                                          ? R.color.gold.withOpacity(0.1)
+                                          : R.color.textMutedJadwal.withOpacity(
+                                              0.05,
+                                            ),
+                                      shape: BoxShape.circle,
                                     ),
-                                    if (enabled)
+                                    child: Icon(
+                                      enabled
+                                          ? Icons.notifications_active_rounded
+                                          : Icons.notifications_off_rounded,
+                                      color: enabled
+                                          ? R.color.gold
+                                          : R.color.textMutedJadwal,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 14),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
                                       Text(
-                                        'Setiap hari pukul ${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}',
+                                        'Reminder Tilawah',
                                         style: TextStyle(
-                                          color: R.color.goldDim,
-                                          fontSize: 11,
+                                          color: enabled
+                                              ? R.color.textJadwal
+                                              : R.color.textMutedJadwal,
+                                          fontWeight: enabled
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                          fontSize: 14,
                                         ),
                                       ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Switch(
-                              value: enabled,
-                              activeColor: R.color.gold,
-                              activeTrackColor: R.color.gold.withOpacity(0.3),
-                              inactiveThumbColor: R.color.textMutedJadwal,
-                              inactiveTrackColor: R.color.surfaceJadwal,
-                              onChanged: (val) async {
-                                HapticFeedback.lightImpact();
-                                await homeCtrl.updateTilawahReminder(
-                                  enabled: val,
-                                  hour: hour,
-                                  minute: minute,
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (enabled) ...[
-                        const SizedBox(height: 10),
-                        GestureDetector(
-                          onTap: () async {
-                            final picked = await showTimePicker(
-                              context: context,
-                              initialTime: TimeOfDay(hour: hour, minute: minute),
-                              helpText: 'Pilih Jam Reminder Tilawah',
-                              builder: (ctx, child) => Theme(
-                                data: Theme.of(ctx).copyWith(
-                                  timePickerTheme: TimePickerThemeData(
-                                    backgroundColor: R.color.bgJadwal,
-                                    hourMinuteColor: R.color.surface2Jadwal,
-                                    dialBackgroundColor: R.color.surface2Jadwal,
-                                    dayPeriodColor: R.color.surface2Jadwal,
+                                      if (enabled)
+                                        Text(
+                                          'Setiap hari pukul ${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}',
+                                          style: TextStyle(
+                                            color: R.color.goldDim,
+                                            fontSize: 11,
+                                          ),
+                                        ),
+                                    ],
                                   ),
-                                  colorScheme: ColorScheme.dark(
-                                    primary: R.color.gold,
-                                    onPrimary: Colors.black,
-                                    surface: R.color.bgJadwal,
-                                    onSurface: R.color.textJadwal,
-                                  ),
-                                ),
-                                child: child!,
+                                ],
                               ),
-                            );
-                            if (picked != null) {
-                              HapticFeedback.lightImpact();
-                              await homeCtrl.updateTilawahReminder(
-                                enabled: true,
-                                hour: picked.hour,
-                                minute: picked.minute,
-                              );
-                            }
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                            decoration: BoxDecoration(
-                              color: R.color.surface2Jadwal,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: R.color.gold.withOpacity(0.15)),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(Icons.access_time_rounded, color: R.color.gold, size: 20),
-                                const SizedBox(width: 12),
-                                Text(
-                                  'Jam Pengingat',
-                                  style: TextStyle(color: R.color.textJadwal, fontSize: 13),
-                                ),
-                                const Spacer(),
-                                Text(
-                                  '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}',
-                                  style: TextStyle(
-                                    color: R.color.gold,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                                const SizedBox(width: 4),
-                                Icon(Icons.chevron_right_rounded, color: R.color.goldDim, size: 18),
-                              ],
-                            ),
+                              Switch(
+                                value: enabled,
+                                activeThumbColor: R.color.gold,
+                                activeTrackColor: R.color.gold.withOpacity(0.3),
+                                inactiveThumbColor: R.color.textMutedJadwal,
+                                inactiveTrackColor: R.color.surfaceJadwal,
+                                onChanged: (val) async {
+                                  HapticFeedback.lightImpact();
+                                  await homeCtrl.updateTilawahReminder(
+                                    enabled: val,
+                                    hour: hour,
+                                    minute: minute,
+                                  );
+                                },
+                              ),
+                            ],
                           ),
                         ),
+                        if (enabled) ...[
+                          const SizedBox(height: 10),
+                          GestureDetector(
+                            onTap: () async {
+                              final picked = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay(
+                                  hour: hour,
+                                  minute: minute,
+                                ),
+                                helpText: 'Pilih Jam Reminder Tilawah',
+                                builder: (ctx, child) => Theme(
+                                  data: Theme.of(ctx).copyWith(
+                                    timePickerTheme: TimePickerThemeData(
+                                      backgroundColor: R.color.bgJadwal,
+                                      hourMinuteColor: R.color.surface2Jadwal,
+                                      dialBackgroundColor:
+                                          R.color.surface2Jadwal,
+                                      dayPeriodColor: R.color.surface2Jadwal,
+                                    ),
+                                    colorScheme: ColorScheme.dark(
+                                      primary: R.color.gold,
+                                      onPrimary: Colors.black,
+                                      surface: R.color.bgJadwal,
+                                      onSurface: R.color.textJadwal,
+                                    ),
+                                  ),
+                                  child: child!,
+                                ),
+                              );
+                              if (picked != null) {
+                                HapticFeedback.lightImpact();
+                                await homeCtrl.updateTilawahReminder(
+                                  enabled: true,
+                                  hour: picked.hour,
+                                  minute: picked.minute,
+                                );
+                              }
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
+                              decoration: BoxDecoration(
+                                color: R.color.surface2Jadwal,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: R.color.gold.withOpacity(0.15),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.access_time_rounded,
+                                    color: R.color.gold,
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    'Jam Pengingat',
+                                    style: TextStyle(
+                                      color: R.color.textJadwal,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}',
+                                    style: TextStyle(
+                                      color: R.color.gold,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Icon(
+                                    Icons.chevron_right_rounded,
+                                    color: R.color.goldDim,
+                                    size: 18,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
-                    ],
-                  );
-                });
-              }),
+                    );
+                  });
+                },
+              ),
               const SizedBox(height: 10),
             ],
           ),
@@ -1069,8 +1233,12 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    isEnabled ? Icons.volume_up_rounded : Icons.volume_off_rounded,
-                    color: isEnabled ? R.color.emeraldLight : R.color.textMutedJadwal,
+                    isEnabled
+                        ? Icons.volume_up_rounded
+                        : Icons.volume_off_rounded,
+                    color: isEnabled
+                        ? R.color.emeraldLight
+                        : R.color.textMutedJadwal,
                     size: 20,
                   ),
                 ),
@@ -1078,7 +1246,9 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                 Text(
                   'Adzan $name',
                   style: TextStyle(
-                    color: isEnabled ? R.color.textJadwal : R.color.textMutedJadwal,
+                    color: isEnabled
+                        ? R.color.textJadwal
+                        : R.color.textMutedJadwal,
                     fontWeight: isEnabled ? FontWeight.bold : FontWeight.normal,
                     fontSize: 14,
                   ),
@@ -1087,7 +1257,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
             ),
             Switch(
               value: isEnabled,
-              activeColor: R.color.emeraldLight,
+              activeThumbColor: R.color.emeraldLight,
               activeTrackColor: R.color.emerald.withOpacity(0.3),
               inactiveThumbColor: R.color.textMutedJadwal,
               inactiveTrackColor: R.color.surfaceJadwal,
@@ -1110,10 +1280,12 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
         children: [
           // Ornamen geometris latar belakang khas Islami
           Positioned.fill(child: _GeoBg()),
-          
+
           SafeArea(
             child: Obx(() {
-              final isDataLoading = _controller.isLoading.value && _controller.todayJadwal.value == null;
+              final isDataLoading =
+                  _controller.isLoading.value &&
+                  _controller.todayJadwal.value == null;
               final errorMsg = _controller.errorMessage.value;
 
               return CustomScrollView(
@@ -1133,15 +1305,14 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                       entranceCtrl: _entranceCtrl,
                     ),
                   ),
-                  
+
                   if (isDataLoading)
                     const SliverFillRemaining(
                       hasScrollBody: false,
-                      child: Center(
-                        child: CustomLoader(size: 60),
-                      ),
+                      child: Center(child: CustomLoader(size: 60)),
                     )
-                  else if (errorMsg.isNotEmpty && _controller.todayJadwal.value == null)
+                  else if (errorMsg.isNotEmpty &&
+                      _controller.todayJadwal.value == null)
                     SliverFillRemaining(
                       hasScrollBody: false,
                       child: Center(
@@ -1150,11 +1321,17 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.cloud_off_rounded, color: Colors.redAccent, size: 48),
+                              const Icon(
+                                Icons.cloud_off_rounded,
+                                color: Colors.redAccent,
+                                size: 48,
+                              ),
                               const SizedBox(height: 16),
                               Text(
                                 errorMsg,
-                                style: TextStyle(color: R.color.textMutedJadwal),
+                                style: TextStyle(
+                                  color: R.color.textMutedJadwal,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(height: 16),
@@ -1183,17 +1360,11 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                     ),
                     // 3. Penanggalan Masehi & Hijriah
                     SliverToBoxAdapter(
-                      child: _TanggalHijriRow(
-                        tanggal: _tanggal,
-                        hijri: _hijri,
-                      ),
+                      child: _TanggalHijriRow(tanggal: _tanggal, hijri: _hijri),
                     ),
                     // 4. Progress Tracker pelaksanaan sholat harian
                     SliverToBoxAdapter(
-                      child: _SholatProgressBar(
-                        now: _now,
-                        sholat: _sholat,
-                      ),
+                      child: _SholatProgressBar(now: _now, sholat: _sholat),
                     ),
                     // 5. Label Section Pembatas
                     SliverToBoxAdapter(
@@ -1245,7 +1416,10 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
               height: 1,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [R.color.goldDim.withOpacity(0.3), Colors.transparent],
+                  colors: [
+                    R.color.goldDim.withOpacity(0.3),
+                    Colors.transparent,
+                  ],
                 ),
               ),
             ),
@@ -1374,7 +1548,10 @@ class _JadwalSholatAppBar extends StatelessWidget {
                         const SizedBox(width: 3),
                         Text(
                           kota,
-                          style: TextStyle(fontSize: 12, color: R.color.textMutedJadwal),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: R.color.textMutedJadwal,
+                          ),
                         ),
                         const SizedBox(width: 2),
                         Icon(
@@ -1410,7 +1587,9 @@ class _JadwalSholatAppBar extends StatelessWidget {
                   notifEnabled
                       ? Icons.notifications_active_rounded
                       : Icons.notifications_off_outlined,
-                  color: notifEnabled ? R.color.emeraldLight : R.color.textMutedJadwal,
+                  color: notifEnabled
+                      ? R.color.emeraldLight
+                      : R.color.textMutedJadwal,
                   size: 18,
                 ),
               ),
@@ -1424,9 +1603,7 @@ class _JadwalSholatAppBar extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: R.color.surface2Jadwal,
-                  border: Border.all(
-                    color: R.color.goldDim.withOpacity(0.2),
-                  ),
+                  border: Border.all(color: R.color.goldDim.withOpacity(0.2)),
                 ),
                 child: Icon(
                   Icons.settings_rounded,
@@ -1572,7 +1749,10 @@ class _HeroCountdown extends StatelessWidget {
                     ),
 
                     const SizedBox(height: 20),
-                    Container(height: 1, color: R.color.goldDim.withOpacity(0.15)),
+                    Container(
+                      height: 1,
+                      color: R.color.goldDim.withOpacity(0.15),
+                    ),
                     const SizedBox(height: 20),
 
                     // Countdown timer tersisa sebelum masuk adzan berikutnya
@@ -1619,7 +1799,7 @@ class _HeroCountdown extends StatelessWidget {
                             for (final label in [
                               R.string.hourLabel,
                               R.string.minuteLabel,
-                              R.string.secondLabel
+                              R.string.secondLabel,
                             ]) ...[
                               SizedBox(
                                 width: 72,
@@ -1633,7 +1813,8 @@ class _HeroCountdown extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              if (label != R.string.secondLabel) const SizedBox(width: 12),
+                              if (label != R.string.secondLabel)
+                                const SizedBox(width: 12),
                             ],
                           ],
                         ),
@@ -1655,10 +1836,7 @@ class _TanggalHijriRow extends StatelessWidget {
   final String tanggal;
   final String hijri;
 
-  const _TanggalHijriRow({
-    required this.tanggal,
-    required this.hijri,
-  });
+  const _TanggalHijriRow({required this.tanggal, required this.hijri});
 
   @override
   Widget build(BuildContext context) {
@@ -1698,10 +1876,7 @@ class _SholatProgressBar extends StatelessWidget {
   final DateTime now;
   final List<WaktuSholat> sholat;
 
-  const _SholatProgressBar({
-    required this.now,
-    required this.sholat,
-  });
+  const _SholatProgressBar({required this.now, required this.sholat});
 
   @override
   Widget build(BuildContext context) {
@@ -1786,7 +1961,9 @@ class _SholatProgressBar extends StatelessWidget {
                       height: 8,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: done ? R.color.emeraldLight : R.color.surface3Jadwal,
+                        color: done
+                            ? R.color.emeraldLight
+                            : R.color.surface3Jadwal,
                         border: Border.all(
                           color: done
                               ? R.color.emeraldLight
@@ -1807,7 +1984,10 @@ class _SholatProgressBar extends StatelessWidget {
                   .map(
                     (s) => Text(
                       s.nama.substring(0, 3),
-                      style: TextStyle(fontSize: 9, color: R.color.textDimJadwal),
+                      style: TextStyle(
+                        fontSize: 9,
+                        color: R.color.textDimJadwal,
+                      ),
                     ),
                   )
                   .toList(),
@@ -1889,7 +2069,10 @@ class _JadwalSholatBottomRow extends StatelessWidget {
               height: 1,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [R.color.goldDim.withOpacity(0.3), Colors.transparent],
+                  colors: [
+                    R.color.goldDim.withOpacity(0.3),
+                    Colors.transparent,
+                  ],
                 ),
               ),
             ),
@@ -1914,15 +2097,20 @@ class _JadwalSholatBottomRow extends StatelessWidget {
         final headingRad = -controller.deviceHeading.value * math.pi / 180.0;
         bgAngle = headingRad;
         compassAngle = headingRad; // dial rotation
-        qiblaAngle = (controller.qiblaDirection.value - controller.deviceHeading.value) * math.pi / 180.0; // needle rotation
+        qiblaAngle =
+            (controller.qiblaDirection.value - controller.deviceHeading.value) *
+            math.pi /
+            180.0; // needle rotation
       } else {
         // Fallback animations
         bgAngle = ringCtrl.value * 2 * math.pi;
         compassAngle = 0.0; // dial stays still
-        qiblaAngle = math.sin(compassCtrl.value * 2 * math.pi) * 0.04; // needle oscillates
+        qiblaAngle =
+            math.sin(compassCtrl.value * 2 * math.pi) *
+            0.04; // needle oscillates
       }
 
-      final qiblaDegStr = hasCompass 
+      final qiblaDegStr = hasCompass
           ? '${controller.qiblaDirection.value.toStringAsFixed(1)}°'
           : '291.5° NW';
 
@@ -1951,11 +2139,17 @@ class _JadwalSholatBottomRow extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    hasCompass ? 'KOMPAS KIBLAT AKTIF' : R.string.qiblaDirection,
+                    hasCompass
+                        ? 'KOMPAS KIBLAT AKTIF'
+                        : R.string.qiblaDirection,
                     style: TextStyle(
                       fontSize: 10,
-                      color: hasCompass ? R.color.emeraldLight : R.color.textMutedJadwal,
-                      fontWeight: hasCompass ? FontWeight.bold : FontWeight.normal,
+                      color: hasCompass
+                          ? R.color.emeraldLight
+                          : R.color.textMutedJadwal,
+                      fontWeight: hasCompass
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                       letterSpacing: 2,
                     ),
                   ),
@@ -1986,7 +2180,10 @@ class _JadwalSholatBottomRow extends StatelessWidget {
                   ),
                   Text(
                     R.string.makkahKabah,
-                    style: TextStyle(fontSize: 9, color: R.color.textMutedJadwal),
+                    style: TextStyle(
+                      fontSize: 9,
+                      color: R.color.textMutedJadwal,
+                    ),
                   ),
                 ],
               ),
@@ -2011,7 +2208,8 @@ class _JadwalSholatBottomRow extends StatelessWidget {
       final maghribMinutes = mHour * 60 + mMin;
       final subuhMinutes = (sHour + 24) * 60 + sMin;
 
-      final middleMinutes = (maghribMinutes + (subuhMinutes - maghribMinutes) / 2).round();
+      final middleMinutes =
+          (maghribMinutes + (subuhMinutes - maghribMinutes) / 2).round();
       final finalMinutes = middleMinutes % 1440;
 
       final hour = finalMinutes ~/ 60;
@@ -2036,10 +2234,26 @@ class _JadwalSholatBottomRow extends StatelessWidget {
           : '--:--';
 
       final extras = [
-        {'label': 'Imsak', 'waktu': imsakWaktu, 'icon': Icons.wb_twilight_rounded},
-        {'label': 'Syuruq', 'waktu': syuruqWaktu, 'icon': Icons.wb_sunny_rounded},
-        {'label': 'Dhuha', 'waktu': dhuhaWaktu, 'icon': Icons.light_mode_rounded},
-        {'label': 'Tengah Malam', 'waktu': tengahMalamWaktu, 'icon': Icons.bedtime_rounded},
+        {
+          'label': 'Imsak',
+          'waktu': imsakWaktu,
+          'icon': Icons.wb_twilight_rounded,
+        },
+        {
+          'label': 'Syuruq',
+          'waktu': syuruqWaktu,
+          'icon': Icons.wb_sunny_rounded,
+        },
+        {
+          'label': 'Dhuha',
+          'waktu': dhuhaWaktu,
+          'icon': Icons.light_mode_rounded,
+        },
+        {
+          'label': 'Tengah Malam',
+          'waktu': tengahMalamWaktu,
+          'icon': Icons.bedtime_rounded,
+        },
       ];
 
       return Container(
@@ -2068,11 +2282,18 @@ class _JadwalSholatBottomRow extends StatelessWidget {
                 children: extras.map((e) {
                   return Row(
                     children: [
-                      Icon(e['icon'] as IconData, color: R.color.goldDim, size: 14),
+                      Icon(
+                        e['icon'] as IconData,
+                        color: R.color.goldDim,
+                        size: 14,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         e['label'] as String,
-                        style: TextStyle(fontSize: 11, color: R.color.textMutedJadwal),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: R.color.textMutedJadwal,
+                        ),
                       ),
                       const Spacer(),
                       Text(
@@ -2186,7 +2407,7 @@ class _SholatCard extends StatelessWidget {
 
   // Jumlah rakaat masing-masing sholat fardhu
   static const _rakaat = [2, 4, 4, 3, 4];
-  
+
   // Teks keutamaan masing-masing sholat
   static const _keutamaan = [
     'Dikerjakan sebelum fajar menyingsing. Dua rakaat sholat sunnah fajar lebih baik dari dunia dan seisinya.',
@@ -2309,7 +2530,10 @@ class _SholatCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     '${_rakaat[index]}x',
-                    style: TextStyle(fontSize: 9, color: R.color.textMutedJadwal),
+                    style: TextStyle(
+                      fontSize: 9,
+                      color: R.color.textMutedJadwal,
+                    ),
                   ),
                 ],
               ),
@@ -2348,7 +2572,7 @@ class _SholatCard extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 9,
                                 fontWeight: FontWeight.w600,
-                                                                color: Color.lerp(
+                                color: Color.lerp(
                                   accent,
                                   R.color.isDark ? Colors.white : Colors.black,
                                   R.color.isDark ? 0.5 : 0.3,
@@ -2378,7 +2602,10 @@ class _SholatCard extends StatelessWidget {
                     ),
                     Text(
                       sholat.deskripsi,
-                      style: TextStyle(fontSize: 11, color: R.color.textMutedJadwal),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: R.color.textMutedJadwal,
+                      ),
                     ),
                   ],
                 ),
@@ -2426,7 +2653,9 @@ class _SholatCard extends StatelessWidget {
     final accent = sholat.accent;
     return Container(
       decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: R.color.goldDim.withOpacity(0.12))),
+        border: Border(
+          top: BorderSide(color: R.color.goldDim.withOpacity(0.12)),
+        ),
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -2457,7 +2686,9 @@ class _SholatCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               _InfoBadge(
-                icon: notifEnabled ? Icons.notifications_rounded : Icons.notifications_off_rounded,
+                icon: notifEnabled
+                    ? Icons.notifications_rounded
+                    : Icons.notifications_off_rounded,
                 label: notifEnabled ? 'Notif Aktif' : 'Notif Mati',
                 color: notifEnabled ? R.color.emerald : R.color.textMutedJadwal,
               ),

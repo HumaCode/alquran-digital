@@ -12,20 +12,21 @@ import '../../../data/providers/theme_controller.dart';
 class DetailSurahView extends GetView<DetailSurahController> {
   const DetailSurahView({super.key});
 
-  Color get _bg => R.color.bg1;
-  Color get _gold => R.color.gold;
-  Color get _goldLight => R.color.goldLight;
-  Color get _goldDim => R.color.goldDim;
-  Color get _textSoft => R.color.textSoft;
-  Color get _bg2 => R.color.bg2;
-  Color get _emeraldDark => R.color.emeraldDark;
-  Color get _emeraldMedium => R.color.emeraldMedium;
+  Color get _bg => controller.isNightMode.value ? const Color(0xFF0A0A0A) : R.color.bg1;
+  Color get _gold => controller.isNightMode.value ? const Color(0xFFB89E67) : R.color.gold;
+  Color get _goldLight => controller.isNightMode.value ? const Color(0xFFB89E67) : R.color.goldLight;
+  Color get _goldDim => controller.isNightMode.value ? const Color(0xFF444444) : R.color.goldDim;
+  Color get _textSoft => controller.isNightMode.value ? const Color(0xFF999999) : R.color.textSoft;
+  Color get _bg2 => controller.isNightMode.value ? const Color(0xFF0A0A0A) : R.color.bg2;
+  Color get _emeraldDark => controller.isNightMode.value ? const Color(0xFF101010) : R.color.emeraldDark;
+  Color get _emeraldMedium => controller.isNightMode.value ? const Color(0xFF161616) : R.color.emeraldMedium;
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      // Force dependency on isDarkMode so it rebuilds when theme changes
+      // Force dependency on isDarkMode and isNightMode so it rebuilds when theme/mode changes
       ThemeController.to.isDarkMode.value;
+      controller.isNightMode.value;
       return Scaffold(
         backgroundColor: _bg,
         appBar: AppBar(
@@ -45,9 +46,20 @@ class DetailSurahView extends GetView<DetailSurahController> {
           centerTitle: true,
           actions: [
             IconButton(
+              icon: Icon(
+                controller.isNightMode.value ? Icons.nightlight_round : Icons.nightlight_outlined,
+                color: controller.isNightMode.value ? _gold : _goldLight,
+              ),
+              tooltip: 'Mode Malam',
+              onPressed: () {
+                controller.toggleNightMode();
+              },
+            ),
+            IconButton(
               icon: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 500),
+                duration: controller.isNightMode.value ? Duration.zero : const Duration(milliseconds: 500),
                 transitionBuilder: (child, animation) {
+                  if (controller.isNightMode.value) return child;
                   return RotationTransition(
                     turns: animation,
                     child: ScaleTransition(
@@ -515,7 +527,9 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                 fontWeight: FontWeight.w500,
                               ).copyWith(
                                 fontFamily: 'Poppins',
-                                fontSize: controller.arabicFontSize.value,
+                                fontSize: controller.isNightMode.value
+                                    ? controller.arabicFontSize.value + 4
+                                    : controller.arabicFontSize.value,
                                 height: 1.8,
                               ),
                             ),

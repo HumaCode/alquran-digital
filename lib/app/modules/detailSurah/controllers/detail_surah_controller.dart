@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../data/models/detail_surah_model.dart';
 import '../../../data/models/tafsir_model.dart';
 import '../../../data/repositories/surah_repository.dart';
@@ -21,6 +22,7 @@ class DetailSurahController extends GetxController {
   final showLatin = true.obs;
   final showTranslation = true.obs;
   final tafsirFontSize = 15.0.obs;
+  final isNightMode = false.obs;
 
   late final int nomorSurah;
   int? targetAyat;
@@ -60,6 +62,7 @@ class DetailSurahController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _loadNightMode();
 
     // Get the Surah number from arguments
     final args = Get.arguments;
@@ -159,7 +162,7 @@ class DetailSurahController extends GetxController {
               if (key != null && key.currentContext != null) {
                 Scrollable.ensureVisible(
                   key.currentContext!,
-                  duration: const Duration(milliseconds: 800),
+                  duration: isNightMode.value ? Duration.zero : const Duration(milliseconds: 800),
                   curve: Curves.easeInOut,
                 );
               }
@@ -272,7 +275,7 @@ class DetailSurahController extends GetxController {
       if (key != null && key.currentContext != null) {
         Scrollable.ensureVisible(
           key.currentContext!,
-          duration: const Duration(milliseconds: 600),
+          duration: isNightMode.value ? Duration.zero : const Duration(milliseconds: 600),
           curve: Curves.easeInOut,
         );
       }
@@ -402,6 +405,25 @@ class DetailSurahController extends GetxController {
       }
     } catch (e) {
       print('Gagal mencatat tilawah otomatis: $e');
+    }
+  }
+
+  Future<void> _loadNightMode() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      isNightMode.value = prefs.getBool('night_mode_enabled') ?? false;
+    } catch (e) {
+      print('Gagal memuat preferensi Mode Malam: $e');
+    }
+  }
+
+  Future<void> toggleNightMode() async {
+    try {
+      isNightMode.value = !isNightMode.value;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('night_mode_enabled', isNightMode.value);
+    } catch (e) {
+      print('Gagal menyimpan preferensi Mode Malam: $e');
     }
   }
 }

@@ -428,12 +428,23 @@ class _HomeViewState extends State<HomeView>
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-                    child: Row(
-                      children: [
-                        _buildSearchTypeTab('surah', 'Cari Surah'),
-                        const SizedBox(width: 10),
-                        _buildSearchTypeTab('ayat', 'Cari Ayat (Global)'),
-                      ],
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: _bg2.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: _goldDim.withValues(alpha: 0.15),
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(child: _buildSearchTypeTab('surah', 'Cari Surah')),
+                          const SizedBox(width: 4),
+                          Expanded(child: _buildSearchTypeTab('ayat', 'Cari Ayat (Global)')),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -514,6 +525,7 @@ class _HomeViewState extends State<HomeView>
                         final namaSurah = item['namaSurah'] as String;
                         final nomorAyat = item['nomorAyat'] as int;
                         final teksArab = item['teksArab'] as String;
+                        final teksLatin = item['teksLatin'] as String;
                         final teksIndonesia = item['teksIndonesia'] as String;
 
                         return Padding(
@@ -571,10 +583,31 @@ class _HomeViewState extends State<HomeView>
                                       ),
                                     ),
                                     const SizedBox(height: 12),
-                                    Text(
+                                    _buildHighlightedText(
+                                      teksLatin,
+                                      _homeController.searchQuery.value,
+                                      style: R.textStyle.medium(
+                                        color: _goldLight.withValues(alpha: 0.8),
+                                      ).copyWith(
+                                        fontStyle: FontStyle.italic,
+                                        fontSize: 13,
+                                      ),
+                                      highlightStyle: R.textStyle.mediumBold.copyWith(
+                                        color: _gold,
+                                        backgroundColor: _gold.withValues(alpha: 0.2),
+                                        fontStyle: FontStyle.italic,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    _buildHighlightedText(
                                       teksIndonesia,
-                                      textAlign: TextAlign.left,
+                                      _homeController.searchQuery.value,
                                       style: R.textStyle.medium(color: _textSoft),
+                                      highlightStyle: R.textStyle.mediumBold.copyWith(
+                                        color: _gold,
+                                        backgroundColor: _gold.withValues(alpha: 0.2),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -1446,16 +1479,14 @@ class _HomeViewState extends State<HomeView>
         onTap: () {
           _homeController.changeSearchType(type);
         },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
-            color: isSelected ? _gold : _bg2.withValues(alpha: 0.5),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isSelected ? _gold : _goldDim.withValues(alpha: 0.15),
-              width: 1,
-            ),
+            color: isSelected ? _gold : Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
           ),
+          alignment: Alignment.center,
           child: Text(
             label,
             style: R.textStyle.medium(
@@ -1466,5 +1497,54 @@ class _HomeViewState extends State<HomeView>
         ),
       );
     });
+  }
+
+  Widget _buildHighlightedText(
+    String text,
+    String highlightQuery, {
+    required TextStyle style,
+    required TextStyle highlightStyle,
+  }) {
+    if (highlightQuery.isEmpty) {
+      return Text(text, style: style);
+    }
+
+    final String query = highlightQuery.toLowerCase();
+    final String source = text;
+    final List<TextSpan> spans = [];
+
+    int start = 0;
+    int index = source.toLowerCase().indexOf(query, start);
+
+    while (index != -1) {
+      // Add normal text before matched query
+      if (index > start) {
+        spans.add(TextSpan(
+          text: source.substring(start, index),
+          style: style,
+        ));
+      }
+
+      // Add highlighted matched text
+      spans.add(TextSpan(
+        text: source.substring(index, index + query.length),
+        style: highlightStyle,
+      ));
+
+      start = index + query.length;
+      index = source.toLowerCase().indexOf(query, start);
+    }
+
+    // Add remaining text after last match
+    if (start < source.length) {
+      spans.add(TextSpan(
+        text: source.substring(start),
+        style: style,
+      ));
+    }
+
+    return Text.rich(
+      TextSpan(children: spans),
+    );
   }
 }

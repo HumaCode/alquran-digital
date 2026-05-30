@@ -552,7 +552,7 @@ class _SettingsViewState extends State<SettingsView> {
               surface: _bg2,
               onSurface: _textSoft,
             ),
-            dialogTheme: DialogTheme(
+            dialogTheme: DialogThemeData(
               backgroundColor: _bg,
             ),
           ),

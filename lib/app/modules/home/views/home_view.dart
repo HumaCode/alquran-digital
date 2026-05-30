@@ -388,8 +388,8 @@ class _HomeViewState extends State<HomeView>
                                   height: 60,
                                   child: CircularProgressIndicator(
                                     value: ratio,
-                                    backgroundColor: _bg.withValues(alpha: 0.3),
-                                    color: _emeraldMedium,
+                                    backgroundColor: R.color.isDark ? _bg.withValues(alpha: 0.15) : Colors.black.withOpacity(0.06),
+                                    color: R.color.emerald,
                                     strokeWidth: 6,
                                   ),
                                 );
@@ -1737,7 +1737,7 @@ class _HomeViewState extends State<HomeView>
                 height: 60,
                 alignment: Alignment.bottomCenter,
                 decoration: BoxDecoration(
-                  color: _bg.withValues(alpha: 0.3),
+                  color: R.color.isDark ? _bg.withValues(alpha: 0.15) : Colors.black.withOpacity(0.06),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: AnimatedContainer(
@@ -1749,7 +1749,7 @@ class _HomeViewState extends State<HomeView>
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
                       colors: isTargetMet
-                          ? [_emeraldDark, _emeraldMedium]
+                          ? [R.color.emerald, R.color.emeraldLight]
                           : (isToday ? [_gold, _goldLight] : [_textSoft.withValues(alpha: 0.3), _textSoft.withValues(alpha: 0.5)]),
                     ),
                     borderRadius: BorderRadius.circular(4),

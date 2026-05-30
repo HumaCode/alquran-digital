@@ -69,6 +69,14 @@ class DatabaseHelper {
             isCompleted INTEGER NOT NULL
           )
         ''');
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS hafalan_progress (
+            nomorSurah INTEGER NOT NULL,
+            nomorAyat INTEGER NOT NULL,
+            status TEXT NOT NULL,
+            PRIMARY KEY (nomorSurah, nomorAyat)
+          )
+        ''');
       },
     );
   }
@@ -818,6 +826,56 @@ class DatabaseHelper {
     final db = await instance.database;
     final result = await db.rawQuery('SELECT COUNT(*) as count FROM surah_read_history WHERE isCompleted = 1');
     return Sqflite.firstIntValue(result) ?? 0;
+  }
+
+  // ── Operations for Hafalan Progress ─────────────────────────────────────────
+
+  Future<void> saveHafalanProgress(int nomorSurah, int nomorAyat, String status) async {
+    final db = await instance.database;
+    await db.insert(
+      'hafalan_progress',
+      {
+        'nomorSurah': nomorSurah,
+        'nomorAyat': nomorAyat,
+        'status': status,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> deleteHafalanProgress(int nomorSurah, int nomorAyat) async {
+    final db = await instance.database;
+    await db.delete(
+      'hafalan_progress',
+      where: 'nomorSurah = ? AND nomorAyat = ?',
+      whereArgs: [nomorSurah, nomorAyat],
+    );
+  }
+
+  Future<String?> getHafalanStatus(int nomorSurah, int nomorAyat) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'hafalan_progress',
+      columns: ['status'],
+      where: 'nomorSurah = ? AND nomorAyat = ?',
+      whereArgs: [nomorSurah, nomorAyat],
+    );
+    if (result.isEmpty) return null;
+    return result.first['status'] as String?;
+  }
+
+  Future<List<Map<String, dynamic>>> getHafalanProgressBySurah(int nomorSurah) async {
+    final db = await instance.database;
+    return await db.query(
+      'hafalan_progress',
+      where: 'nomorSurah = ?',
+      whereArgs: [nomorSurah],
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> getAllHafalanProgress() async {
+    final db = await instance.database;
+    return await db.query('hafalan_progress');
   }
 
   String _formatDate(DateTime date) {

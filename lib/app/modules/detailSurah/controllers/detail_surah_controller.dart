@@ -57,6 +57,14 @@ class DetailSurahController extends GetxController {
   final isPlayingFullSurah = false.obs;
   int _currentFullSurahIndex = 0;
 
+  // Hafalan Mode & Audio loop states
+  final isMemorizationMode = false.obs;
+  final revealedWords = <String>{}.obs;
+  final audioRepeatCount = 1.obs;
+  final hafalanProgress = <int, String>{}.obs;
+  int _remainingRepeats = 0;
+  Ayat? _currentlyPlayingAyatObj;
+
   List<Ayat> _allAyat = [];
   int _loadedCount = 0;
   static const int _pageSize = 20;
@@ -80,20 +88,37 @@ class DetailSurahController extends GetxController {
     }
 
     // Listen to audio player completion
-    _audioPlayer.onPlayerComplete.listen((event) {
+    _audioPlayer.onPlayerComplete.listen((event) async {
+      if (_remainingRepeats > 0) {
+        _remainingRepeats--;
+        final audioUrl = _currentlyPlayingAyatObj?.audio[selectedQori.value];
+        if (audioUrl != null) {
+          try {
+            await _audioPlayer.play(UrlSource(audioUrl));
+            isAudioPlaying.value = true;
+            return;
+          } catch (e) {
+            print('Gagal mengulang audio: $e');
+          }
+        }
+      }
+
       if (isPlayingFullSurah.value) {
         _currentFullSurahIndex++;
         if (_currentFullSurahIndex < _allAyat.length) {
+          _remainingRepeats = audioRepeatCount.value - 1;
           _playFullSurahAyat(_currentFullSurahIndex);
         } else {
           // Finished playing all verses
           isPlayingFullSurah.value = false;
           currentlyPlayingAyat.value = null;
           isAudioPlaying.value = false;
+          _currentlyPlayingAyatObj = null;
         }
       } else {
         currentlyPlayingAyat.value = null;
         isAudioPlaying.value = false;
+        _currentlyPlayingAyatObj = null;
       }
     });
 
@@ -187,6 +212,9 @@ class DetailSurahController extends GetxController {
 
       // Ambil status khatam untuk surah ini
       await checkIfCompleted();
+
+      // Ambil progress hafalan untuk surah ini
+      await loadHafalanProgress();
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {
@@ -230,6 +258,8 @@ class DetailSurahController extends GetxController {
         }
       } else {
         await _audioPlayer.stop();
+        _currentlyPlayingAyatObj = ayat;
+        _remainingRepeats = audioRepeatCount.value - 1;
         currentlyPlayingAyat.value = ayat.nomorAyat;
         isAudioPlaying.value = true;
         await _audioPlayer.play(UrlSource(audioUrl));
@@ -247,10 +277,12 @@ class DetailSurahController extends GetxController {
       isPlayingFullSurah.value = false;
       currentlyPlayingAyat.value = null;
       isAudioPlaying.value = false;
+      _currentlyPlayingAyatObj = null;
     } else {
       if (_allAyat.isEmpty) return;
       isPlayingFullSurah.value = true;
       _currentFullSurahIndex = 0;
+      _remainingRepeats = audioRepeatCount.value - 1;
       await _playFullSurahAyat(0);
     }
   }
@@ -258,15 +290,18 @@ class DetailSurahController extends GetxController {
   Future<void> _playFullSurahAyat(int index) async {
     if (index >= _allAyat.length) return;
     final ayat = _allAyat[index];
+    _currentlyPlayingAyatObj = ayat;
     final audioUrl = ayat.audio[selectedQori.value];
     if (audioUrl == null) {
       _currentFullSurahIndex++;
       if (_currentFullSurahIndex < _allAyat.length) {
+        _remainingRepeats = audioRepeatCount.value - 1;
         await _playFullSurahAyat(_currentFullSurahIndex);
       } else {
         isPlayingFullSurah.value = false;
         currentlyPlayingAyat.value = null;
         isAudioPlaying.value = false;
+        _currentlyPlayingAyatObj = null;
       }
       return;
     }
@@ -465,6 +500,66 @@ class DetailSurahController extends GetxController {
       );
     } catch (e) {
       print('Gagal mengubah status khatam surah: $e');
+    }
+  }
+
+  // ── Hafalan Mode Methods ───────────────────────────────────────────────────
+  void toggleMemorizationMode() {
+    isMemorizationMode.value = !isMemorizationMode.value;
+    if (!isMemorizationMode.value) {
+      revealedWords.clear();
+    }
+  }
+
+  void revealWord(String key) {
+    revealedWords.add(key);
+  }
+
+  void cycleRepeatCount() {
+    switch (audioRepeatCount.value) {
+      case 1:
+        audioRepeatCount.value = 2;
+        break;
+      case 2:
+        audioRepeatCount.value = 3;
+        break;
+      case 3:
+        audioRepeatCount.value = 5;
+        break;
+      case 5:
+        audioRepeatCount.value = 10;
+        break;
+      default:
+        audioRepeatCount.value = 1;
+    }
+  }
+
+  Future<void> loadHafalanProgress() async {
+    try {
+      final list = await _repository.getHafalanProgressBySurah(nomorSurah);
+      final map = <int, String>{};
+      for (var item in list) {
+        final ayatNum = item['nomorAyat'] as int;
+        final status = item['status'] as String;
+        map[ayatNum] = status;
+      }
+      hafalanProgress.assignAll(map);
+    } catch (e) {
+      print('Gagal memuat progress hafalan: $e');
+    }
+  }
+
+  Future<void> updateHafalanStatus(int nomorAyat, String status) async {
+    try {
+      if (status == 'none') {
+        await _repository.deleteHafalanProgress(nomorSurah, nomorAyat);
+        hafalanProgress.remove(nomorAyat);
+      } else {
+        await _repository.saveHafalanProgress(nomorSurah, nomorAyat, status);
+        hafalanProgress[nomorAyat] = status;
+      }
+    } catch (e) {
+      print('Gagal memperbarui status hafalan: $e');
     }
   }
 }

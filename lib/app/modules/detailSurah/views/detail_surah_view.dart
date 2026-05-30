@@ -345,6 +345,88 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                       ),
                                     ],
                                   ),
+                                  const SizedBox(height: 12),
+                                  Divider(color: _goldDim.withValues(alpha: 0.15), thickness: 1),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      // Mode Hafalan Toggle Button
+                                      Obx(() {
+                                        final isHafalan = controller.isMemorizationMode.value;
+                                        return TextButton.icon(
+                                          onPressed: () {
+                                            controller.toggleMemorizationMode();
+                                            CustomToast.show(
+                                              context,
+                                              message: isHafalan 
+                                                  ? 'Mode Hafalan dinonaktifkan' 
+                                                  : 'Mode Hafalan diaktifkan. Ketuk tanda tanya (?) untuk melihat kata.',
+                                              type: ToastType.info,
+                                            );
+                                          },
+                                          icon: Icon(
+                                            isHafalan ? Icons.psychology_rounded : Icons.psychology_outlined,
+                                            color: isHafalan ? _gold : _goldLight.withValues(alpha: 0.6),
+                                            size: 18,
+                                          ),
+                                          label: Text(
+                                            'Mode Hafalan',
+                                            style: TextStyle(
+                                              color: isHafalan ? _gold : _goldLight.withValues(alpha: 0.6),
+                                              fontWeight: isHafalan ? FontWeight.bold : FontWeight.normal,
+                                              fontFamily: 'Poppins',
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                          style: TextButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                            backgroundColor: isHafalan ? _gold.withValues(alpha: 0.1) : Colors.transparent,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                              side: BorderSide(
+                                                color: isHafalan ? _gold.withValues(alpha: 0.3) : Colors.white10,
+                                                width: 1,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                      
+                                      // Audio Repeat Selector
+                                      Obx(() {
+                                        final repeat = controller.audioRepeatCount.value;
+                                        return TextButton.icon(
+                                          onPressed: () => controller.cycleRepeatCount(),
+                                          icon: Icon(
+                                            Icons.repeat_one_rounded,
+                                            color: repeat > 1 ? _gold : _goldLight.withValues(alpha: 0.6),
+                                            size: 18,
+                                          ),
+                                          label: Text(
+                                            'Ulang: ${repeat}x',
+                                            style: TextStyle(
+                                              color: repeat > 1 ? _gold : _goldLight.withValues(alpha: 0.6),
+                                              fontWeight: repeat > 1 ? FontWeight.bold : FontWeight.normal,
+                                              fontFamily: 'Poppins',
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                          style: TextButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                            backgroundColor: repeat > 1 ? _gold.withValues(alpha: 0.1) : Colors.transparent,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                              side: BorderSide(
+                                                color: repeat > 1 ? _gold.withValues(alpha: 0.3) : Colors.white10,
+                                                width: 1,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                    ],
+                                  ),
                                   if (isPlaying && currentAyat != null) ...[
                                     const SizedBox(height: 8),
                                     Text(
@@ -442,6 +524,36 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                       ),
                                     ),
                                   ),
+                                  Obx(() {
+                                    final status = controller.hafalanProgress[ayat.nomorAyat];
+                                    if (status == null) return const SizedBox.shrink();
+                                    final isSudah = status == 'sudah';
+                                    return Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: isSudah
+                                              ? R.color.emerald.withValues(alpha: 0.15)
+                                              : Colors.blue.withValues(alpha: 0.15),
+                                          borderRadius: BorderRadius.circular(6),
+                                          border: Border.all(
+                                            color: isSudah ? R.color.emerald : Colors.blue,
+                                            width: 0.8,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          isSudah ? 'Hafal' : 'Menghafal',
+                                          style: TextStyle(
+                                            color: isSudah ? R.color.emeraldLight : Colors.blueAccent,
+                                            fontSize: 9,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Poppins',
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }),
                                   const Spacer(),
                                   // Play Audio Button
                                   Obx(() {
@@ -550,6 +662,56 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                     ),
                                   ),
                                   const SizedBox(width: 4),
+                                  // Hafalan Status Popup Menu Button
+                                  Obx(() {
+                                    final status = controller.hafalanProgress[ayat.nomorAyat];
+                                    IconData icon;
+                                    Color iconColor;
+                                    if (status == 'sudah') {
+                                      icon = Icons.psychology_rounded;
+                                      iconColor = R.color.emerald;
+                                    } else if (status == 'sedang') {
+                                      icon = Icons.psychology_rounded;
+                                      iconColor = Colors.blue;
+                                    } else {
+                                      icon = Icons.psychology_outlined;
+                                      iconColor = _goldDim;
+                                    }
+                                    return Theme(
+                                      data: Theme.of(context).copyWith(
+                                        cardColor: _bg2,
+                                      ),
+                                      child: PopupMenuButton<String>(
+                                        icon: Icon(icon, color: iconColor, size: 20),
+                                        tooltip: 'Status Hafalan',
+                                        onSelected: (val) {
+                                          controller.updateHafalanStatus(ayat.nomorAyat, val);
+                                          CustomToast.show(
+                                            context,
+                                            message: val == 'none'
+                                                ? 'Progress hafalan ayat ${ayat.nomorAyat} dihapus'
+                                                : 'Ayat ${ayat.nomorAyat} ditandai sebagai ${val == 'sudah' ? 'Sudah Dihafal' : 'Sedang Dihafal'}',
+                                            type: ToastType.success,
+                                          );
+                                        },
+                                        itemBuilder: (context) => [
+                                          PopupMenuItem(
+                                            value: 'none',
+                                            child: Text('Belum Dihafal', style: TextStyle(color: _textSoft)),
+                                          ),
+                                          PopupMenuItem(
+                                            value: 'sedang',
+                                            child: Text('Sedang Dihafal', style: const TextStyle(color: Colors.blueAccent)),
+                                          ),
+                                          PopupMenuItem(
+                                            value: 'sudah',
+                                            child: Text('Sudah Dihafal', style: TextStyle(color: R.color.emeraldLight)),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                                  const SizedBox(width: 4),
                                   // Catatan Ayat (Tadabbur) Button
                                   Obx(() {
                                     final hasNote = controller.versesWithNotes
@@ -579,87 +741,79 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                     );
                                   }),
                                   const SizedBox(width: 4),
-                                  // Copy Button
-                                  Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(8),
-                                      onTap: () {
-                                        Clipboard.setData(
-                                          ClipboardData(
-                                            text:
-                                                '${ayat.teksArab}\n${ayat.teksLatin}\n${ayat.teksIndonesia}',
-                                          ),
-                                        );
-                                        CustomToast.show(
-                                          context,
-                                          message:
-                                              'Ayat ${ayat.nomorAyat} ${R.string.copySuccess.toLowerCase()}',
-                                          type: ToastType.success,
-                                        );
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(6),
-                                        child: Icon(
-                                          Icons.copy_rounded,
-                                          color: _goldDim,
-                                          size: 20,
-                                        ),
-                                      ),
+                                  // Opsi Lainnya (Salin, Bagikan, Tafsir)
+                                  Theme(
+                                    data: Theme.of(context).copyWith(
+                                      cardColor: _bg2,
                                     ),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  // Share Button
-                                  Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(8),
-                                      onTap: () {
-                                        Clipboard.setData(
-                                          ClipboardData(
-                                            text:
-                                                'QS. ${detail.namaLatin} [${detail.nomor}:${ayat.nomorAyat}]\n\n'
-                                                '${ayat.teksArab}\n\n'
-                                                'Artinya: "${ayat.teksIndonesia}"',
+                                    child: PopupMenuButton<String>(
+                                      icon: Icon(Icons.more_vert_rounded, color: _goldDim, size: 20),
+                                      tooltip: 'Opsi Lainnya',
+                                      onSelected: (val) {
+                                        if (val == 'copy') {
+                                          Clipboard.setData(
+                                            ClipboardData(
+                                              text: '${ayat.teksArab}\n${ayat.teksLatin}\n${ayat.teksIndonesia}',
+                                            ),
+                                          );
+                                          CustomToast.show(
+                                            context,
+                                            message: 'Ayat ${ayat.nomorAyat} ${R.string.copySuccess.toLowerCase()}',
+                                            type: ToastType.success,
+                                          );
+                                        } else if (val == 'share') {
+                                          Clipboard.setData(
+                                            ClipboardData(
+                                              text: 'QS. ${detail.namaLatin} [${detail.nomor}:${ayat.nomorAyat}]\n\n'
+                                                  '${ayat.teksArab}\n\n'
+                                                  'Artinya: "${ayat.teksIndonesia}"',
+                                            ),
+                                          );
+                                          CustomToast.show(
+                                            context,
+                                            message: R.string.shareText,
+                                            type: ToastType.success,
+                                          );
+                                        } else if (val == 'tafsir') {
+                                          _showTafsirBottomSheet(
+                                            context,
+                                            detail,
+                                            ayat.nomorAyat,
+                                          );
+                                        }
+                                      },
+                                      itemBuilder: (context) => [
+                                        PopupMenuItem(
+                                          value: 'copy',
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.copy_rounded, color: _goldDim, size: 18),
+                                              const SizedBox(width: 8),
+                                              Text('Salin Ayat', style: TextStyle(color: _textSoft, fontFamily: 'Poppins', fontSize: 13)),
+                                            ],
                                           ),
-                                        );
-                                        CustomToast.show(
-                                          context,
-                                          message: R.string.shareText,
-                                          type: ToastType.success,
-                                        );
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(6),
-                                        child: Icon(
-                                          Icons.share_rounded,
-                                          color: _goldDim,
-                                          size: 20,
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  // Tafsir Button
-                                  Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(8),
-                                      onTap: () {
-                                        _showTafsirBottomSheet(
-                                          context,
-                                          detail,
-                                          ayat.nomorAyat,
-                                        );
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(6),
-                                        child: Icon(
-                                          Icons.menu_book_rounded,
-                                          color: _goldDim,
-                                          size: 20,
+                                        PopupMenuItem(
+                                          value: 'share',
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.share_rounded, color: _goldDim, size: 18),
+                                              const SizedBox(width: 8),
+                                              Text('Bagikan', style: TextStyle(color: _textSoft, fontFamily: 'Poppins', fontSize: 13)),
+                                            ],
+                                          ),
                                         ),
-                                      ),
+                                        PopupMenuItem(
+                                          value: 'tafsir',
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.menu_book_rounded, color: _goldDim, size: 18),
+                                              const SizedBox(width: 8),
+                                              Text('Lihat Tafsir', style: TextStyle(color: _textSoft, fontFamily: 'Poppins', fontSize: 13)),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
@@ -668,22 +822,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                             const SizedBox(height: 24),
 
                             // Arabic Text
-                            Text(
-                              ayat.teksArab,
-                              textAlign: TextAlign.right,
-                              style: R.textStyle
-                                  .large(
-                                    color: _goldLight,
-                                    fontWeight: FontWeight.w500,
-                                  )
-                                  .copyWith(
-                                    fontFamily: 'Poppins',
-                                    fontSize: controller.isNightMode.value
-                                        ? controller.arabicFontSize.value + 4
-                                        : controller.arabicFontSize.value,
-                                    height: 1.8,
-                                  ),
-                            ),
+                            _buildArabicText(context, ayat),
                             if (controller.showLatin.value ||
                                 controller.showTranslation.value) ...[
                               const SizedBox(height: 18),
@@ -1436,6 +1575,95 @@ class DetailSurahView extends GetView<DetailSurahController> {
         );
       },
     );
+  }
+
+  Widget _buildArabicText(BuildContext context, Ayat ayat) {
+    return Obx(() {
+      if (!controller.isMemorizationMode.value) {
+        return Text(
+          ayat.teksArab,
+          textAlign: TextAlign.right,
+          textDirection: TextDirection.rtl,
+          style: R.textStyle
+              .large(
+                color: _goldLight,
+                fontWeight: FontWeight.w500,
+              )
+              .copyWith(
+                fontFamily: 'Poppins',
+                fontSize: controller.isNightMode.value
+                    ? controller.arabicFontSize.value + 4
+                    : controller.arabicFontSize.value,
+                height: 1.8,
+              ),
+        );
+      }
+
+      final words = ayat.teksArab.split(' ');
+      final fontSize = controller.isNightMode.value
+          ? controller.arabicFontSize.value + 4
+          : controller.arabicFontSize.value;
+
+      return Container(
+        width: double.infinity,
+        alignment: Alignment.topRight,
+        child: Directionality(
+          textDirection: TextDirection.rtl,
+          child: Wrap(
+            alignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 6,
+            runSpacing: 10,
+            children: List.generate(words.length, (idx) {
+              final word = words[idx];
+              final isWordHidden = (idx + ayat.nomorAyat) % 3 == 0;
+              final key = "${ayat.nomorAyat}-$idx";
+              final isRevealed = controller.revealedWords.contains(key);
+
+              if (isWordHidden && !isRevealed) {
+                return GestureDetector(
+                  onTap: () => controller.revealWord(key),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: _goldDim.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: _goldDim.withValues(alpha: 0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: Text(
+                      ' ? ',
+                      style: R.textStyle
+                          .large(color: _gold)
+                          .copyWith(
+                            fontFamily: 'Poppins',
+                            fontSize: fontSize * 0.75,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ),
+                );
+              }
+
+              return Text(
+                word,
+                style: R.textStyle
+                    .large(
+                      color: (isWordHidden && isRevealed) ? _gold : _goldLight,
+                      fontWeight: FontWeight.w500,
+                    )
+                    .copyWith(
+                      fontFamily: 'Poppins',
+                      fontSize: fontSize,
+                    ),
+              );
+            }),
+          ),
+        ),
+      );
+    });
   }
 }
 

@@ -108,11 +108,11 @@ Memudahkan pengguna berbagi refleksi ayat Al-Quran.
 ### Sprint 3 — Prioritas Rendah (Diferensiasi & Premium Feel)
 
 #### 14. 📿 Mode Hafalan (Memorization Mode)
-Membantu pengguna menghafal Al-Quran secara bertahap dan sistematis.
-*   [ ] Tombol "Mode Hafalan" di Detail Surah → menyembunyikan sebagian teks Arab secara acak.
-*   [ ] Fitur audio loop per ayat: putar satu ayat N kali secara otomatis sebelum lanjut.
-*   [ ] Tandai ayat yang sedang/sudah dihafal dengan badge khusus.
-*   [ ] Buat tabel `hafalan_progress` untuk menyimpan status hafalan per ayat.
+Membuat pengguna menghafal Al-Quran secara bertahap dan sistematis.
+*   [x] Tombol "Mode Hafalan" di Detail Surah → menyembunyikan sebagian teks Arab secara acak.
+*   [x] Fitur audio loop per ayat: putar satu ayat N kali secara otomatis sebelum lanjut.
+*   [x] Tandai ayat yang sedang/sudah dihafal dengan badge khusus.
+*   [x] Buat tabel `hafalan_progress` untuk menyimpan status hafalan per ayat.
 
 #### 15. 🔍 Pencarian Lanjut (Advanced Search)
 Memperkuat kemampuan pencarian yang sudah ada.

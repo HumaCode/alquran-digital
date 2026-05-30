@@ -598,16 +598,24 @@ class _HomeViewState extends State<HomeView>
               if (_activeTab == 2)
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
-                    ),
-                    child: Row(
-                      children: [
-                        _buildBookmarkSubTab(0, 'Daftar Surah'),
-                        const SizedBox(width: 12),
-                        _buildBookmarkSubTab(1, 'Daftar Ayat'),
-                      ],
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: _bg2.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: _goldDim.withValues(alpha: 0.15),
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(child: _buildBookmarkSubTab(0, 'Daftar Surah')),
+                          const SizedBox(width: 4),
+                          Expanded(child: _buildBookmarkSubTab(1, 'Daftar Ayat')),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -1453,22 +1461,20 @@ class _HomeViewState extends State<HomeView>
           _activeBookmarkSubTab = index;
         });
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? _gold : _bg2.withValues(alpha: 0.5),
+          color: isSelected ? _gold : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected ? _gold : _goldDim.withValues(alpha: 0.15),
-            width: 1,
-          ),
         ),
+        alignment: Alignment.center,
         child: Text(
           label,
           style: R.textStyle.medium(
             color: isSelected ? _bg : _textSoft,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-          ).copyWith(fontSize: 13),
+          ).copyWith(fontSize: 12),
         ),
       ),
     );

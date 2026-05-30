@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../constants/r.dart';
 import '../controllers/arah_kiblat_controller.dart';
+import 'package:alquran_digital/app/components/widgets/widgets.dart';
 
 class ArahKiblatView extends StatefulWidget {
   const ArahKiblatView({super.key});
@@ -68,9 +69,7 @@ class _ArahKiblatViewState extends State<ArahKiblatView>
           Obx(() {
             if (controller.isLoading.value) {
               return const Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFD4A843)),
-                ),
+                child: CustomLoader(size: 60),
               );
             }
 

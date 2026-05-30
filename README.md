@@ -11,13 +11,16 @@ Aplikasi mobile komprehensif yang dirancang untuk membantu umat Muslim dalam men
 * **Arah Kiblat**: Kompas penunjuk arah kiblat yang presisi.
 * **Murottal**: Fitur pemutar audio Al-Quran (Murottal).
 * **Bookmark Ayat Al-Quran**: Menyimpan ayat favorit secara offline ke database SQLite lokal dengan tombol interaktif dan animasi getar gelombang yang halus saat dihapus.
-* **Pencarian Ayat Global**: Mencari kata kunci tertentu di seluruh Al-Quran (transliterasi latin & terjemahan Indonesia) lengkap dengan highlight kuning pada kata yang cocok.
+* **Pencarian Ayat Global & Lanjut (Advanced Search)**: Mencari kata kunci tertentu di seluruh Al-Quran (transliterasi latin & terjemahan Indonesia) lengkap dengan highlight kuning pada kata yang cocok. Ditambah dengan pencarian lanjut yang menyaring surah berdasarkan Makkiyah/Madaniyah, panjang surah (pendek, sedang, panjang), highlight dinamis, dan riwayat 10 pencarian terakhir.
 * **Pengaturan Adzan Kustom**: Fleksibilitas untuk menyalakan/mematikan (mute) suara adzan per waktu sholat (Subuh, Dzuhur, Ashar, Maghrib, Isya) secara granular.
 * **Pengingat Sebelum Adzan**: Opsi alarm pengingat bersiap wudhu (5-30 menit sebelum adzan) menggunakan notifikasi lokal.
-* **Widget Layar Utama (Home Screen)**: Widget native Android 3x2 bertema dark emerald premium yang menampilkan hitung mundur sholat berikutnya serta jadwal sholat hari ini secara real-time.
-* **Catatan Tafsir Pribadi & Tadabbur (Catatan Ayat)**: Fitur menulis, mengedit, dan menghapus refleksi pribadi (tadabbur) untuk setiap ayat secara offline, terintegrasi penuh dalam antarmuka 2-Tab premium (Bookmark & Catatan).
+* **Widget Layar Utama Diperluas (Expanded Home Widgets)**: Tiga widget native Android (Jadwal Sholat & Countdown Real-time, Ayat Harian Acak, dan Bar Progress Tilawah & Streak) yang mempercantik layar utama HP secara instan.
+* **Catatan Tafsir Pribadi & Tadabbur**: Menulis, mengedit, dan menghapus refleksi pribadi (tadabbur) per ayat secara offline. Lengkap dengan fitur **Ekspor ke File .txt** dan **Share WhatsApp** terformat siap kirim.
 * **Murottal Background Player**: Pemutaran audio murottal terus berjalan lancar di latar belakang (background) didukung dengan bar notifikasi media control dan lockscreen widget native OS.
 * **Target & Pelacak Tilawah Harian (Daily Tilawah Tracker)**: Melacak jumlah ayat yang dibaca per hari secara otomatis saat membuka surah, menghitung coretan streak tilawah beruntun, serta menyajikan visualisasi grafik progres 7 hari terakhir.
+* **Tracker Khatam Al-Quran**: Melacak surah yang selesai dibaca (tabel `surah_read_history`), menampilkan progress global di Beranda ("X dari 114 Surah selesai"), estimasi tanggal khatam otomatis berdasarkan tilawah harian, dan tombol penyelesaian surah di Detail Surah.
+* **Mode Hafalan (Memorization Mode)**: Membantu pengguna menghafal Al-Quran secara sistematis dengan menyembunyikan kata Arab secara acak, fitur audio loop per ayat sebanyak N kali, badge penanda status hafalan, dan penyimpanan progress di database `hafalan_progress`.
+* **Tema Warna Kustom**: Pilihan 4 palet warna premium (Emerald Green, Biru Safir, Ungu Amethyst, Coklat Tembaga) dengan mode gelap/terang adaptif, disimpan permanen di database lokal, dan dilengkapi area *Live Preview* interaktif di halaman Pengaturan terpusat.
 
 ## 📸 Cuplikan Layar (Screenshots)
 

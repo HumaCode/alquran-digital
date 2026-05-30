@@ -492,6 +492,22 @@ class HomeController extends GetxController {
     }
   }
 
+  Future<void> toggleTilawahReminder(bool enabled) async {
+    await updateTilawahReminder(
+      enabled: enabled,
+      hour: tilawahReminderHour.value,
+      minute: tilawahReminderMinute.value,
+    );
+  }
+
+  Future<void> updateTilawahReminderTime(int hour, int minute) async {
+    await updateTilawahReminder(
+      enabled: tilawahReminderEnabled.value,
+      hour: hour,
+      minute: minute,
+    );
+  }
+
   /// Dipanggil setelah fetchTilawahTracker agar body notif selalu fresh.
   Future<void> _rescheduleReminderIfNeeded() async {
     if (!tilawahReminderEnabled.value) return;

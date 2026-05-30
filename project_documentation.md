@@ -33,6 +33,7 @@ graph TD
     *   `detailSurah/`: Memuat teks ayat per 20 data secara dinamis menggunakan ScrollController.
     *   `doa/`: Kumpulan doa harian syar'i beserta filter pencarian.
     *   `splash/`: Splash screen interaktif dengan transisi logo memudar.
+    *   `settings/`: Pengaturan terpusat untuk tema kustom, target tilawah, dan sakelar notifikasi reminder.
 *   **`/routes`**: Pengaturan navigasi rute aplikasi (`app_pages.dart` dan `app_routes.dart`).
 
 ---
@@ -46,10 +47,15 @@ Akses aset, warna, gaya huruf, dan teks statis dipusatkan lewat singleton `R`. H
 *   **Teks Statis**: `R.string.appTitle`, `R.string.tryAgain`
 *   **Gaya Huruf**: `R.textStyle.medium(color: Colors.white)`
 
-### Sistem Warna Dinamis (Light & Dark Mode)
-Aplikasi mendukung peralihan tema yang adaptif di mana `AppColor` mendeteksi status tema aktif melalui `ThemeController` dan menyajikan warna yang sesuai:
-*   **Mode Terang (Light Mode)**: Menggunakan rasio kontras tinggi yang ramah bagi pengguna lansia. Warna teks utama disesuaikan menjadi lebih gelap tajam (`Color(0xFF193222)`) di atas latar belakang putih bersih untuk memastikan keterbacaan optimal.
-*   **Mode Gelap (Dark Mode)**: Menggunakan warna latar belakang hijau gelap premium (`Color(0xFF0D1F17)`) dengan teks berwarna sage lembut (`Color(0xFFD8E8D8)`) guna menghindari mata lelah di kondisi cahaya redup.
+### Sistem Warna Dinamis (Light & Dark Mode + Custom Color Themes)
+Aplikasi mendukung peralihan tema yang adaptif di mana `AppColor` mendeteksi status tema aktif dan tema warna yang dipilih melalui `ThemeController`:
+*   **Mode Terang (Light Mode)**: Menggunakan rasio kontras tinggi yang ramah bagi pengguna lansia. Warna teks utama disesuaikan menjadi lebih gelap tajam berdasarkan palet warna terpilih di atas latar belakang putih bersih untuk memastikan keterbacaan optimal.
+*   **Mode Gelap (Dark Mode)**: Menggunakan warna latar belakang gelap premium yang dilaraskan dengan palet warna terpilih (misal: Hijau Gelap Emerald, Biru Gelap Safir, Ungu Gelap Amethyst, Coklat Gelap Tembaga) dengan teks berwarna sage lembut guna menghindari mata lelah.
+*   **4 Pilihan Palet Warna**:
+    1.  **Emerald Green** (Default): Hijau bernuansa Islami.
+    2.  **Biru Safir (Sapphire Blue)**: Biru laut dalam yang menenangkan.
+    3.  **Ungu Amethyst (Amethyst Purple)**: Ungu anggun spiritual.
+    4.  **Coklat Tembaga (Copper Brown)**: Coklat hangat bersahaja.
 
 ---
 
@@ -71,6 +77,41 @@ Aplikasi mendukung peralihan tema yang adaptif di mana `AppColor` mendeteksi sta
 *   Penjadwalan waktu sholat menggunakan plugin `flutter_local_notifications` dan dikelola melalui `NotificationHelper`.
 *   Jadwal sholat harian diperoleh dari GPS koordinat, kemudian disimpan ke database lokal dan dijadwalkan secara otomatis menggunakan alarm eksak (`zonedSchedule` dengan mode `AndroidScheduleMode.exactAllowWhileIdle`).
 *   Menggunakan audio adzan kustom (`adzhan.mp3`) yang tersimpan di resource asli perangkat Android (`res/raw/adzhan.mp3`).
+
+### E. Target & Pelacak Tilawah Harian (Daily Tilawah Tracker)
+*   Melacak jumlah ayat yang selesai dibaca secara real-time setiap kali pengguna membuka detail surah.
+*   Menghitung streak tilawah berturut-turut untuk meningkatkan motivasi pengguna.
+*   Visualisasi grafik progres tilawah 7 hari terakhir yang interaktif.
+
+### F. Tracker Khatam Al-Quran
+*   **Database Tracking**: Menggunakan tabel `surah_read_history` untuk mendata surah mana saja yang sudah ditandai selesai dibaca oleh pengguna.
+*   **Progress Global**: Ditampilkan di Beranda berupa persentase kelengkapan tilawah ("X dari 114 Surah").
+*   **Estimasi Tanggal Khatam**: Menghitung secara otomatis sisa waktu dan estimasi tanggal khatam menggunakan total sisa ayat Al-Quran (6236 ayat) dibagi rata-rata tilawah harian pengguna.
+
+### G. Ekspor & Share Catatan Tadabbur
+*   **Share WhatsApp**: Tombol share cepat per catatan yang memformat teks secara dinamis (Teks Arab + Terjemahan Indonesia + Catatan Tadabbur Pribadi).
+*   **Ekspor Lokal**: Mengonversi dan menulis semua catatan tadabbur pengguna ke dalam satu file teks `.txt` di direktori penyimpanan lokal perangkat.
+
+### H. Pencarian Lanjut (Advanced Search)
+*   **Filter Makkiyah/Madaniyah**: Menyaring hasil pencarian berdasarkan klasifikasi tempat turunnya surah.
+*   **Filter Panjang Surah**: Klasifikasi durasi surah: Pendek (< 20 ayat), Sedang (20 - 100 ayat), dan Panjang (> 100 ayat).
+*   **Highlight Teks**: Memberikan mark/sorotan visual kuning pada teks Arab atau terjemahan yang sesuai dengan kata kunci pencarian.
+*   **Search History**: Menyimpan dan menampilkan 10 riwayat pencarian terakhir secara aman dan reaktif.
+
+### I. Mode Hafalan (Memorization Mode)
+*   **Penyembunyian Teks Acak**: Menyembunyikan kata-kata Arab tertentu secara acak (opsi menyembunyikan 30%, 50%, atau 70% kata) untuk menguji kekuatan ingatan hafalan pengguna.
+*   **Audio Loop Per Ayat**: Mengulang pemutaran audio murottal satu ayat sebanyak N kali sebelum berlanjut ke ayat berikutnya secara otomatis.
+*   **Hafalan Progress Tracking**: Menyimpan progress hafalan per ayat pada tabel `hafalan_progress` di SQLite lokal.
+
+### J. Perluasan Widget Layar Utama (Android App Widgets)
+*   **Widget Ayat Harian**: Menampilkan satu ayat Al-Quran secara acak setiap harinya yang diambil langsung dari database lokal via widget provider native.
+*   **Widget Progress Tilawah**: Widget bar progress melingkar/horizontal ringkas yang memperlihatkan capaian tilawah hari ini beserta streak tilawah pengguna langsung dari home screen.
+*   **Widget Countdown Sholat**: Widget jadwal sholat native dengan perhitungan mundur (countdown) sisa waktu sholat berikutnya secara real-time.
+
+### K. Tema Warna Kustom & Live Preview
+*   **4 Palet Warna Premium**: Integrasi tema warna Emerald (default), Biru Safir (Sapphire Blue), Ungu Amethyst (Amethyst Purple), dan Coklat Tembaga (Copper Brown).
+*   **Database Syncing**: Pilihan warna disimpan secara persisten di tabel metadata SQLite lokal.
+*   **Live Preview**: Halaman Pengaturan terpusat (`SettingsView`) menyajikan kartu pratinjau langsung yang mendemonstrasikan perpaduan warna dan mode tema secara instan saat opsi palet warna diketuk.
 
 ---
 

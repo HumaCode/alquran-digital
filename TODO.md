@@ -129,9 +129,9 @@ Mengembangkan widget Android yang sudah ada (`SholatWidgetProvider.kt`).
 
 #### 17. 🎨 Tema Warna Kustom
 Meningkatkan personalisasi tampilan aplikasi.
-*   [ ] Beberapa pilihan palet warna: Emerald (default), Biru Safir, Ungu Amethyst, Coklat Tembaga.
-*   [ ] Simpan pilihan tema ke database.
-*   [ ] Preview live saat memilih tema di halaman Pengaturan.
+*   [x] Beberapa pilihan palet warna: Emerald (default), Biru Safir, Ungu Amethyst, Coklat Tembaga.
+*   [x] Simpan pilihan tema ke database.
+*   [x] Preview live saat memilih tema di halaman Pengaturan.
 
 
 

@@ -13,6 +13,7 @@ abstract class Routes {
   static const MUROTAL = _Paths.MUROTAL;
   static const BOOKMARKS = _Paths.BOOKMARKS;
   static const STATISTIK = _Paths.STATISTIK;
+  static const SETTINGS = _Paths.SETTINGS;
 }
 
 abstract class _Paths {
@@ -27,4 +28,5 @@ abstract class _Paths {
   static const MUROTAL = '/murotal';
   static const BOOKMARKS = '/bookmarks';
   static const STATISTIK = '/statistik';
+  static const SETTINGS = '/settings';
 }

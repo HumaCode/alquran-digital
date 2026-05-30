@@ -1654,6 +1654,17 @@ class _HomeViewState extends State<HomeView>
                         _homeController.fetchTilawahTracker();
                       },
                     ),
+                    const SizedBox(height: 10),
+                    _buildDrawerItem(
+                      icon: Icons.settings_rounded,
+                      title: 'Pengaturan',
+                      subtitle: 'Tema, target tilawah, & notifikasi',
+                      onTap: () async {
+                        Navigator.pop(context);
+                        await Get.toNamed(Routes.SETTINGS);
+                        _homeController.fetchTilawahTracker();
+                      },
+                    ),
                   ],
                 ),
               ),

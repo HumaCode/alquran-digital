@@ -25,6 +25,9 @@ class _HomeViewState extends State<HomeView>
   Color get _bg2 => R.color.bg2;
   Color get _emeraldDark => R.color.emeraldDark;
   Color get _emeraldMedium => R.color.emeraldMedium;
+  Color get _emerald => R.color.emerald;
+  Color get _emeraldLight => R.color.emeraldLight;
+
 
   final HomeController _homeController = Get.find<HomeController>();
 

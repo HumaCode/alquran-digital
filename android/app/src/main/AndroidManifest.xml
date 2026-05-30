@@ -75,6 +75,26 @@
                 android:resource="@xml/sholat_widget_info" />
         </receiver>
 
+        <!-- Ayat Harian Widget Receiver -->
+        <receiver android:name=".AyatWidgetProvider" android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ayat_widget_info" />
+        </receiver>
+
+        <!-- Progress Tilawah Widget Receiver -->
+        <receiver android:name=".ProgressWidgetProvider" android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/progress_widget_info" />
+        </receiver>
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

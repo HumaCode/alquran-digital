@@ -123,9 +123,9 @@ Memperkuat kemampuan pencarian yang sudah ada.
 
 #### 16. 🏠 Widget Beranda Diperluas
 Mengembangkan widget Android yang sudah ada (`SholatWidgetProvider.kt`).
-*   [ ] Widget baru: "Ayat Harian" — tampilkan satu ayat Al-Quran secara acak setiap hari.
-*   [ ] Widget progress tilawah hari ini (bar progres ringkas).
-*   [ ] Perbarui widget sholat agar juga menampilkan countdown waktu sholat berikutnya secara real-time.
+*   [x] Widget baru: "Ayat Harian" — tampilkan satu ayat Al-Quran secara acak setiap hari.
+*   [x] Widget progress tilawah hari ini (bar progres ringkas).
+*   [x] Perbarui widget sholat agar juga menampilkan countdown waktu sholat berikutnya secara real-time.
 
 #### 17. 🎨 Tema Warna Kustom
 Meningkatkan personalisasi tampilan aplikasi.

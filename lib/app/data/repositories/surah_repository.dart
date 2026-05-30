@@ -244,5 +244,59 @@ class SurahRepository {
   Future<int> getCompletedSurahsCount() async {
     return await DatabaseHelper.instance.getCompletedSurahsCount();
   }
+
+  Future<Map<String, String>> getRandomAyat() async {
+    try {
+      final dbHelper = DatabaseHelper.instance;
+      final rawAyat = await dbHelper.getRandomAyat();
+      if (rawAyat != null) {
+        final surahNo = rawAyat['nomorSurah'] as int;
+        final ayatNo = rawAyat['nomorAyat'] as int;
+        final teksArab = rawAyat['teksArab'] as String;
+        final teksIndo = rawAyat['teksIndonesia'] as String;
+        
+        final db = await dbHelper.database;
+        final surahResult = await db.query('surahs', where: 'nomor = ?', whereArgs: [surahNo], limit: 1);
+        String surahName = "Al-Quran";
+        if (surahResult.isNotEmpty) {
+          surahName = surahResult.first['namaLatin'] as String;
+        }
+        
+        return {
+          'arab': teksArab,
+          'indo': teksIndo,
+          'ref': 'QS. $surahName: $ayatNo',
+        };
+      }
+    } catch (e) {
+      print('Gagal mengambil ayat acak dari DB: $e');
+    }
+    
+    // Predefined fallback verses
+    final fallbacks = [
+      {
+        'arab': 'اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ',
+        'indo': 'Allah, tidak ada tuhan selain Dia. Yang Maha Hidup, yang terus-menerus mengurus (makhluk-Nya)...',
+        'ref': 'QS. Al-Baqarah: 255'
+      },
+      {
+        'arab': 'يَا أَيُّهَا الَّذِينَ آمَنُوا كُتِبَ عَلَيْكُمُ الصِّيَامُ',
+        'indo': 'Wahai orang-orang yang beriman! Diwajibkan atas kamu berpuasa sebagaimana diwajibkan atas orang sebelum kamu...',
+        'ref': 'QS. Al-Baqarah: 183'
+      },
+      {
+        'arab': 'إِنَّ مَعَ الْعُسْرِ يُسْرًا',
+        'indo': 'Sesungguhnya bersama kesulitan ada kemudahan.',
+        'ref': 'QS. Al-Insyirah: 6'
+      },
+      {
+        'arab': 'ادْعُونِي أَسْتَجِبْ لَكُمْ',
+        'indo': 'Berdoalah kepada-Ku, niscaya akan Aku perkenankan bagimu.',
+        'ref': 'QS. Ghafir: 60'
+      }
+    ];
+    final index = DateTime.now().day % fallbacks.length;
+    return fallbacks[index];
+  }
 }
 

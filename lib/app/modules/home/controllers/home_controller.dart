@@ -6,6 +6,7 @@ import '../../../data/models/surah_model.dart';
 import '../../../data/repositories/surah_repository.dart';
 import '../../../data/providers/database_helper.dart';
 import '../../../data/providers/notification_helper.dart';
+import '../../../data/providers/widget_helper.dart';
 
 class HomeController extends GetxController {
   final SurahRepository _repository;
@@ -80,6 +81,7 @@ class HomeController extends GetxController {
     fetchKhatamProgress();
     _loadReminderSettings();
     loadSearchHistory();
+    fetchAndSetDailyAyat();
   }
 
   @override
@@ -420,8 +422,28 @@ class HomeController extends GetxController {
       tilawahToday.value = todayCount;
       // Perbarui body notifikasi reminder agar selalu menampilkan sisa ayat terkini
       _rescheduleReminderIfNeeded();
+
+      // Perbarui widget progress
+      await WidgetHelper.updateProgressWidget(
+        today: todayCount,
+        target: target,
+        streak: streak,
+      );
     } catch (e) {
       print('Gagal mengambil data tilawah tracker: $e');
+    }
+  }
+
+  Future<void> fetchAndSetDailyAyat() async {
+    try {
+      final ayatData = await _repository.getRandomAyat();
+      await WidgetHelper.updateAyatWidget(
+        arab: ayatData['arab'] ?? '',
+        indo: ayatData['indo'] ?? '',
+        ref: ayatData['ref'] ?? '',
+      );
+    } catch (e) {
+      print('Gagal memuat ayat harian untuk widget: $e');
     }
   }
 

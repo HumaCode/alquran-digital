@@ -21,7 +21,9 @@ class SholatWidgetProvider : AppWidgetProvider() {
             val location = prefs.getString("location", "Kota Pekalongan")
             val nextPrayerName = prefs.getString("next_prayer_name", "-")
             val nextPrayerTime = prefs.getString("next_prayer_time", "--:--")
-            val countdown = prefs.getString("countdown", "")
+            
+            // Dynamic countdown computed on render
+            val countdown = calculateCountdown(nextPrayerTime)
             
             val subuh = prefs.getString("time_subuh", "--:--")
             val dzuhur = prefs.getString("time_dzuhur", "--:--")
@@ -43,6 +45,40 @@ class SholatWidgetProvider : AppWidgetProvider() {
             
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views)
+        }
+    }
+
+    private fun calculateCountdown(nextTime: String?): String {
+        if (nextTime == null || nextTime == "--:--" || !nextTime.contains(":")) return ""
+        try {
+            val parts = nextTime.split(":")
+            val targetHour = parts[0].toIntOrNull() ?: return ""
+            val targetMin = parts[1].toIntOrNull() ?: return ""
+
+            val now = java.util.Calendar.getInstance()
+            val target = java.util.Calendar.getInstance().apply {
+                set(java.util.Calendar.HOUR_OF_DAY, targetHour)
+                set(java.util.Calendar.MINUTE, targetMin)
+                set(java.util.Calendar.SECOND, 0)
+                set(java.util.Calendar.MILLISECOND, 0)
+            }
+
+            if (target.before(now)) {
+                target.add(java.util.Calendar.DATE, 1)
+            }
+
+            val diffMs = target.timeInMillis - now.timeInMillis
+            val diffMins = (diffMs / (1000 * 60)).toInt()
+
+            return if (diffMins > 60) {
+                val hours = diffMins / 60
+                val mins = diffMins % 60
+                "$hours jam $mins mnt lagi"
+            } else {
+                "$diffMins mnt lagi"
+            }
+        } catch (e: Exception) {
+            return ""
         }
     }
 }

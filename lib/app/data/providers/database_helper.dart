@@ -878,6 +878,15 @@ class DatabaseHelper {
     return await db.query('hafalan_progress');
   }
 
+  Future<Map<String, dynamic>?> getRandomAyat() async {
+    final db = await instance.database;
+    final result = await db.rawQuery('SELECT * FROM ayats ORDER BY RANDOM() LIMIT 1');
+    if (result.isNotEmpty) {
+      return result.first;
+    }
+    return null;
+  }
+
   String _formatDate(DateTime date) {
     return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
   }

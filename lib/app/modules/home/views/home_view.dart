@@ -32,6 +32,7 @@ class _HomeViewState extends State<HomeView>
   late Animation<double> _fadeAnim;
 
   int _activeTab = 0;
+  int _activeBookmarkSubTab = 0;
   final List<String> _tabs = [
     R.string.tabDaftarSurat,
     R.string.tabTerakhirDibaca,
@@ -86,8 +87,10 @@ class _HomeViewState extends State<HomeView>
                   IconButton(
                     icon: Icon(Icons.bookmark_rounded, color: _gold),
                     tooltip: 'Bookmark Ayat',
-                    onPressed: () {
-                      Get.toNamed(Routes.BOOKMARKS);
+                    onPressed: () async {
+                      await Get.toNamed(Routes.BOOKMARKS);
+                      _homeController.fetchBookmarks();
+                      _homeController.fetchBookmarkedAyats();
                     },
                   ),
                   Obx(() {
@@ -420,6 +423,24 @@ class _HomeViewState extends State<HomeView>
                   ),
                 ),
 
+              // ── Bookmark Sub-Tab Selector ──────────────────────────────────
+              if (_activeTab == 2)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 12,
+                    ),
+                    child: Row(
+                      children: [
+                        _buildBookmarkSubTab(0, 'Daftar Surah'),
+                        const SizedBox(width: 12),
+                        _buildBookmarkSubTab(1, 'Daftar Ayat'),
+                      ],
+                    ),
+                  ),
+                ),
+
               // ── Tab Content ──────────────────────────────────────────────
               if (_activeTab == 0) ...[
                 // Daftar Surah (Dynamic from API)
@@ -518,6 +539,8 @@ class _HomeViewState extends State<HomeView>
                             arguments: surahList[i].nomor,
                           );
                           _homeController.fetchLastRead();
+                          _homeController.fetchBookmarks();
+                          _homeController.fetchBookmarkedAyats();
                         },
                       ),
                       childCount: surahList.length,
@@ -561,6 +584,8 @@ class _HomeViewState extends State<HomeView>
                               },
                             );
                             _homeController.fetchLastRead();
+                            _homeController.fetchBookmarks();
+                            _homeController.fetchBookmarkedAyats();
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -646,79 +671,211 @@ class _HomeViewState extends State<HomeView>
               ] else ...[
                 // Bookmarks
                 Obx(() {
-                  final listToUse = _homeController.allSurahs;
-                  final bookmarkedList = listToUse
-                      .where(
-                        (s) => _homeController.bookmarkedSurahIds.contains(
-                          s.nomor,
-                        ),
-                      )
-                      .toList();
+                  if (_activeBookmarkSubTab == 0) {
+                    // Daftar Surah Bookmark
+                    final listToUse = _homeController.allSurahs;
+                    final bookmarkedList = listToUse
+                        .where(
+                          (s) => _homeController.bookmarkedSurahIds.contains(
+                            s.nomor,
+                          ),
+                        )
+                        .toList();
 
-                  if (bookmarkedList.isEmpty) {
-                    return SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 60),
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.bookmark_outline_rounded,
-                              size: 48,
-                              color: _goldDim.withValues(alpha: 0.4),
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              'Belum ada bookmark',
-                              style: R.textStyle.medium(
-                                fontWeight: FontWeight.w600,
-                                color: _textSoft,
+                    if (bookmarkedList.isEmpty) {
+                      return SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 60),
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.bookmark_outline_rounded,
+                                size: 48,
+                                color: _goldDim.withValues(alpha: 0.4),
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Ketuk ikon bookmark untuk menandai surah favorit.',
-                              style: R.textStyle.small(
-                                color: _textSoft.withValues(alpha: 0.4),
+                              const SizedBox(height: 12),
+                              Text(
+                                'Belum ada bookmark surah',
+                                style: R.textStyle.medium(
+                                  fontWeight: FontWeight.w600,
+                                  color: _textSoft,
+                                ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 4),
+                              Text(
+                                'Ketuk ikon bookmark untuk menandai surah favorit.',
+                                style: R.textStyle.small(
+                                  color: _textSoft.withValues(alpha: 0.4),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
+                      );
+                    }
+                    return SliverList(
+                      delegate: SliverChildBuilderDelegate((context, i) {
+                        final item = bookmarkedList[i];
+                        return SurahTile(
+                          item: item,
+                          gold: _gold,
+                          goldLight: _goldLight,
+                          goldDim: _goldDim,
+                          textSoft: _textSoft,
+                          isBookmarked: true,
+                          onBookmarkTapped: () async {
+                            final added = await _homeController.toggleBookmark(
+                              item.nomor,
+                            );
+                            if (context.mounted) {
+                              CustomToast.show(
+                                context,
+                                message: added
+                                    ? 'Surah ${item.namaLatin} ditambahkan ke bookmark'
+                                    : 'Surah ${item.namaLatin} dihapus dari bookmark',
+                              );
+                            }
+                          },
+                          onTap: () async {
+                            await Get.toNamed(
+                              Routes.DETAIL_SURAH,
+                              arguments: item.nomor,
+                            );
+                            _homeController.fetchLastRead();
+                            _homeController.fetchBookmarks();
+                            _homeController.fetchBookmarkedAyats();
+                          },
+                        );
+                      }, childCount: bookmarkedList.length),
+                    );
+                  } else {
+                    // Daftar Ayat Bookmark
+                    final list = _homeController.bookmarkedAyats;
+                    if (list.isEmpty) {
+                      return SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 60),
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.bookmark_outline_rounded,
+                                size: 48,
+                                color: _goldDim.withValues(alpha: 0.4),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                'Belum ada bookmark ayat',
+                                style: R.textStyle.medium(
+                                  fontWeight: FontWeight.w600,
+                                  color: _textSoft,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Ketuk ikon bookmark di detail surah untuk menyimpan ayat.',
+                                style: R.textStyle.small(
+                                  color: _textSoft.withValues(alpha: 0.4),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
+                    return SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final item = list[index];
+                        final nomorSurah = item['nomorSurah'] as int;
+                        final namaSurah = item['namaSurah'] as String;
+                        final nomorAyat = item['nomorAyat'] as int;
+                        final teksArab = item['teksArab'] as String;
+                        final teksIndonesia = item['teksIndonesia'] as String;
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: _bg2.withValues(alpha: 0.6),
+                              borderRadius: BorderRadius.circular(18),
+                              border: Border.all(color: _goldDim.withValues(alpha: 0.12)),
+                            ),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(18),
+                              onTap: () async {
+                                await Get.toNamed(
+                                  Routes.DETAIL_SURAH,
+                                  arguments: {
+                                    'nomor': nomorSurah,
+                                    'ayat': nomorAyat,
+                                  },
+                                );
+                                _homeController.fetchLastRead();
+                                _homeController.fetchBookmarks();
+                                _homeController.fetchBookmarkedAyats();
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                          decoration: BoxDecoration(
+                                            color: _goldDim.withValues(alpha: 0.15),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Text(
+                                            'QS. $namaSurah [$nomorSurah:$nomorAyat]',
+                                            style: R.textStyle.smallBold.copyWith(color: _goldLight),
+                                          ),
+                                        ),
+                                        Material(
+                                          color: Colors.transparent,
+                                          child: InkWell(
+                                            borderRadius: BorderRadius.circular(8),
+                                            onTap: () {
+                                              _showDeleteConfirmation(context, nomorSurah, namaSurah, nomorAyat);
+                                            },
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(6),
+                                              child: Icon(Icons.delete_outline_rounded, color: R.color.red, size: 20),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      teksArab,
+                                      textAlign: TextAlign.right,
+                                      style: R.textStyle.large(
+                                        color: _goldLight,
+                                        fontWeight: FontWeight.w500,
+                                      ).copyWith(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 20,
+                                        height: 1.8,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      teksIndonesia,
+                                      textAlign: TextAlign.left,
+                                      style: R.textStyle.medium(color: _textSoft),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }, childCount: list.length),
                     );
                   }
-                  return SliverList(
-                    delegate: SliverChildBuilderDelegate((context, i) {
-                      final item = bookmarkedList[i];
-                      return SurahTile(
-                        item: item,
-                        gold: _gold,
-                        goldLight: _goldLight,
-                        goldDim: _goldDim,
-                        textSoft: _textSoft,
-                        isBookmarked: true,
-                        onBookmarkTapped: () async {
-                          final added = await _homeController.toggleBookmark(
-                            item.nomor,
-                          );
-                          if (context.mounted) {
-                            CustomToast.show(
-                              context,
-                              message: added
-                                  ? 'Surah ${item.namaLatin} ditambahkan ke bookmark'
-                                  : 'Surah ${item.namaLatin} dihapus dari bookmark',
-                            );
-                          }
-                        },
-                        onTap: () async {
-                          await Get.toNamed(
-                            Routes.DETAIL_SURAH,
-                            arguments: item.nomor,
-                          );
-                          _homeController.fetchLastRead();
-                        },
-                      );
-                    }, childCount: bookmarkedList.length),
-                  );
                 }),
               ],
 
@@ -935,9 +1092,11 @@ class _HomeViewState extends State<HomeView>
                       icon: Icons.bookmark_rounded,
                       title: R.string.sidebarBookmarks,
                       subtitle: R.string.sidebarBookmarksSubtitle,
-                      onTap: () {
+                      onTap: () async {
                         Navigator.pop(context);
-                        Get.toNamed(Routes.BOOKMARKS);
+                        await Get.toNamed(Routes.BOOKMARKS);
+                        _homeController.fetchBookmarks();
+                        _homeController.fetchBookmarkedAyats();
                       },
                     ),
                   ],
@@ -959,6 +1118,118 @@ class _HomeViewState extends State<HomeView>
                     ),
                   ],
                 ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBookmarkSubTab(int index, String label) {
+    final isSelected = _activeBookmarkSubTab == index;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _activeBookmarkSubTab = index;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? _gold : _bg2.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? _gold : _goldDim.withValues(alpha: 0.15),
+            width: 1,
+          ),
+        ),
+        child: Text(
+          label,
+          style: R.textStyle.medium(
+            color: isSelected ? _bg : _textSoft,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+          ).copyWith(fontSize: 13),
+        ),
+      ),
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context, int nomorSurah, String namaSurah, int nomorAyat) {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        backgroundColor: _bg2,
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: R.color.red.withValues(alpha: 0.1),
+                ),
+                child: Icon(
+                  Icons.delete_forever_rounded,
+                  size: 40,
+                  color: R.color.red,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Hapus Bookmark',
+                style: R.textStyle.largeBold.copyWith(color: _textSoft),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Apakah Anda yakin ingin menghapus QS. $namaSurah [$nomorSurah:$nomorAyat] dari daftar bookmark?',
+                textAlign: TextAlign.center,
+                style: R.textStyle.medium(color: _textSoft.withValues(alpha: 0.7)),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: _goldDim.withValues(alpha: 0.3)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      onPressed: () => Get.back(),
+                      child: Text(
+                        'Batal',
+                        style: R.textStyle.medium(color: _textSoft.withValues(alpha: 0.5)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: R.color.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      onPressed: () {
+                        _homeController.deleteAyatBookmark(nomorSurah, nomorAyat);
+                        Get.back();
+                      },
+                      child: Text(
+                        'Hapus',
+                        style: R.textStyle.mediumBold.copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

@@ -29,6 +29,7 @@ class HomeController extends GetxController {
 
   // Bookmark states
   final bookmarkedSurahIds = <int>[].obs;
+  final bookmarkedAyats = <Map<String, dynamic>>[].obs;
 
   List<DataSurah> _allSurahs = [];
   List<DataSurah> get allSurahs => _allSurahs;
@@ -42,6 +43,7 @@ class HomeController extends GetxController {
     fetchSurahs();
     fetchLastRead();
     fetchBookmarks();
+    fetchBookmarkedAyats();
   }
 
   @override
@@ -150,6 +152,24 @@ class HomeController extends GetxController {
       bookmarkedSurahIds.assignAll(list);
     } catch (e) {
       print('Gagal mengambil bookmark: $e');
+    }
+  }
+
+  Future<void> fetchBookmarkedAyats() async {
+    try {
+      final list = await _repository.getBookmarksList();
+      bookmarkedAyats.assignAll(list);
+    } catch (e) {
+      print('Gagal mengambil bookmark ayat: $e');
+    }
+  }
+
+  Future<void> deleteAyatBookmark(int nomorSurah, int nomorAyat) async {
+    try {
+      await _repository.deleteBookmark(nomorSurah, nomorAyat);
+      await fetchBookmarkedAyats();
+    } catch (e) {
+      print('Gagal menghapus bookmark ayat: $e');
     }
   }
 

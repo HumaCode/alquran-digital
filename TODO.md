@@ -77,9 +77,9 @@ Mengingatkan pengguna jika target tilawah harian belum tercapai di penghujung ha
 
 #### 10. 🌙 Mode Baca Malam (Night Reader Mode)
 Memberikan kenyamanan membaca Al-Quran di malam hari tanpa menyilaukan mata.
-*   [ ] Tambahkan tombol "Mode Malam" di AppBar `DetailSurahView`.
-*   [ ] Mode Malam: background hitam pekat `#0A0A0A`, teks Arab emas redup, font lebih besar (+4pt), tidak ada efek animasi.
-*   [ ] Simpan preferensi mode ke `SharedPreferences` agar persisten.
+*   [x] Tambahkan tombol "Mode Malam" di AppBar `DetailSurahView`.
+*   [x] Mode Malam: background hitam pekat `#0A0A0A`, teks Arab emas redup, font lebih besar (+4pt), tidak ada efek animasi.
+*   [x] Simpan preferensi mode ke `SharedPreferences` agar persisten.
 
 ---
 

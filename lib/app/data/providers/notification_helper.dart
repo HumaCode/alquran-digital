@@ -3,6 +3,16 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import '../models/jadwal_sholat_model.dart';
 
+@pragma('vm:entry-point')
+void notificationTapBackground(NotificationResponse notificationResponse) {
+  if (notificationResponse.actionId == 'mute_adzhan') {
+    if (notificationResponse.id != null) {
+      FlutterLocalNotificationsPlugin().cancel(id: notificationResponse.id!);
+      print('Adzan dimatikan untuk ID: ${notificationResponse.id}');
+    }
+  }
+}
+
 class NotificationHelper {
   static final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
@@ -46,6 +56,7 @@ class NotificationHelper {
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         // Handle click if needed
       },
+      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
 
     // Request permissions for Android 13+
@@ -74,6 +85,13 @@ class NotificationHelper {
       sound: const RawResourceAndroidNotificationSound('adzhan'),
       playSound: true,
       enableVibration: true,
+      actions: <AndroidNotificationAction>[
+        const AndroidNotificationAction(
+          'mute_adzhan',
+          'Matikan Adzan',
+          showsUserInterface: false,
+        ),
+      ],
     );
 
     final notificationDetails = NotificationDetails(android: androidDetails);

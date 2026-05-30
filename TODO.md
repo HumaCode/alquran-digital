@@ -116,10 +116,10 @@ Membantu pengguna menghafal Al-Quran secara bertahap dan sistematis.
 
 #### 15. 🔍 Pencarian Lanjut (Advanced Search)
 Memperkuat kemampuan pencarian yang sudah ada.
-*   [ ] Filter hasil pencarian: Makkiyah / Madaniyah.
-*   [ ] Filter berdasarkan panjang surah (pendek < 20 ayat / sedang / panjang).
-*   [ ] Highlight teks yang cocok dengan query di hasil pencarian.
-*   [ ] Riwayat pencarian (history 10 terakhir).
+*   [x] Filter hasil pencarian: Makkiyah / Madaniyah.
+*   [x] Filter berdasarkan panjang surah (pendek < 20 ayat / sedang / panjang).
+*   [x] Highlight teks yang cocok dengan query di hasil pencarian.
+*   [x] Riwayat pencarian (history 10 terakhir).
 
 #### 16. 🏠 Widget Beranda Diperluas
 Mengembangkan widget Android yang sudah ada (`SholatWidgetProvider.kt`).

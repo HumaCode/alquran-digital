@@ -9,6 +9,7 @@ class SurahTile extends StatelessWidget {
   final bool isBookmarked;
   final VoidCallback? onBookmarkTapped;
   final VoidCallback? onTap;
+  final String searchQuery;
 
   const SurahTile({
     super.key,
@@ -20,6 +21,7 @@ class SurahTile extends StatelessWidget {
     this.isBookmarked = false,
     this.onBookmarkTapped,
     this.onTap,
+    this.searchQuery = '',
   });
 
   @override
@@ -62,8 +64,9 @@ class SurahTile extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      _buildHighlightedText(
                         item.namaLatin,
+                        searchQuery,
                         style: R.textStyle.medium(
                           fontWeight: FontWeight.w600,
                           color: textSoft,
@@ -71,6 +74,7 @@ class SurahTile extends StatelessWidget {
                           fontSize: 15,
                           fontFamily: 'Poppins',
                         ),
+                        highlightColor: gold,
                       ),
                       const SizedBox(height: 2),
                       Text(
@@ -118,6 +122,54 @@ class SurahTile extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildHighlightedText(
+    String text,
+    String query, {
+    required TextStyle style,
+    required Color highlightColor,
+  }) {
+    if (query.isEmpty) {
+      return Text(text, style: style);
+    }
+
+    final matches = query.toLowerCase();
+    final textLower = text.toLowerCase();
+    final spans = <TextSpan>[];
+
+    int start = 0;
+    int index = textLower.indexOf(matches, start);
+
+    while (index != -1) {
+      if (index > start) {
+        spans.add(TextSpan(
+          text: text.substring(start, index),
+          style: style,
+        ));
+      }
+      spans.add(TextSpan(
+        text: text.substring(index, index + query.length),
+        style: style.copyWith(
+          color: highlightColor,
+          fontWeight: FontWeight.bold,
+          backgroundColor: highlightColor.withValues(alpha: 0.15),
+        ),
+      ));
+      start = index + query.length;
+      index = textLower.indexOf(matches, start);
+    }
+
+    if (start < text.length) {
+      spans.add(TextSpan(
+        text: text.substring(start),
+        style: style,
+      ));
+    }
+
+    return RichText(
+      text: TextSpan(children: spans),
     );
   }
 }

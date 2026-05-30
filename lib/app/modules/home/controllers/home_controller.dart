@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../data/models/surah_model.dart';
 import '../../../data/repositories/surah_repository.dart';
 import '../../../data/providers/database_helper.dart';
@@ -27,6 +28,13 @@ class HomeController extends GetxController {
   final searchedAyats = <Map<String, dynamic>>[].obs;
   final isSearchLoading = false.obs;
   Timer? _searchDebounce;
+
+  // Advanced Search & Filters states
+  final filterPlace = 'all'.obs; // 'all', 'Makkiyah', 'Madaniyah'
+  final filterLength = 'all'.obs; // 'all', 'short', 'medium', 'long'
+  final searchHistory = <String>[].obs;
+  final _rawSearchedAyats = <Map<String, dynamic>>[];
+  static const String _historyKey = 'search_history_queries';
 
   // Last Read states
   final lastReadSurahNomor = 0.obs;
@@ -71,6 +79,7 @@ class HomeController extends GetxController {
     fetchTilawahTracker();
     fetchKhatamProgress();
     _loadReminderSettings();
+    loadSearchHistory();
   }
 
   @override
@@ -128,26 +137,36 @@ class HomeController extends GetxController {
     searchQuery.value = query;
     _searchDebounce?.cancel();
 
-    if (query.trim().isEmpty) {
+    if (query.trim().isEmpty && filterPlace.value == 'all' && filterLength.value == 'all') {
       searchedAyats.clear();
+      _rawSearchedAyats.clear();
       surahs.clear();
       _loadedCount = 0;
       loadNextPage();
     } else {
       if (searchType.value == 'surah') {
-        final normalizedQuery = query.toLowerCase();
-        final filtered = _allSurahs.where((s) {
-          return s.namaLatin.toLowerCase().contains(normalizedQuery) ||
-              s.nama.toLowerCase().contains(normalizedQuery) ||
-              s.arti.toLowerCase().contains(normalizedQuery);
-        }).toList();
-        surahs.assignAll(filtered);
+        applyFilters();
+        if (query.trim().length >= 2) {
+          _searchDebounce = Timer(const Duration(milliseconds: 1000), () {
+            addSearchHistory(query.trim());
+          });
+        }
       } else {
+        if (query.trim().isEmpty) {
+          searchedAyats.clear();
+          _rawSearchedAyats.clear();
+          return;
+        }
         isSearchLoading.value = true;
-        _searchDebounce = Timer(const Duration(milliseconds: 300), () async {
+        _searchDebounce = Timer(const Duration(milliseconds: 500), () async {
           try {
             final results = await DatabaseHelper.instance.searchAyat(query);
-            searchedAyats.assignAll(results);
+            _rawSearchedAyats.clear();
+            _rawSearchedAyats.addAll(results);
+            applyFilters();
+            if (query.trim().length >= 2) {
+              addSearchHistory(query.trim());
+            }
           } catch (e) {
             debugPrint('Error searching ayat: $e');
           } finally {
@@ -167,6 +186,136 @@ class HomeController extends GetxController {
     searchController.clear();
     _searchDebounce?.cancel();
     onSearchChanged('');
+  }
+
+  void applyFilters() {
+    final query = searchQuery.value.trim().toLowerCase();
+    
+    if (searchType.value == 'surah') {
+      Iterable<DataSurah> filtered = _allSurahs;
+      
+      // Filter by search query
+      if (query.isNotEmpty) {
+        filtered = filtered.where((s) =>
+            s.namaLatin.toLowerCase().contains(query) ||
+            s.nama.toLowerCase().contains(query) ||
+            s.arti.toLowerCase().contains(query));
+      }
+      
+      // Filter by tempatTurun (Makkiyah / Madaniyah)
+      if (filterPlace.value != 'all') {
+        final isMekah = filterPlace.value == 'Makkiyah';
+        filtered = filtered.where((s) {
+          final tempat = s.tempatTurun.toLowerCase();
+          return isMekah 
+              ? (tempat == 'mekah' || tempat.contains('makki') || tempat.contains('mekki')) 
+              : (tempat == 'madinah' || tempat.contains('mada'));
+        });
+      }
+      
+      // Filter by length
+      if (filterLength.value != 'all') {
+        filtered = filtered.where((s) {
+          final count = s.jumlahAyat;
+          if (filterLength.value == 'short') return count < 20;
+          if (filterLength.value == 'medium') return count >= 20 && count <= 100;
+          return count > 100; // 'long'
+        });
+      }
+      
+      surahs.assignAll(filtered.toList());
+    } else {
+      Iterable<Map<String, dynamic>> filtered = _rawSearchedAyats;
+      
+      // Filter by tempatTurun
+      if (filterPlace.value != 'all') {
+        final isMekah = filterPlace.value == 'Makkiyah';
+        filtered = filtered.where((item) {
+          final tempat = (item['tempatTurun'] as String? ?? '').toLowerCase();
+          return isMekah 
+              ? (tempat == 'mekah' || tempat.contains('makki') || tempat.contains('mekki')) 
+              : (tempat == 'madinah' || tempat.contains('mada'));
+        });
+      }
+      
+      // Filter by length
+      if (filterLength.value != 'all') {
+        filtered = filtered.where((item) {
+          final count = item['jumlahAyat'] as int? ?? 0;
+          if (filterLength.value == 'short') return count < 20;
+          if (filterLength.value == 'medium') return count >= 20 && count <= 100;
+          return count > 100; // 'long'
+        });
+      }
+      
+      searchedAyats.assignAll(filtered.toList());
+    }
+  }
+
+  void setFilterPlace(String place) {
+    filterPlace.value = place;
+    applyFilters();
+  }
+
+  void setFilterLength(String length) {
+    filterLength.value = length;
+    applyFilters();
+  }
+
+  void clearFilters() {
+    filterPlace.value = 'all';
+    filterLength.value = 'all';
+    applyFilters();
+  }
+
+  Future<void> loadSearchHistory() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final list = prefs.getStringList(_historyKey);
+      if (list != null) {
+        searchHistory.assignAll(list);
+      }
+    } catch (e) {
+      debugPrint('Error loading search history: $e');
+    }
+  }
+
+  Future<void> addSearchHistory(String query) async {
+    final trimmed = query.trim();
+    if (trimmed.isEmpty) return;
+
+    searchHistory.remove(trimmed);
+    searchHistory.insert(0, trimmed);
+    if (searchHistory.length > 10) {
+      searchHistory.removeLast();
+    }
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList(_historyKey, searchHistory);
+    } catch (e) {
+      debugPrint('Error saving search history: $e');
+    }
+  }
+
+  Future<void> deleteHistoryItem(String query) async {
+    searchHistory.remove(query);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList(_historyKey, searchHistory);
+    } catch (e) {
+      debugPrint('Error deleting history item: $e');
+    }
+  }
+
+  Future<void> clearSearchHistory() async {
+    searchHistory.clear();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_historyKey);
+    } catch (e) {
+      debugPrint('Error clearing search history: $e');
+    }
   }
 
   Future<void> fetchSurahs() async {

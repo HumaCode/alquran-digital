@@ -574,7 +574,9 @@ class DatabaseHelper {
         a.teksArab, 
         a.teksLatin, 
         a.teksIndonesia, 
-        s.namaLatin AS namaSurah 
+        s.namaLatin AS namaSurah,
+        s.tempatTurun,
+        s.jumlahAyat
       FROM ayats a 
       JOIN surahs s ON a.nomorSurah = s.nomor 
       WHERE a.teksLatin LIKE ? OR a.teksIndonesia LIKE ?

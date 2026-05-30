@@ -35,6 +35,7 @@ class _HomeViewState extends State<HomeView>
   late Animation<double> _fadeAnim;
 
   int _activeTab = 0;
+  bool _showFilters = false;
   int _activeBookmarkSubTab = 0;
   final List<String> _tabs = [
     R.string.tabDaftarSurat,
@@ -728,8 +729,12 @@ class _HomeViewState extends State<HomeView>
                               color: _goldDim,
                               size: 20,
                             ),
-                            suffixIcon: _homeController.searchQuery.isNotEmpty
-                                ? IconButton(
+                            suffixIcon: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                if (_homeController.searchQuery.isNotEmpty)
+                                  IconButton(
                                     icon: Icon(
                                       Icons.clear_rounded,
                                       color: _goldDim,
@@ -737,8 +742,26 @@ class _HomeViewState extends State<HomeView>
                                     ),
                                     onPressed: () =>
                                         _homeController.clearSearch(),
-                                  )
-                                : null,
+                                  ),
+                                Obx(() {
+                                  final hasFilters = _homeController.filterPlace.value != 'all' ||
+                                      _homeController.filterLength.value != 'all';
+                                  return IconButton(
+                                    icon: Icon(
+                                      Icons.tune_rounded,
+                                      color: hasFilters ? _gold : _goldDim,
+                                      size: 20,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _showFilters = !_showFilters;
+                                      });
+                                    },
+                                  );
+                                }),
+                                const SizedBox(width: 8),
+                              ],
+                            ),
                             border: InputBorder.none,
                             contentPadding: const EdgeInsets.symmetric(
                               horizontal: 20,
@@ -750,6 +773,10 @@ class _HomeViewState extends State<HomeView>
                     ),
                   ),
                 ),
+
+              // ── Advanced Filters Panel ───────────────────────────────────
+              if (_activeTab == 0)
+                _buildAdvancedFiltersPanel(),
 
               // ── Search Type Selector ───────────────────────────────────────
               if (_activeTab == 0)
@@ -776,6 +803,10 @@ class _HomeViewState extends State<HomeView>
                     ),
                   ),
                 ),
+
+              // ── Search History Section ───────────────────────────────────
+              if (_activeTab == 0)
+                _buildSearchHistorySection(),
 
               // ── Bookmark Sub-Tab Selector ──────────────────────────────────
               if (_activeTab == 2)
@@ -1029,6 +1060,7 @@ class _HomeViewState extends State<HomeView>
                         goldLight: _goldLight,
                         goldDim: _goldDim,
                         textSoft: _textSoft,
+                        searchQuery: _homeController.searchQuery.value,
                         isBookmarked: _homeController.bookmarkedSurahIds
                             .contains(surahList[i].nomor),
                         onBookmarkTapped: () async {
@@ -1893,6 +1925,233 @@ class _HomeViewState extends State<HomeView>
     return Text.rich(
       TextSpan(children: spans),
     );
+  }
+
+  Widget _buildAdvancedFiltersPanel() {
+    return SliverToBoxAdapter(
+      child: AnimatedCrossFade(
+        duration: const Duration(milliseconds: 350),
+        crossFadeState: _showFilters ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+        secondChild: const SizedBox.shrink(),
+        firstChild: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: _bg2.withValues(alpha: 0.8),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: _goldDim.withValues(alpha: 0.2),
+                width: 1,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.tune_rounded, color: _gold, size: 18),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Filter Pencarian',
+                          style: R.textStyle.medium(color: _goldLight).copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Obx(() {
+                      final hasFilters = _homeController.filterPlace.value != 'all' ||
+                          _homeController.filterLength.value != 'all';
+                      if (!hasFilters) return const SizedBox.shrink();
+                      return TextButton(
+                        onPressed: () => _homeController.clearFilters(),
+                        child: Text(
+                          'Reset',
+                          style: R.textStyle.small(color: R.color.red).copyWith(fontSize: 12),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                
+                // Filter Tempat Turun
+                Text(
+                  'Tempat Turun',
+                  style: R.textStyle.small(color: _textSoft.withValues(alpha: 0.6)).copyWith(fontSize: 12),
+                ),
+                const SizedBox(height: 6),
+                Obx(() {
+                  final activePlace = _homeController.filterPlace.value;
+                  return Row(
+                    children: [
+                      _buildFilterOption(
+                        label: 'Semua',
+                        isActive: activePlace == 'all',
+                        onTap: () => _homeController.setFilterPlace('all'),
+                      ),
+                      const SizedBox(width: 8),
+                      _buildFilterOption(
+                        label: 'Makkiyah',
+                        isActive: activePlace == 'Makkiyah',
+                        onTap: () => _homeController.setFilterPlace('Makkiyah'),
+                      ),
+                      const SizedBox(width: 8),
+                      _buildFilterOption(
+                        label: 'Madaniyah',
+                        isActive: activePlace == 'Madaniyah',
+                        onTap: () => _homeController.setFilterPlace('Madaniyah'),
+                      ),
+                    ],
+                  );
+                }),
+                const SizedBox(height: 16),
+                
+                // Filter Panjang Surah
+                Text(
+                  'Panjang Surah',
+                  style: R.textStyle.small(color: _textSoft.withValues(alpha: 0.6)).copyWith(fontSize: 12),
+                ),
+                const SizedBox(height: 6),
+                Obx(() {
+                  final activeLength = _homeController.filterLength.value;
+                  return Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      _buildFilterOption(
+                        label: 'Semua',
+                        isActive: activeLength == 'all',
+                        onTap: () => _homeController.setFilterLength('all'),
+                      ),
+                      _buildFilterOption(
+                        label: 'Pendek (<20 Ayat)',
+                        isActive: activeLength == 'short',
+                        onTap: () => _homeController.setFilterLength('short'),
+                      ),
+                      _buildFilterOption(
+                        label: 'Sedang (20-100 Ayat)',
+                        isActive: activeLength == 'medium',
+                        onTap: () => _homeController.setFilterLength('medium'),
+                      ),
+                      _buildFilterOption(
+                        label: 'Panjang (>100 Ayat)',
+                        isActive: activeLength == 'long',
+                        onTap: () => _homeController.setFilterLength('long'),
+                      ),
+                    ],
+                  );
+                }),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterOption({required String label, required bool isActive, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          gradient: isActive
+              ? LinearGradient(colors: [_goldDim, _gold])
+              : null,
+          color: isActive ? null : _bg.withValues(alpha: 0.4),
+          border: Border.all(
+            color: isActive ? Colors.transparent : _goldDim.withValues(alpha: 0.2),
+            width: 1,
+          ),
+        ),
+        child: Text(
+          label,
+          style: R.textStyle.small(
+            color: isActive ? _bg : _goldLight.withValues(alpha: 0.7),
+            fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+          ).copyWith(fontSize: 12),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchHistorySection() {
+    return Obx(() {
+      final history = _homeController.searchHistory;
+      if (history.isEmpty || _homeController.searchQuery.value.isNotEmpty) {
+        return const SliverToBoxAdapter(child: SizedBox.shrink());
+      }
+      return SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Pencarian Terakhir',
+                    style: R.textStyle.medium(color: _textSoft).copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => _homeController.clearSearchHistory(),
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: const Size(0, 0),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Text(
+                      'Hapus Semua',
+                      style: R.textStyle.small(color: R.color.red).copyWith(
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: history.map((q) {
+                  return InputChip(
+                    label: Text(
+                      q,
+                      style: R.textStyle.small(color: _goldLight).copyWith(fontSize: 12),
+                    ),
+                    backgroundColor: _bg2.withValues(alpha: 0.5),
+                    deleteIcon: Icon(Icons.close_rounded, size: 14, color: _goldDim),
+                    onDeleted: () => _homeController.deleteHistoryItem(q),
+                    onPressed: () {
+                      _homeController.searchController.text = q;
+                      _homeController.onSearchChanged(q);
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      side: BorderSide(color: _goldDim.withValues(alpha: 0.2)),
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 12),
+              Divider(color: _goldDim.withValues(alpha: 0.15)),
+            ],
+          ),
+        ),
+      );
+    });
   }
 
   Widget _buildWeeklyChart() {

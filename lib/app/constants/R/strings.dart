@@ -92,6 +92,8 @@ class Strings {
   final String sidebarQiblaSubtitle = "Kompas penunjuk arah Ka'bah";
   final String sidebarBookmarks = 'Bookmark Ayat';
   final String sidebarBookmarksSubtitle = 'Daftar ayat favorit yang disimpan';
+  final String sidebarStatistik = 'Statistik Tilawah';
+  final String sidebarStatistikSubtitle = 'Grafik & pencapaian tilawah harian';
 
   // Global buttons/actions
   final String cancel = 'Batal';

@@ -66,7 +66,7 @@ class NotificationHelper {
 
     final now = DateTime.now();
     final androidDetails = AndroidNotificationDetails(
-      'sholat_channel_v2', // Gunakan channel ID baru agar custom sound terdaftar ulang
+      'sholat_channel_v3', // Diubah ke v3 untuk memaksa registrasi ulang custom sound adzan
       'Notifikasi Adzan',
       channelDescription: 'Mengumandangkan adzan ketika masuk waktu sholat',
       importance: Importance.max,

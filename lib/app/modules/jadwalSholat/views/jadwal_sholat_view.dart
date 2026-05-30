@@ -1108,7 +1108,11 @@ class _HeroCountdown extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w700,
-                              color: Color.lerp(sholat.accent, Colors.white, 0.4),
+                              color: Color.lerp(
+                                sholat.accent,
+                                R.color.isDark ? Colors.white : Colors.black,
+                                R.color.isDark ? 0.4 : 0.25,
+                              ),
                               letterSpacing: 2,
                             ),
                           ),
@@ -1893,7 +1897,11 @@ class _SholatCard extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 9,
                                 fontWeight: FontWeight.w600,
-                                color: Color.lerp(accent, Colors.white, 0.5),
+                                                                color: Color.lerp(
+                                  accent,
+                                  R.color.isDark ? Colors.white : Colors.black,
+                                  R.color.isDark ? 0.5 : 0.3,
+                                ),
                               ),
                             ),
                           ),
@@ -1935,7 +1943,11 @@ class _SholatCard extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                       color: isSudahLewat && !isBerikutnya
                           ? R.color.textMutedJadwal
-                          : Color.lerp(accent, Colors.white, 0.35),
+                          : Color.lerp(
+                              accent,
+                              R.color.isDark ? Colors.white : Colors.black,
+                              R.color.isDark ? 0.35 : 0.25,
+                            ),
                       letterSpacing: 1.5,
                       fontFeatures: const [FontFeature.tabularFigures()],
                     ),
@@ -2114,7 +2126,11 @@ class _InfoBadge extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 10,
-              color: Color.lerp(color, Colors.white, 0.4),
+              color: Color.lerp(
+                color,
+                R.color.isDark ? Colors.white : Colors.black,
+                R.color.isDark ? 0.4 : 0.25,
+              ),
               fontWeight: FontWeight.w600,
             ),
           ),

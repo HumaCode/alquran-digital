@@ -147,8 +147,14 @@ class _DoaViewState extends State<DoaView> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _C.bg,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      ),
+      child: Scaffold(
+        backgroundColor: _C.bg,
       body: Column(
         children: [
           _buildHeader(),
@@ -194,6 +200,7 @@ class _DoaViewState extends State<DoaView> with TickerProviderStateMixin {
         ],
       ),
       floatingActionButton: _buildFab(),
+      ),
     );
   }
 
@@ -396,7 +403,13 @@ class _DoaViewState extends State<DoaView> with TickerProviderStateMixin {
                   kat,
                   style: R.textStyle.small(
                     fontWeight: active ? FontWeight.w600 : FontWeight.w400,
-                    color: active ? Color.lerp(color, Colors.white, 0.5) : _C.textMuted,
+                    color: active
+                        ? Color.lerp(
+                            color,
+                            R.color.isDark ? Colors.white : Colors.black,
+                            R.color.isDark ? 0.4 : 0.3,
+                          )
+                        : _C.textMuted,
                   ).copyWith(letterSpacing: 0.3),
                 ),
               ),
@@ -1525,7 +1538,11 @@ class _Chip extends StatelessWidget {
         label,
         style: R.textStyle.smallBold.copyWith(
           fontSize: 10,
-          color: Color.lerp(color, Colors.white, 0.5),
+          color: Color.lerp(
+            color,
+            R.color.isDark ? Colors.white : Colors.black,
+            R.color.isDark ? 0.4 : 0.3,
+          ),
           letterSpacing: 0.3,
         ),
       ),

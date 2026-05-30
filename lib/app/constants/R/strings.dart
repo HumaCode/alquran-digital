@@ -57,4 +57,35 @@ class Strings {
   final String haditsArabic = 'إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَوْقُوتًا';
   final String haditsTranslation = '"Sesungguhnya sholat itu adalah kewajiban yang ditentukan waktunya atas orang-orang yang beriman."';
   final String haditsReference = "— QS. An-Nisa' : 103";
+
+  // imsakiyah / location
+  final String imsakiyahTitle = 'Jadwal Imsakiyah';
+  final String selectLocation = 'Pilih Lokasi';
+  final String autoDetectLocation = 'Deteksi Lokasi Otomatis (GPS / IP)';
+  final String province = 'Provinsi';
+  final String searchCity = 'Cari Kabupaten / Kota';
+  final String enterCityHint = 'Masukkan nama kota...';
+  final String cityNotFound = 'Kota tidak ditemukan';
+  final String timetableMonth = 'Tabel Waktu Selama Sebulan';
+  final String swipeHorizontal = 'Geser horizontal';
+  final String imsak = 'Imsak';
+  final String subuh = 'Subuh';
+  final String terbit = 'Terbit';
+  final String dhuha = 'Dhuha';
+  final String dzuhur = 'Dzuhur';
+  final String ashar = 'Ashar';
+  final String maghrib = 'Maghrib';
+  final String isya = 'Isya';
+  final String startFasting = 'Mulai Puasa';
+  final String breakFast = 'Buka Puasa';
+  final String dateShort = 'Tgl';
+
+  // sidebar subtitles
+  final String sidebarPrayersSubtitle = "Doa harian & pilihan syar'i";
+  final String sidebarPrayerTimesSubtitle = 'Waktu sholat 5 waktu akurat';
+  final String sidebarImsakiyahSubtitle = 'Panduan waktu imsak & buka';
+  final String sidebarMurotal = 'Murotal Al-Quran';
+  final String sidebarMurotalSubtitle = 'Dengarkan murotal penuh 114 surah';
+  final String sidebarQibla = 'Arah Kiblat';
+  final String sidebarQiblaSubtitle = "Kompas penunjuk arah Ka'bah";
 }

@@ -61,7 +61,7 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Pilih Lokasi',
+                      R.string.selectLocation,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -96,18 +96,18 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                         ),
                       ],
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.my_location_rounded,
                           color: Colors.white,
                           size: 18,
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Deteksi Lokasi Otomatis (GPS / IP)',
-                          style: TextStyle(
+                          R.string.autoDetectLocation,
+                          style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
@@ -119,7 +119,7 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Provinsi',
+                  R.string.province,
                   style: TextStyle(fontSize: 12, color: R.color.textMutedJadwal),
                 ),
                 const SizedBox(height: 6),
@@ -155,7 +155,7 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Cari Kabupaten / Kota',
+                  R.string.searchCity,
                   style: TextStyle(fontSize: 12, color: R.color.textMutedJadwal),
                 ),
                 const SizedBox(height: 6),
@@ -163,7 +163,7 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                   onChanged: (val) => controller.searchQuery.value = val,
                   style: TextStyle(color: R.color.textJadwal, fontSize: 14),
                   decoration: InputDecoration(
-                    hintText: 'Masukkan nama kota...',
+                    hintText: R.string.enterCityHint,
                     hintStyle: TextStyle(color: R.color.textMutedJadwal, fontSize: 13),
                     prefixIcon: Icon(Icons.search_rounded, color: R.color.goldLight, size: 20),
                     filled: true,
@@ -193,7 +193,7 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                           if (list.isEmpty) {
                             return Center(
                               child: Text(
-                                'Kota tidak ditemukan',
+                                R.string.cityNotFound,
                                 style: TextStyle(color: R.color.textMutedJadwal),
                               ),
                             );
@@ -269,13 +269,13 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+                            icon: Icon(Icons.arrow_back_rounded, color: R.color.goldLight),
                             onPressed: () => Get.back(),
                           ),
                           Column(
                             children: [
                               Text(
-                                'Jadwal Imsakiyah',
+                                R.string.imsakiyahTitle,
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w800,
@@ -347,7 +347,7 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                 ),
                                 onPressed: () => controller.fetchImsakiyahData(),
-                                child: const Text('Coba Lagi', style: TextStyle(color: Colors.white)),
+                                child: Text(R.string.tryAgain, style: const TextStyle(color: Colors.white)),
                               ),
                             ],
                           ),
@@ -374,7 +374,7 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  'Tabel Waktu Selama Sebulan',
+                                  R.string.timetableMonth,
                                   style: TextStyle(
                                     color: R.color.goldLight,
                                     fontSize: 14,
@@ -386,7 +386,7 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                                     Icon(Icons.swipe_left_rounded, color: R.color.goldDim.withOpacity(0.6), size: 14),
                                     const SizedBox(width: 4),
                                     Text(
-                                      'Geser horizontal',
+                                      R.string.swipeHorizontal,
                                       style: TextStyle(color: R.color.textMutedJadwal, fontSize: 10),
                                     ),
                                   ],
@@ -502,9 +502,9 @@ class _TodayHighlight extends StatelessWidget {
           children: [
             Expanded(
               child: _HighlightCard(
-                title: 'Imsak',
+                title: R.string.imsak,
                 waktu: today.imsak,
-                subtitle: 'Mulai Puasa',
+                subtitle: R.string.startFasting,
                 icon: Icons.timer_rounded,
                 startColor: R.color.emerald,
                 endColor: R.color.emeraldLight,
@@ -513,9 +513,9 @@ class _TodayHighlight extends StatelessWidget {
             const SizedBox(width: 16),
             Expanded(
               child: _HighlightCard(
-                title: 'Buka Puasa',
+                title: R.string.breakFast,
                 waktu: today.maghrib,
-                subtitle: 'Maghrib',
+                subtitle: R.string.maghrib,
                 icon: Icons.brightness_3_rounded,
                 startColor: R.color.goldDim,
                 endColor: R.color.goldLight,
@@ -648,15 +648,15 @@ class _TimetableTable extends StatelessWidget {
                   ),
                 ),
                 children: [
-                  _TableHeaderCell(text: 'Tgl'),
-                  _TableHeaderCell(text: 'Imsak'),
-                  _TableHeaderCell(text: 'Subuh'),
-                  _TableHeaderCell(text: 'Terbit'),
-                  _TableHeaderCell(text: 'Dhuha'),
-                  _TableHeaderCell(text: 'Dzuhur'),
-                  _TableHeaderCell(text: 'Ashar'),
-                  _TableHeaderCell(text: 'Maghrib'),
-                  _TableHeaderCell(text: 'Isya'),
+                  _TableHeaderCell(text: R.string.dateShort),
+                  _TableHeaderCell(text: R.string.imsak),
+                  _TableHeaderCell(text: R.string.subuh),
+                  _TableHeaderCell(text: R.string.terbit),
+                  _TableHeaderCell(text: R.string.dhuha),
+                  _TableHeaderCell(text: R.string.dzuhur),
+                  _TableHeaderCell(text: R.string.ashar),
+                  _TableHeaderCell(text: R.string.maghrib),
+                  _TableHeaderCell(text: R.string.isya),
                 ],
               ),
 
@@ -739,7 +739,7 @@ class _TableCell extends StatelessWidget {
   Widget build(BuildContext context) {
     Color txtColor = R.color.textJadwal;
     if (isToday) {
-      txtColor = Colors.white;
+      txtColor = R.color.isDark ? Colors.white : R.color.textJadwal;
     } else if (isFeatured) {
       txtColor = R.color.emeraldLight;
     }

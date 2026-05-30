@@ -257,7 +257,7 @@ class _DynamicIslandToastWidgetState extends State<_DynamicIslandToastWidget>
                                 child: Text(
                                   widget.message,
                                   style: R.textStyle.medium(
-                                    color: R.color.textSoft,
+                                    color: const Color(0xFFD8E8D8),
                                     fontWeight: FontWeight.w600,
                                   ).copyWith(
                                     fontSize: 13,

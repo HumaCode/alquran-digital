@@ -7,18 +7,19 @@ import '../../../data/models/detail_surah_model.dart';
 import '../../home/widgets/diamond_number_painter.dart';
 import '../controllers/detail_surah_controller.dart';
 import 'package:alquran_digital/app/components/widgets/widgets.dart';
+import '../../../data/providers/theme_controller.dart';
 
 class DetailSurahView extends GetView<DetailSurahController> {
   const DetailSurahView({super.key});
 
-  static final Color _bg = R.color.bg1;
-  static final Color _gold = R.color.gold;
-  static final Color _goldLight = R.color.goldLight;
-  static final Color _goldDim = R.color.goldDim;
-  static final Color _textSoft = R.color.textSoft;
-  static final Color _bg2 = R.color.bg2;
-  static final Color _emeraldDark = R.color.emeraldDark;
-  static final Color _emeraldMedium = R.color.emeraldMedium;
+  Color get _bg => R.color.bg1;
+  Color get _gold => R.color.gold;
+  Color get _goldLight => R.color.goldLight;
+  Color get _goldDim => R.color.goldDim;
+  Color get _textSoft => R.color.textSoft;
+  Color get _bg2 => R.color.bg2;
+  Color get _emeraldDark => R.color.emeraldDark;
+  Color get _emeraldMedium => R.color.emeraldMedium;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +44,32 @@ class DetailSurahView extends GetView<DetailSurahController> {
         }),
         centerTitle: true,
         actions: [
+          Obx(() {
+            final isDark = ThemeController.to.isDarkMode.value;
+            return IconButton(
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                transitionBuilder: (child, animation) {
+                  return RotationTransition(
+                    turns: animation,
+                    child: ScaleTransition(
+                      scale: animation,
+                      child: child,
+                    ),
+                  );
+                },
+                child: Icon(
+                  isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                  key: ValueKey<bool>(isDark),
+                  color: _goldLight,
+                ),
+              ),
+              tooltip: 'Ubah Tema',
+              onPressed: () {
+                ThemeController.to.toggleTheme();
+              },
+            );
+          }),
           IconButton(
             icon: Icon(Icons.tune_rounded, color: _goldLight),
             tooltip: 'Pengaturan Tampilan',
@@ -414,7 +441,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                             ayat.teksLatin,
                             textAlign: TextAlign.left,
                             style: R.textStyle.medium(
-                              color: _gold.withValues(alpha: 0.9),
+                              color: _goldLight.withValues(alpha: 0.9),
                             ).copyWith(
                               fontFamily: 'Poppins',
                               fontSize: 14,
@@ -835,6 +862,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                 },
               ),
               
+
               // Qori Selector for Verse Audio
               const SizedBox(height: 8),
               Padding(

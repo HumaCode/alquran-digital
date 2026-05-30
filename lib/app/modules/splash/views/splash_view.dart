@@ -16,15 +16,14 @@ class SplashView extends StatefulWidget {
 
 class _SplashViewState extends State<SplashView>
     with TickerProviderStateMixin {
-  // ── Warna Palet ──────────────────────────────────────────────────────────
-  static final Color _bg1 = R.color.bg1;
-  static final Color _bg2 = R.color.bg2;
-  static final Color _gold = R.color.gold;
-  static final Color _goldLight = R.color.goldLight;
-  static final Color _goldDim = R.color.goldDim;
-  static final Color _emerald = R.color.emerald;
-  static final Color _emeraldDark = R.color.emeraldDark;
-  static final Color _textSoft = R.color.textSoft;
+  Color get _bg1 => R.color.bg1;
+  Color get _bg2 => R.color.bg2;
+  Color get _gold => R.color.gold;
+  Color get _goldLight => R.color.goldLight;
+  Color get _goldDim => R.color.goldDim;
+  Color get _emerald => R.color.emerald;
+  Color get _emeraldDark => R.color.emeraldDark;
+  Color get _textSoft => R.color.textSoft;
 
   // ── Controllers ──────────────────────────────────────────────────────────
   late AnimationController _bgController;

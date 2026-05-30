@@ -1150,8 +1150,8 @@ class DetailSurahView extends GetView<DetailSurahController> {
                           type: ToastType.success,
                         );
                       },
-                      icon: const Icon(Icons.delete_outline_rounded, color: R.color.redAccent, size: 18),
-                      label: const Text(
+                      icon: Icon(Icons.delete_outline_rounded, color: R.color.redAccent, size: 18),
+                      label: Text(
                         'Hapus',
                         style: TextStyle(color: R.color.redAccent, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
                       ),

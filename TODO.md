@@ -42,6 +42,25 @@ Menampilkan jadwal sholat hari ini di halaman depan ponsel pengguna.
 *   [x] Integrasikan paket integrasi widget native seperti `home_widget` untuk Android & iOS.
 *   [x] Desain widget dengan estetika modern, menampilkan waktu sholat terdekat dan hitung mundur.
 
+### 6. 📝 Catatan Tafsir Pribadi & Tadabbur (Catatan Ayat)
+Menyediakan wadah bagi pengguna untuk menulis refleksi atau catatan pribadi mengenai isi kandungan ayat tertentu.
+*   [ ] Buat tabel SQLite baru `notes` (kolom: `id`, `nomorSurah`, `namaSurah`, `nomorAyat`, `teksCatatan`, `updatedAt`).
+*   [ ] Tambahkan tombol ikon Catatan (Note) di samping tombol Bookmark pada setiap item ayat di `DetailSurahView`.
+*   [ ] Sediakan Bottom Sheet input catatan dan tampilkan badge indikator visual di ayat yang memiliki catatan.
+*   [ ] Integrasikan daftar Catatan ke dalam modul Bookmarks (dengan struktur 2 Tab: Bookmark & Catatan).
+
+### 7. 🎛️ Media Kontrol Murottal di Bar Notifikasi (Background Player)
+Mengintegrasikan pemutar audio Murottal dengan kontrol media sistem operasi native agar mudah dikendalikan dari lockscreen.
+*   [ ] Integrasikan plugin audio background (seperti `just_audio` + `audio_service` atau setup background session `audioplayers`).
+*   [ ] Tampilkan judul surah, qori, dan tombol Play/Pause/Stop/Seek di laci notifikasi dan lockscreen.
+
+### 8. 🎯 Target & Pelacak Tilawah Harian (Daily Tilawah Tracker)
+Membantu pengguna tetap konsisten dalam membaca Al-Quran dengan target harian dan sistem streak tilawah.
+*   [ ] Buat tabel SQLite `tilawah_progress` (kolom: `id`, `tanggal`, `jumlahAyatDibaca`).
+*   [ ] Tampilkan kartu ringkasan target harian dan streak tilawah (misal: "Tilawah 5 Hari Beruntun! 🔥") di Beranda.
+*   [ ] Implementasikan penghitung ayat yang dibaca secara otomatis ketika membuka surah.
+*   [ ] Sediakan visualisasi grafik progres 7 hari terakhir.
+
 ---
 
 ## 🛠️ Catatan & Panduan Teknis Pengembangan

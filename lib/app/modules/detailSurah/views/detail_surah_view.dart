@@ -337,6 +337,8 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                   const Spacer(),
                                   // Play Audio Button
                                   IconButton(
+                                    padding: const EdgeInsets.all(6),
+                                    constraints: const BoxConstraints(),
                                     icon: Obx(() {
                                       final isPlaying = controller.currentlyPlayingAyat.value == ayat.nomorAyat &&
                                           controller.isAudioPlaying.value;
@@ -350,8 +352,11 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                       controller.togglePlayAudio(ayat);
                                     },
                                   ),
+                                  const SizedBox(width: 4),
                                   // Tandai Terakhir Dibaca Button
                                   IconButton(
+                                    padding: const EdgeInsets.all(6),
+                                    constraints: const BoxConstraints(),
                                     icon: Obx(() => Icon(
                                           controller.lastReadAyatNomor.value == ayat.nomorAyat
                                               ? Icons.bookmark_added_rounded
@@ -374,8 +379,11 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                       );
                                     },
                                   ),
+                                  const SizedBox(width: 4),
                                   // Simpan Bookmark Button
                                   IconButton(
+                                    padding: const EdgeInsets.all(6),
+                                    constraints: const BoxConstraints(),
                                     icon: Obx(() => Icon(
                                           controller.bookmarkedAyats.contains(ayat.nomorAyat)
                                               ? Icons.bookmark_rounded
@@ -397,8 +405,11 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                       );
                                     },
                                   ),
+                                  const SizedBox(width: 4),
                                   // Copy Button
                                   IconButton(
+                                    padding: const EdgeInsets.all(6),
+                                    constraints: const BoxConstraints(),
                                     icon: Icon(Icons.copy_rounded, color: _goldDim, size: 20),
                                     onPressed: () {
                                       Clipboard.setData(ClipboardData(
@@ -411,8 +422,11 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                       );
                                     },
                                   ),
+                                  const SizedBox(width: 4),
                                   // Share Button
                                   IconButton(
+                                    padding: const EdgeInsets.all(6),
+                                    constraints: const BoxConstraints(),
                                     icon: Icon(Icons.share_rounded, color: _goldDim, size: 20),
                                     onPressed: () {
                                       // Share content (simple copy notification as fallback)
@@ -428,8 +442,11 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                       );
                                     },
                                   ),
+                                  const SizedBox(width: 4),
                                   // Tafsir Button
                                   IconButton(
+                                    padding: const EdgeInsets.all(6),
+                                    constraints: const BoxConstraints(),
                                     icon: Icon(Icons.menu_book_rounded, color: _goldDim, size: 20),
                                     onPressed: () {
                                       _showTafsirBottomSheet(context, detail, ayat.nomorAyat);

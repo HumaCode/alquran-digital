@@ -14,16 +14,13 @@ class CustomToast {
     ToastType type = ToastType.success,
     Duration duration = const Duration(seconds: 3),
   }) {
-    // If there is an existing toast, tell it to animate out immediately
-    if (_currentState != null && _currentState!.mounted) {
-      _currentState!.animateOutAndRemove(() {
-        _createNewToast(context, message, type, duration);
-      });
-    } else {
-      // Remove overlay if it exists but state is gone
-      dismiss();
-      _createNewToast(context, message, type, duration);
-    }
+    // Instantly dismiss any existing toast to prevent layout conflicts or duplicate insertions
+    dismiss();
+
+    // Check if context is mounted before proceeding
+    if (!context.mounted) return;
+
+    _createNewToast(context, message, type, duration);
   }
 
   static void _createNewToast(
@@ -32,29 +29,39 @@ class CustomToast {
     ToastType type,
     Duration duration,
   ) {
-    final overlayState = Overlay.of(context);
+    try {
+      final overlayState = Overlay.maybeOf(context);
+      if (overlayState == null) return;
 
-    _currentOverlay = OverlayEntry(
-      builder: (context) => _DynamicIslandToastWidget(
-        message: message,
-        type: type,
-        duration: duration,
-        onCreated: (state) {
-          _currentState = state;
-        },
-        onDismissComplete: () {
-          dismiss();
-        },
-      ),
-    );
+      _currentOverlay = OverlayEntry(
+        builder: (context) => _DynamicIslandToastWidget(
+          message: message,
+          type: type,
+          duration: duration,
+          onCreated: (state) {
+            _currentState = state;
+          },
+          onDismissComplete: () {
+            dismiss();
+          },
+        ),
+      );
 
-    overlayState.insert(_currentOverlay!);
+      overlayState.insert(_currentOverlay!);
+    } catch (e) {
+      debugPrint('Error showing CustomToast: $e');
+    }
   }
 
   static void dismiss() {
-    _currentOverlay?.remove();
-    _currentOverlay = null;
-    _currentState = null;
+    try {
+      _currentOverlay?.remove();
+    } catch (e) {
+      debugPrint('Error removing CustomToast overlay: $e');
+    } finally {
+      _currentOverlay = null;
+      _currentState = null;
+    }
   }
 }
 

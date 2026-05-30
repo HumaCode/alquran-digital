@@ -15,7 +15,7 @@ class BookmarksView extends GetView<BookmarksController> {
   Color get _goldDim => R.color.goldDim;
   Color get _text => R.color.textSoft;
   Color get _textMuted => R.color.textMuted;
-  Color get _red => R.color.red;
+  Color get _red => R.color.redAccent;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class BookmarksView extends GetView<BookmarksController> {
           backgroundColor: _surface,
           elevation: 0,
           title: Text(
-            'Simpan & Catatan',
+            R.string.tabSimpanCatatan,
             style: R.textStyle.extraLargeBold.copyWith(color: _goldLight),
           ),
           leading: IconButton(
@@ -45,8 +45,8 @@ class BookmarksView extends GetView<BookmarksController> {
             labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
             unselectedLabelStyle: const TextStyle(fontFamily: 'Poppins'),
             tabs: const [
-              Tab(text: 'Bookmark Ayat'),
-              Tab(text: 'Catatan Tadabbur'),
+              Tab(text: R.string.tabBookmarkAyat),
+              Tab(text: R.string.tabCatatanTadabbur),
             ],
           ),
         ),
@@ -222,7 +222,7 @@ class BookmarksView extends GetView<BookmarksController> {
               const CustomLoader(size: 50),
               const SizedBox(height: 16),
               Text(
-                'Memuat catatan...',
+                R.string.loadingNotes,
                 style: R.textStyle.medium(color: _textMuted),
               ),
             ],
@@ -252,12 +252,12 @@ class BookmarksView extends GetView<BookmarksController> {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'Belum Ada Catatan',
+                  R.string.noNotesTitle,
                   style: R.textStyle.largeBold.copyWith(color: _goldLight),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Anda bisa menulis refleksi atau catatan pribadi pada ayat Al-Qur\'an dengan menekan tombol catatan pada halaman baca surah.',
+                  R.string.noNotesSubtitle,
                   textAlign: TextAlign.center,
                   style: R.textStyle.medium(color: _textMuted),
                 ),
@@ -464,12 +464,12 @@ class BookmarksView extends GetView<BookmarksController> {
               ),
               const SizedBox(height: 20),
               Text(
-                'Hapus Catatan',
+                R.string.deleteNoteTitle,
                 style: R.textStyle.largeBold.copyWith(color: _text),
               ),
               const SizedBox(height: 12),
               Text(
-                'Apakah Anda yakin ingin menghapus catatan untuk QS. $namaSurah [$nomorSurah:$nomorAyat]?',
+                R.string.deleteNoteConfirmMsg(namaSurah, nomorSurah, nomorAyat),
                 textAlign: TextAlign.center,
                 style: R.textStyle.medium(color: _textMuted),
               ),
@@ -507,7 +507,7 @@ class BookmarksView extends GetView<BookmarksController> {
                         Get.back();
                         CustomToast.show(
                           context,
-                          message: 'Catatan QS. $namaSurah [$nomorSurah:$nomorAyat] berhasil dihapus',
+                          message: R.string.deleteNoteSuccessMsg(namaSurah, nomorSurah, nomorAyat),
                           type: ToastType.success,
                         );
                       },
@@ -575,7 +575,7 @@ class BookmarksView extends GetView<BookmarksController> {
                   Icon(Icons.edit_note_rounded, color: _goldLight, size: 24),
                   const SizedBox(width: 8),
                   Text(
-                    'Ubah Catatan Ayat $nomorAyat',
+                    R.string.notesAyatTitleWithNo(nomorAyat),
                     style: R.textStyle.medium(
                       color: _goldLight,
                       fontWeight: FontWeight.bold,
@@ -594,7 +594,7 @@ class BookmarksView extends GetView<BookmarksController> {
                 maxLines: 4,
                 style: TextStyle(color: _text, fontSize: 14, fontFamily: 'Poppins'),
                 decoration: InputDecoration(
-                  hintText: 'Tulis tadabbur, refleksi, atau catatan penting...',
+                  hintText: R.string.editNoteHint,
                   hintStyle: TextStyle(color: _text.withValues(alpha: 0.5), fontSize: 13),
                   filled: true,
                   fillColor: _surface.withValues(alpha: 0.3),
@@ -630,7 +630,7 @@ class BookmarksView extends GetView<BookmarksController> {
                       Get.back();
                       CustomToast.show(
                         context,
-                        message: 'Catatan ayat $nomorAyat berhasil diubah',
+                        message: R.string.notesEditSuccessMsg(nomorAyat),
                         type: ToastType.success,
                       );
                     },

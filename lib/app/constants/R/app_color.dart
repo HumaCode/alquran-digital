@@ -45,4 +45,6 @@ class AppColor {
   Color get textMutedJadwal => isDark ? const Color(0xFF5A7A5A) : const Color(0xFF5A7561);
   Color get textDimJadwal => isDark ? const Color(0xFF3A5A3A) : const Color(0xFF8CA393);
   Color get sky => const Color(0xFF1565C0);
+  Color get orange => const Color(0xFFFFA726);
+  Color get redAccent => const Color(0xFFFF5252);
 }

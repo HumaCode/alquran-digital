@@ -338,7 +338,7 @@ class _HomeViewState extends State<HomeView>
                               Icon(Icons.track_changes_rounded, color: _gold, size: 20),
                               const SizedBox(width: 8),
                               Text(
-                                "Target Tilawah Harian",
+                                R.string.tilawahTargetTitle,
                                 style: R.textStyle.medium(
                                   fontWeight: FontWeight.w600,
                                   color: _goldLight,
@@ -359,7 +359,7 @@ class _HomeViewState extends State<HomeView>
                               child: Row(
                                 children: [
                                   Obx(() => Text(
-                                    "${_homeController.tilawahTarget.value} Ayat",
+                                    "${_homeController.tilawahTarget.value} ${R.string.tilawahAyatSuffix}",
                                     style: R.textStyle.small(color: _goldLight, fontWeight: FontWeight.bold),
                                   )),
                                   const SizedBox(width: 4),
@@ -413,10 +413,10 @@ class _HomeViewState extends State<HomeView>
                                 Obx(() {
                                   final streak = _homeController.tilawahStreak.value;
                                   return Text(
-                                    streak > 0 ? "Streak: $streak Hari Beruntun! 🔥" : "Mulai Tilawah Hari Ini! 🌟",
+                                    streak > 0 ? R.string.tilawahStreakText(streak) : R.string.tilawahStreakEmpty,
                                     style: R.textStyle.medium(
                                       fontWeight: FontWeight.bold,
-                                      color: streak > 0 ? Colors.orangeAccent : _goldLight,
+                                      color: streak > 0 ? R.color.orange : _goldLight,
                                     ),
                                   );
                                 }),
@@ -425,8 +425,8 @@ class _HomeViewState extends State<HomeView>
                                   final left = _homeController.tilawahTarget.value - _homeController.tilawahToday.value;
                                   return Text(
                                     left > 0
-                                        ? "Kurang $left ayat lagi untuk mencapai target hari ini."
-                                        : "Selamat! Target harian Anda telah tercapai! 🎉",
+                                        ? R.string.tilawahStatusPending(left)
+                                        : R.string.tilawahStatusDone,
                                     style: R.textStyle.small(color: _textSoft.withValues(alpha: 0.7)),
                                   );
                                 }),
@@ -439,7 +439,7 @@ class _HomeViewState extends State<HomeView>
                       
                       // 7-day progress bar chart
                       Text(
-                        "Progres 7 Hari Terakhir",
+                        R.string.tilawahWeeklyProgress,
                         style: R.textStyle.small(color: _textSoft.withValues(alpha: 0.6)).copyWith(fontSize: 12),
                       ),
                       const SizedBox(height: 12),
@@ -1799,7 +1799,7 @@ class _HomeViewState extends State<HomeView>
             side: BorderSide(color: _gold.withValues(alpha: 0.2)),
           ),
           title: Text(
-            "Atur Target Harian",
+            R.string.tilawahSetTargetTitle,
             style: R.textStyle.medium(fontWeight: FontWeight.bold, color: _goldLight),
           ),
           content: Column(
@@ -1807,7 +1807,7 @@ class _HomeViewState extends State<HomeView>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Masukkan jumlah target ayat yang ingin Anda baca setiap hari:",
+                R.string.tilawahSetTargetSubtitle,
                 style: R.textStyle.small(color: _textSoft),
               ),
               const SizedBox(height: 16),
@@ -1816,7 +1816,7 @@ class _HomeViewState extends State<HomeView>
                 keyboardType: TextInputType.number,
                 style: R.textStyle.medium(color: _goldLight),
                 decoration: InputDecoration(
-                  labelText: "Target Ayat",
+                  labelText: R.string.tilawahTargetLabel,
                   labelStyle: TextStyle(color: _goldDim),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: _gold.withValues(alpha: 0.3)),
@@ -1833,7 +1833,7 @@ class _HomeViewState extends State<HomeView>
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text("Batal", style: TextStyle(color: _textSoft)),
+              child: Text(R.string.cancel, style: TextStyle(color: _textSoft)),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -1847,7 +1847,7 @@ class _HomeViewState extends State<HomeView>
                 _homeController.updateDailyTarget(target);
                 Navigator.of(context).pop();
               },
-              child: const Text("Simpan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+              child: Text(R.string.save, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
             ),
           ],
         );

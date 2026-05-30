@@ -88,7 +88,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 60),
+                    Icon(Icons.error_outline_rounded, color: R.color.redAccent, size: 60),
                     const SizedBox(height: 16),
                     Text(
                       controller.errorMessage.value,
@@ -578,7 +578,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                         Icon(Icons.edit_note_rounded, color: _goldLight, size: 16),
                                         const SizedBox(width: 6),
                                         Text(
-                                          'Catatan Tadabbur Saya',
+                                          R.string.notesTadabburSaya,
                                           style: R.textStyle.small(
                                             color: _goldLight,
                                             fontWeight: FontWeight.bold,
@@ -1098,7 +1098,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                   Icon(Icons.edit_note_rounded, color: _goldLight, size: 24),
                   const SizedBox(width: 8),
                   Text(
-                    'Catatan Ayat ${ayat.nomorAyat}',
+                    R.string.notesAyatTitleWithNo(ayat.nomorAyat),
                     style: R.textStyle.medium(
                       color: _goldLight,
                       fontWeight: FontWeight.bold,
@@ -1117,7 +1117,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                 maxLines: 4,
                 style: TextStyle(color: _textSoft, fontSize: 14, fontFamily: 'Poppins'),
                 decoration: InputDecoration(
-                  hintText: 'Tulis tadabbur, refleksi, atau catatan penting mengenai ayat ini...',
+                  hintText: R.string.notesHintText,
                   hintStyle: TextStyle(color: _textSoft.withValues(alpha: 0.5), fontSize: 13),
                   filled: true,
                   fillColor: _bg2.withValues(alpha: 0.3),
@@ -1146,14 +1146,14 @@ class DetailSurahView extends GetView<DetailSurahController> {
                         Get.back();
                         CustomToast.show(
                           context,
-                          message: 'Catatan ayat ${ayat.nomorAyat} berhasil dihapus',
+                          message: R.string.notesDeleteSuccessMsg(ayat.nomorAyat),
                           type: ToastType.success,
                         );
                       },
-                      icon: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent, size: 18),
+                      icon: const Icon(Icons.delete_outline_rounded, color: R.color.redAccent, size: 18),
                       label: const Text(
                         'Hapus',
-                        style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
+                        style: TextStyle(color: R.color.redAccent, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
                       ),
                     ),
                   const Spacer(),
@@ -1171,7 +1171,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                       Get.back();
                       CustomToast.show(
                         context,
-                        message: 'Catatan ayat ${ayat.nomorAyat} berhasil disimpan',
+                        message: R.string.notesSaveSuccessMsg(ayat.nomorAyat),
                         type: ToastType.success,
                       );
                     },

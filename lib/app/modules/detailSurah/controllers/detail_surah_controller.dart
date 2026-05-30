@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import '../../../data/models/detail_surah_model.dart';
 import '../../../data/models/tafsir_model.dart';
 import '../../../data/repositories/surah_repository.dart';
+import '../../home/controllers/home_controller.dart';
 
 class DetailSurahController extends GetxController {
   final SurahRepository _repository;
@@ -141,6 +142,9 @@ class DetailSurahController extends GetxController {
       visibleAyat.clear();
       _loadedCount = 0;
       loadNextPage();
+
+      // Log progress tilawah otomatis
+      _logTilawahCount();
 
       if (targetAyat != null) {
         final index = _allAyat.indexWhere((element) => element.nomorAyat == targetAyat);
@@ -384,6 +388,20 @@ class DetailSurahController extends GetxController {
       verseNotes.remove(nomorAyat);
     } catch (e) {
       print('Gagal menghapus catatan ayat: $e');
+    }
+  }
+
+  Future<void> _logTilawahCount() async {
+    try {
+      final now = DateTime.now();
+      final dateStr = "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+      await _repository.logTilawah(dateStr, _allAyat.length);
+      // Trigger update on HomeController if registered
+      if (Get.isRegistered<HomeController>()) {
+        Get.find<HomeController>().fetchTilawahTracker();
+      }
+    } catch (e) {
+      print('Gagal mencatat tilawah otomatis: $e');
     }
   }
 }

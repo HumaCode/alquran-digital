@@ -306,6 +306,151 @@ class _HomeViewState extends State<HomeView>
                 }),
               ),
 
+              // ── Tilawah Tracker Card ──────────────────────────────────────
+              SliverToBoxAdapter(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: _bg2,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: _gold.withValues(alpha: 0.15),
+                      width: 1,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Title row: Tracker target + Edit button
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.track_changes_rounded, color: _gold, size: 20),
+                              const SizedBox(width: 8),
+                              Text(
+                                "Target Tilawah Harian",
+                                style: R.textStyle.medium(
+                                  fontWeight: FontWeight.w600,
+                                  color: _goldLight,
+                                ),
+                              ),
+                            ],
+                          ),
+                          // Interactive target selector
+                          InkWell(
+                            onTap: () => _showTargetDialog(context),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: _gold.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: _gold.withValues(alpha: 0.2)),
+                              ),
+                              child: Row(
+                                children: [
+                                  Obx(() => Text(
+                                    "${_homeController.tilawahTarget.value} Ayat",
+                                    style: R.textStyle.small(color: _goldLight, fontWeight: FontWeight.bold),
+                                  )),
+                                  const SizedBox(width: 4),
+                                  Icon(Icons.edit_rounded, color: _gold, size: 12),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Progress indicator & streak
+                      Row(
+                        children: [
+                          // Circular Progress Indicator
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Obx(() {
+                                final ratio = _homeController.tilawahTarget.value > 0
+                                    ? (_homeController.tilawahToday.value / _homeController.tilawahTarget.value).clamp(0.0, 1.0)
+                                    : 0.0;
+                                return SizedBox(
+                                  width: 60,
+                                  height: 60,
+                                  child: CircularProgressIndicator(
+                                    value: ratio,
+                                    backgroundColor: _bg.withValues(alpha: 0.3),
+                                    color: _emeraldMedium,
+                                    strokeWidth: 6,
+                                  ),
+                                );
+                              }),
+                              Obx(() => Text(
+                                "${_homeController.tilawahToday.value}",
+                                style: R.textStyle.medium(
+                                  fontWeight: FontWeight.bold,
+                                  color: _goldLight,
+                                ),
+                              )),
+                            ],
+                          ),
+                          const SizedBox(width: 16),
+                          
+                          // Streak and summary text
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Obx(() {
+                                  final streak = _homeController.tilawahStreak.value;
+                                  return Text(
+                                    streak > 0 ? "Streak: $streak Hari Beruntun! 🔥" : "Mulai Tilawah Hari Ini! 🌟",
+                                    style: R.textStyle.medium(
+                                      fontWeight: FontWeight.bold,
+                                      color: streak > 0 ? Colors.orangeAccent : _goldLight,
+                                    ),
+                                  );
+                                }),
+                                const SizedBox(height: 4),
+                                Obx(() {
+                                  final left = _homeController.tilawahTarget.value - _homeController.tilawahToday.value;
+                                  return Text(
+                                    left > 0
+                                        ? "Kurang $left ayat lagi untuk mencapai target hari ini."
+                                        : "Selamat! Target harian Anda telah tercapai! 🎉",
+                                    style: R.textStyle.small(color: _textSoft.withValues(alpha: 0.7)),
+                                  );
+                                }),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      
+                      // 7-day progress bar chart
+                      Text(
+                        "Progres 7 Hari Terakhir",
+                        style: R.textStyle.small(color: _textSoft.withValues(alpha: 0.6)).copyWith(fontSize: 12),
+                      ),
+                      const SizedBox(height: 12),
+                      
+                      // The chart widget
+                      _buildWeeklyChart(),
+                    ],
+                  ),
+                ),
+              ),
+
               // ── Tab Bar ──────────────────────────────────────────────────
               SliverToBoxAdapter(
                 child: Padding(
@@ -1545,6 +1690,168 @@ class _HomeViewState extends State<HomeView>
 
     return Text.rich(
       TextSpan(children: spans),
+    );
+  }
+
+  Widget _buildWeeklyChart() {
+    final now = DateTime.now();
+    final dates = List.generate(7, (index) => now.subtract(Duration(days: 6 - index)));
+
+    return Obx(() {
+      final progressList = _homeController.tilawahProgress;
+      final target = _homeController.tilawahTarget.value;
+      
+      final progressMap = <String, int>{};
+      for (var item in progressList) {
+        progressMap[item['tanggal'] as String] = item['jumlahAyatDibaca'] as int;
+      }
+
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: dates.map((date) {
+          final dateStr = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+          final count = progressMap[dateStr] ?? 0;
+          
+          final double barHeight = target > 0 ? (count / target * 60.0).clamp(4.0, 60.0) : 4.0;
+          final isToday = date.day == now.day && date.month == now.month && date.year == now.year;
+          final isTargetMet = count >= target;
+          
+          final dayName = _getDayName(date.weekday);
+
+          return Column(
+            children: [
+              Text(
+                count > 0 ? "$count" : "0",
+                style: R.textStyle.small(color: _goldDim).copyWith(fontSize: 9),
+              ),
+              const SizedBox(height: 4),
+              Container(
+                width: 16,
+                height: 60,
+                alignment: Alignment.bottomCenter,
+                decoration: BoxDecoration(
+                  color: _bg.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 500),
+                  width: 16,
+                  height: barHeight,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: isTargetMet
+                          ? [_emeraldDark, _emeraldMedium]
+                          : (isToday ? [_gold, _goldLight] : [_textSoft.withValues(alpha: 0.3), _textSoft.withValues(alpha: 0.5)]),
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                dayName,
+                style: R.textStyle.small(
+                  color: isToday ? _gold : _textSoft.withValues(alpha: 0.5),
+                  fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+                ).copyWith(fontSize: 10),
+              ),
+            ],
+          );
+        }).toList(),
+      );
+    });
+  }
+
+  String _getDayName(int weekday) {
+    switch (weekday) {
+      case DateTime.monday:
+        return 'Sen';
+      case DateTime.tuesday:
+        return 'Sel';
+      case DateTime.wednesday:
+        return 'Rab';
+      case DateTime.thursday:
+        return 'Kam';
+      case DateTime.friday:
+        return 'Jum';
+      case DateTime.saturday:
+        return 'Sab';
+      case DateTime.sunday:
+      default:
+        return 'Min';
+    }
+  }
+
+  void _showTargetDialog(BuildContext context) {
+    final controller = TextEditingController(
+      text: _homeController.tilawahTarget.value.toString(),
+    );
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: _bg2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(color: _gold.withValues(alpha: 0.2)),
+          ),
+          title: Text(
+            "Atur Target Harian",
+            style: R.textStyle.medium(fontWeight: FontWeight.bold, color: _goldLight),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Masukkan jumlah target ayat yang ingin Anda baca setiap hari:",
+                style: R.textStyle.small(color: _textSoft),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: controller,
+                keyboardType: TextInputType.number,
+                style: R.textStyle.medium(color: _goldLight),
+                decoration: InputDecoration(
+                  labelText: "Target Ayat",
+                  labelStyle: TextStyle(color: _goldDim),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: _gold.withValues(alpha: 0.3)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: _gold),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text("Batal", style: TextStyle(color: _textSoft)),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _gold,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: () {
+                final target = int.tryParse(controller.text) ?? 10;
+                _homeController.updateDailyTarget(target);
+                Navigator.of(context).pop();
+              },
+              child: const Text("Simpan", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+            ),
+          ],
+        );
+      },
     );
   }
 }

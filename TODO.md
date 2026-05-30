@@ -56,10 +56,10 @@ Mengintegrasikan pemutar audio Murottal dengan kontrol media sistem operasi nati
 
 ### 8. 🎯 Target & Pelacak Tilawah Harian (Daily Tilawah Tracker)
 Membantu pengguna tetap konsisten dalam membaca Al-Quran dengan target harian dan sistem streak tilawah.
-*   [ ] Buat tabel SQLite `tilawah_progress` (kolom: `id`, `tanggal`, `jumlahAyatDibaca`).
-*   [ ] Tampilkan kartu ringkasan target harian dan streak tilawah (misal: "Tilawah 5 Hari Beruntun! 🔥") di Beranda.
-*   [ ] Implementasikan penghitung ayat yang dibaca secara otomatis ketika membuka surah.
-*   [ ] Sediakan visualisasi grafik progres 7 hari terakhir.
+*   [x] Buat tabel SQLite `tilawah_progress` (kolom: `id`, `tanggal`, `jumlahAyatDibaca`).
+*   [x] Tampilkan kartu ringkasan target harian dan streak tilawah (misal: "Tilawah 5 Hari Beruntun! 🔥") di Beranda.
+*   [x] Implementasikan penghitung ayat yang dibaca secara otomatis ketika membuka surah.
+*   [x] Sediakan visualisasi grafik progres 7 hari terakhir.
 
 ---
 

@@ -37,6 +37,12 @@ class HomeController extends GetxController {
   final bookmarkedSurahIds = <int>[].obs;
   final bookmarkedAyats = <Map<String, dynamic>>[].obs;
 
+  // Tilawah Tracker states
+  final tilawahStreak = 0.obs;
+  final tilawahToday = 0.obs;
+  final tilawahTarget = 10.obs;
+  final tilawahProgress = <Map<String, dynamic>>[].obs;
+
   int _loadedCount = 0;
   final int _pageSize = 10;
   List<DataSurah> _allSurahs = [];
@@ -50,6 +56,7 @@ class HomeController extends GetxController {
     fetchLastRead();
     fetchBookmarks();
     fetchBookmarkedAyats();
+    fetchTilawahTracker();
   }
 
   @override
@@ -222,6 +229,43 @@ class HomeController extends GetxController {
     } catch (e) {
       print('Gagal menyimpan bookmark: $e');
       return false;
+    }
+  }
+
+  Future<void> fetchTilawahTracker() async {
+    try {
+      final streak = await _repository.getTilawahStreak();
+      tilawahStreak.value = streak;
+
+      final target = await _repository.getDailyTarget();
+      tilawahTarget.value = target;
+
+      final now = DateTime.now();
+      final todayStr = "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+      
+      final list = await _repository.getTilawahProgressList(7);
+      tilawahProgress.assignAll(list);
+
+      // Find today's progress in list
+      int todayCount = 0;
+      for (var item in list) {
+        if (item['tanggal'] == todayStr) {
+          todayCount = item['jumlahAyatDibaca'] as int;
+          break;
+        }
+      }
+      tilawahToday.value = todayCount;
+    } catch (e) {
+      print('Gagal mengambil data tilawah tracker: $e');
+    }
+  }
+
+  Future<void> updateDailyTarget(int target) async {
+    try {
+      await _repository.saveDailyTarget(target);
+      await fetchTilawahTracker();
+    } catch (e) {
+      print('Gagal memperbarui target tilawah: $e');
     }
   }
 }

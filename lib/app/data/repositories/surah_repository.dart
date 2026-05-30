@@ -178,5 +178,26 @@ class SurahRepository {
   Future<int> deleteNote(int nomorSurah, int nomorAyat) async {
     return await DatabaseHelper.instance.deleteNote(nomorSurah, nomorAyat);
   }
+
+  // ── Tilawah Progress ───────────────────────────────────────────────────────
+  Future<void> logTilawah(String tanggal, int count) async {
+    await DatabaseHelper.instance.logTilawah(tanggal, count);
+  }
+
+  Future<List<Map<String, dynamic>>> getTilawahProgressList(int limit) async {
+    return await DatabaseHelper.instance.getTilawahProgressList(limit);
+  }
+
+  Future<int> getDailyTarget() async {
+    return await DatabaseHelper.instance.getDailyTarget();
+  }
+
+  Future<void> saveDailyTarget(int target) async {
+    await DatabaseHelper.instance.saveDailyTarget(target);
+  }
+
+  Future<int> getTilawahStreak() async {
+    return await DatabaseHelper.instance.getTilawahStreak();
+  }
 }
 

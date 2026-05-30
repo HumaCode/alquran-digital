@@ -54,6 +54,13 @@ class DatabaseHelper {
             updatedAt TEXT NOT NULL
           )
         ''');
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS tilawah_progress (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            tanggal TEXT UNIQUE NOT NULL,
+            jumlahAyatDibaca INTEGER NOT NULL
+          )
+        ''');
       },
     );
   }
@@ -117,6 +124,15 @@ class DatabaseHelper {
         nomorAyat INTEGER NOT NULL,
         teksCatatan TEXT NOT NULL,
         updatedAt TEXT NOT NULL
+      )
+    ''');
+
+    // 6. Tabel Tilawah Progress baru
+    await db.execute('''
+      CREATE TABLE tilawah_progress (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tanggal TEXT UNIQUE NOT NULL,
+        jumlahAyatDibaca INTEGER NOT NULL
       )
     ''');
   }
@@ -533,5 +549,110 @@ class DatabaseHelper {
       WHERE a.teksLatin LIKE ? OR a.teksIndonesia LIKE ?
       ORDER BY a.nomorSurah ASC, a.nomorAyat ASC
     ''', [likeQuery, likeQuery]);
+  }
+
+  // ── Operations for Tilawah Progress ─────────────────────────────────────────
+
+  Future<void> logTilawah(String tanggal, int count) async {
+    final db = await instance.database;
+    final list = await db.query(
+      'tilawah_progress',
+      where: 'tanggal = ?',
+      whereArgs: [tanggal],
+    );
+    if (list.isEmpty) {
+      await db.insert('tilawah_progress', {
+        'tanggal': tanggal,
+        'jumlahAyatDibaca': count,
+      });
+    } else {
+      final current = list.first['jumlahAyatDibaca'] as int;
+      await db.update(
+        'tilawah_progress',
+        {'jumlahAyatDibaca': current + count},
+        where: 'tanggal = ?',
+        whereArgs: [tanggal],
+      );
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getTilawahProgressList(int limit) async {
+    final db = await instance.database;
+    return await db.query(
+      'tilawah_progress',
+      orderBy: 'tanggal DESC',
+      limit: limit,
+    );
+  }
+
+  Future<int> getDailyTarget() async {
+    final db = await instance.database;
+    final list = await db.query(
+      'metadata',
+      where: 'key = ?',
+      whereArgs: ['tilawah_target'],
+    );
+    if (list.isEmpty) return 10; // Default target is 10 verses
+    return int.tryParse(list.first['value'] as String) ?? 10;
+  }
+
+  Future<void> saveDailyTarget(int target) async {
+    final db = await instance.database;
+    await db.insert(
+      'metadata',
+      {
+        'key': 'tilawah_target',
+        'value': target.toString(),
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<int> getTilawahStreak() async {
+    final db = await instance.database;
+    final target = await getDailyTarget();
+    final list = await db.query(
+      'tilawah_progress',
+      orderBy: 'tanggal DESC',
+    );
+    if (list.isEmpty) return 0;
+
+    final now = DateTime.now();
+    final todayStr = _formatDate(now);
+    final yesterdayStr = _formatDate(now.subtract(const Duration(days: 1)));
+
+    int todayProgress = 0;
+    int yesterdayProgress = 0;
+    
+    final progressMap = <String, int>{};
+    for (var item in list) {
+      progressMap[item['tanggal'] as String] = item['jumlahAyatDibaca'] as int;
+    }
+
+    todayProgress = progressMap[todayStr] ?? 0;
+    yesterdayProgress = progressMap[yesterdayStr] ?? 0;
+
+    if (todayProgress < target && yesterdayProgress < target) {
+      return 0;
+    }
+
+    int streak = 0;
+    DateTime checkDate = todayProgress >= target ? now : now.subtract(const Duration(days: 1));
+
+    while (true) {
+      final dateStr = _formatDate(checkDate);
+      final prog = progressMap[dateStr] ?? 0;
+      if (prog >= target) {
+        streak++;
+        checkDate = checkDate.subtract(const Duration(days: 1));
+      } else {
+        break;
+      }
+    }
+    return streak;
+  }
+
+  String _formatDate(DateTime date) {
+    return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
   }
 }

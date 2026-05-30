@@ -15,6 +15,9 @@ Aplikasi mobile komprehensif yang dirancang untuk membantu umat Muslim dalam men
 * **Pengaturan Adzan Kustom**: Fleksibilitas untuk menyalakan/mematikan (mute) suara adzan per waktu sholat (Subuh, Dzuhur, Ashar, Maghrib, Isya) secara granular.
 * **Pengingat Sebelum Adzan**: Opsi alarm pengingat bersiap wudhu (5-30 menit sebelum adzan) menggunakan notifikasi lokal.
 * **Widget Layar Utama (Home Screen)**: Widget native Android 3x2 bertema dark emerald premium yang menampilkan hitung mundur sholat berikutnya serta jadwal sholat hari ini secara real-time.
+* **Catatan Tafsir Pribadi & Tadabbur (Catatan Ayat)**: Fitur menulis, mengedit, dan menghapus refleksi pribadi (tadabbur) untuk setiap ayat secara offline, terintegrasi penuh dalam antarmuka 2-Tab premium (Bookmark & Catatan).
+* **Murottal Background Player**: Pemutaran audio murottal terus berjalan lancar di latar belakang (background) didukung dengan bar notifikasi media control dan lockscreen widget native OS.
+* **Target & Pelacak Tilawah Harian (Daily Tilawah Tracker)**: Melacak jumlah ayat yang dibaca per hari secara otomatis saat membuka surah, menghitung coretan streak tilawah beruntun, serta menyajikan visualisasi grafik progres 7 hari terakhir.
 
 ## 📸 Cuplikan Layar (Screenshots)
 
@@ -64,7 +67,7 @@ Aplikasi mobile komprehensif yang dirancang untuk membantu umat Muslim dalam men
 * **Database Lokal:** SQLite (via `sqflite`)
 * **Notifikasi & Alarm:** `flutter_local_notifications` & `timezone`
 * **Widget Layar Utama:** `home_widget` (integrasi native Android AppWidget)
-* **Audio Player:** `audioplayers`
+* **Audio Player:** `just_audio` & `just_audio_background` (sebelumnya `audioplayers`)
 
 ## 🚀 Cara Menjalankan Proyek (Getting Started)
 

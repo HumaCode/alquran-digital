@@ -235,7 +235,7 @@ class _StatistikViewState extends State<StatistikView> {
         ),
         const SizedBox(height: 12),
         Container(
-          height: 170,
+          height: 195,
           decoration: BoxDecoration(
             color: _bg2,
             borderRadius: BorderRadius.circular(18),

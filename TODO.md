@@ -8,10 +8,10 @@ Dokumen ini digunakan untuk melacak ide, rencana pengembangan, dan progres fitur
 
 ### 1. 🔖 Sistem Bookmark & Favorit Ayat
 Memungkinkan pengguna untuk menyimpan beberapa ayat pilihan dari berbagai surah ke dalam daftar favorit mereka untuk referensi cepat.
-*   [ ] Buat tabel SQLite baru `bookmarks` (kolom: `id`, `nomorSurah`, `namaSurah`, `nomorAyat`, `teksArab`, `teksIndonesia`, `createdAt`).
-*   [ ] Tambahkan tombol ikon Bookmark di samping tombol Copy/Share di setiap item ayat pada `DetailSurahView`.
-*   [ ] Buat modul baru `bookmarks` (Controller & View) untuk menampilkan daftar ayat yang disimpan.
-*   [ ] Tambahkan opsi untuk menghapus bookmark dari daftar.
+*   [x] Buat tabel SQLite baru `bookmarks` (kolom: `id`, `nomorSurah`, `namaSurah`, `nomorAyat`, `teksArab`, `teksIndonesia`, `createdAt`).
+*   [x] Tambahkan tombol ikon Bookmark di samping tombol Copy/Share di setiap item ayat pada `DetailSurahView`.
+*   [x] Buat modul baru `bookmarks` (Controller & View) untuk menampilkan daftar ayat yang disimpan.
+*   [x] Tambahkan opsi untuk menghapus bookmark dari daftar.
 
 ### 2. 🔍 Pencarian Ayat Global (Teks & Terjemahan)
 Mempermudah pengguna mencari ayat berdasarkan kata kunci tertentu secara cepat di seluruh Al-Qur'an.

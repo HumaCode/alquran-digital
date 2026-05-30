@@ -146,5 +146,21 @@ class SurahRepository {
   Future<List<int>> getBookmarks() async {
     return await DatabaseHelper.instance.getBookmarks();
   }
+
+  Future<int> insertBookmark(Map<String, dynamic> bookmark) async {
+    return await DatabaseHelper.instance.insertBookmark(bookmark);
+  }
+
+  Future<List<Map<String, dynamic>>> getBookmarksList() async {
+    return await DatabaseHelper.instance.getBookmarksList();
+  }
+
+  Future<int> deleteBookmark(int nomorSurah, int nomorAyat) async {
+    return await DatabaseHelper.instance.deleteBookmark(nomorSurah, nomorAyat);
+  }
+
+  Future<bool> isBookmarked(int nomorSurah, int nomorAyat) async {
+    return await DatabaseHelper.instance.isBookmarked(nomorSurah, nomorAyat);
+  }
 }
 

@@ -374,6 +374,29 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                       );
                                     },
                                   ),
+                                  // Simpan Bookmark Button
+                                  IconButton(
+                                    icon: Obx(() => Icon(
+                                          controller.bookmarkedAyats.contains(ayat.nomorAyat)
+                                              ? Icons.bookmark_rounded
+                                              : Icons.bookmark_border_rounded,
+                                          color: controller.bookmarkedAyats.contains(ayat.nomorAyat)
+                                              ? _gold
+                                              : _goldDim,
+                                          size: 20,
+                                        )),
+                                    onPressed: () async {
+                                      await controller.toggleBookmark(ayat);
+                                      final isAdded = controller.bookmarkedAyats.contains(ayat.nomorAyat);
+                                      CustomToast.show(
+                                        context,
+                                        message: isAdded
+                                            ? 'Ayat ${ayat.nomorAyat} disimpan ke Bookmark'
+                                            : 'Ayat ${ayat.nomorAyat} dihapus dari Bookmark',
+                                        type: ToastType.success,
+                                      );
+                                    },
+                                  ),
                                   // Copy Button
                                   IconButton(
                                     icon: Icon(Icons.copy_rounded, color: _goldDim, size: 20),

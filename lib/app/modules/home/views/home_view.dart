@@ -83,6 +83,13 @@ class _HomeViewState extends State<HomeView>
                   ),
                 ),
                 actions: [
+                  IconButton(
+                    icon: Icon(Icons.bookmark_rounded, color: _gold),
+                    tooltip: 'Bookmark Ayat',
+                    onPressed: () {
+                      Get.toNamed(Routes.BOOKMARKS);
+                    },
+                  ),
                   Obx(() {
                     final isDark = ThemeController.to.isDarkMode.value;
                     return IconButton(
@@ -921,6 +928,16 @@ class _HomeViewState extends State<HomeView>
                       onTap: () {
                         Navigator.pop(context);
                         Get.toNamed(Routes.MUROTAL);
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    _buildDrawerItem(
+                      icon: Icons.bookmark_rounded,
+                      title: R.string.sidebarBookmarks,
+                      subtitle: R.string.sidebarBookmarksSubtitle,
+                      onTap: () {
+                        Navigator.pop(context);
+                        Get.toNamed(Routes.BOOKMARKS);
                       },
                     ),
                   ],

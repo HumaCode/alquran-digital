@@ -14,6 +14,8 @@ import '../modules/jadwalSholat/bindings/jadwal_sholat_binding.dart';
 import '../modules/jadwalSholat/views/jadwal_sholat_view.dart';
 import '../modules/murotal/bindings/murotal_binding.dart';
 import '../modules/murotal/views/murotal_view.dart';
+import '../modules/bookmarks/bindings/bookmarks_binding.dart';
+import '../modules/bookmarks/views/bookmarks_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 
@@ -70,6 +72,13 @@ class AppPages {
       name: _Paths.MUROTAL,
       page: () => const MurotalView(),
       binding: MurotalBinding(),
+    ),
+    GetPage(
+      name: _Paths.BOOKMARKS,
+      page: () => const BookmarksView(),
+      binding: BookmarksBinding(),
+      transition: Transition.rightToLeftWithFade,
+      transitionDuration: const Duration(milliseconds: 350),
     ),
   ];
 }

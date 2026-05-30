@@ -24,6 +24,7 @@ class DetailSurahController extends GetxController {
   late final int nomorSurah;
   int? targetAyat;
   final lastReadAyatNomor = 0.obs;
+  final bookmarkedAyats = <int>{}.obs;
 
   // Qori Selection for verses
   final selectedQori = '05'.obs; // Default to Misyari Rasyid Al-Afasy
@@ -166,6 +167,9 @@ class DetailSurahController extends GetxController {
       if (lastRead != null && lastRead['nomorSurah'] == nomorSurah) {
         lastReadAyatNomor.value = lastRead['nomorAyat'] as int;
       }
+
+      // Ambil data bookmark untuk surah ini
+      await loadBookmarkedAyats();
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {
@@ -295,5 +299,42 @@ class DetailSurahController extends GetxController {
       return match?.teks;
     }
     return null;
+  }
+
+  Future<void> loadBookmarkedAyats() async {
+    try {
+      final list = await _repository.getBookmarksList();
+      final currentBookmarks = list
+          .where((element) => element['nomorSurah'] == nomorSurah)
+          .map((element) => element['nomorAyat'] as int)
+          .toSet();
+      bookmarkedAyats.assignAll(currentBookmarks);
+    } catch (e) {
+      print('Gagal memuat bookmark: $e');
+    }
+  }
+
+  Future<void> toggleBookmark(Ayat ayat) async {
+    final isAlreadyBookmarked = bookmarkedAyats.contains(ayat.nomorAyat);
+    try {
+      if (isAlreadyBookmarked) {
+        await _repository.deleteBookmark(nomorSurah, ayat.nomorAyat);
+        bookmarkedAyats.remove(ayat.nomorAyat);
+      } else {
+        final detail = detailSurah.value?.data;
+        if (detail == null) return;
+        await _repository.insertBookmark({
+          'nomorSurah': nomorSurah,
+          'namaSurah': detail.namaLatin,
+          'nomorAyat': ayat.nomorAyat,
+          'teksArab': ayat.teksArab,
+          'teksIndonesia': ayat.teksIndonesia,
+          'createdAt': DateTime.now().toIso8601String(),
+        });
+        bookmarkedAyats.add(ayat.nomorAyat);
+      }
+    } catch (e) {
+      print('Gagal mengubah status bookmark: $e');
+    }
   }
 }

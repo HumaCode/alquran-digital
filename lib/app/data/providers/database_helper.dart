@@ -33,6 +33,17 @@ class DatabaseHelper {
             PRIMARY KEY (surah_nomor, qori_id)
           )
         ''');
+        await db.execute('''
+          CREATE TABLE IF NOT EXISTS bookmarks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nomorSurah INTEGER NOT NULL,
+            namaSurah TEXT NOT NULL,
+            nomorAyat INTEGER NOT NULL,
+            teksArab TEXT NOT NULL,
+            teksIndonesia TEXT NOT NULL,
+            createdAt TEXT NOT NULL
+          )
+        ''');
       },
     );
   }
@@ -71,6 +82,19 @@ class DatabaseHelper {
       CREATE TABLE metadata (
         key TEXT PRIMARY KEY,
         value TEXT NOT NULL
+      )
+    ''');
+
+    // 4. Tabel Bookmarks baru
+    await db.execute('''
+      CREATE TABLE bookmarks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nomorSurah INTEGER NOT NULL,
+        namaSurah TEXT NOT NULL,
+        nomorAyat INTEGER NOT NULL,
+        teksArab TEXT NOT NULL,
+        teksIndonesia TEXT NOT NULL,
+        createdAt TEXT NOT NULL
       )
     ''');
   }
@@ -321,6 +345,41 @@ class DatabaseHelper {
     return [1, 36, 67];
   }
 
+  // ── Operations for New Bookmarks Table ──────────────────────────────────────
+
+  Future<int> insertBookmark(Map<String, dynamic> bookmark) async {
+    final db = await instance.database;
+    return await db.insert(
+      'bookmarks',
+      bookmark,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> getBookmarksList() async {
+    final db = await instance.database;
+    return await db.query('bookmarks', orderBy: 'createdAt DESC');
+  }
+
+  Future<int> deleteBookmark(int nomorSurah, int nomorAyat) async {
+    final db = await instance.database;
+    return await db.delete(
+      'bookmarks',
+      where: 'nomorSurah = ? AND nomorAyat = ?',
+      whereArgs: [nomorSurah, nomorAyat],
+    );
+  }
+
+  Future<bool> isBookmarked(int nomorSurah, int nomorAyat) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'bookmarks',
+      where: 'nomorSurah = ? AND nomorAyat = ?',
+      whereArgs: [nomorSurah, nomorAyat],
+      limit: 1,
+    );
+    return result.isNotEmpty;
+  }
 
   Future<void> clearAllData() async {
     final db = await instance.database;

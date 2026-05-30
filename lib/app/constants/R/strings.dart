@@ -88,4 +88,6 @@ class Strings {
   final String sidebarMurotalSubtitle = 'Dengarkan murotal penuh 114 surah';
   final String sidebarQibla = 'Arah Kiblat';
   final String sidebarQiblaSubtitle = "Kompas penunjuk arah Ka'bah";
+  final String sidebarBookmarks = 'Bookmark Ayat';
+  final String sidebarBookmarksSubtitle = 'Daftar ayat favorit yang disimpan';
 }

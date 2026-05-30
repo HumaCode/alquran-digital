@@ -11,6 +11,7 @@ abstract class Routes {
   static const IMSAKIYAH = _Paths.IMSAKIYAH;
   static const ARAH_KIBLAT = _Paths.ARAH_KIBLAT;
   static const MUROTAL = _Paths.MUROTAL;
+  static const BOOKMARKS = _Paths.BOOKMARKS;
 }
 
 abstract class _Paths {
@@ -23,4 +24,5 @@ abstract class _Paths {
   static const IMSAKIYAH = '/imsakiyah';
   static const ARAH_KIBLAT = '/arah-kiblat';
   static const MUROTAL = '/murotal';
+  static const BOOKMARKS = '/bookmarks';
 }

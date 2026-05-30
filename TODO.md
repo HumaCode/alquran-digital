@@ -51,8 +51,8 @@ Menyediakan wadah bagi pengguna untuk menulis refleksi atau catatan pribadi meng
 
 ### 7. 🎛️ Media Kontrol Murottal di Bar Notifikasi (Background Player)
 Mengintegrasikan pemutar audio Murottal dengan kontrol media sistem operasi native agar mudah dikendalikan dari lockscreen.
-*   [ ] Integrasikan plugin audio background (seperti `just_audio` + `audio_service` atau setup background session `audioplayers`).
-*   [ ] Tampilkan judul surah, qori, dan tombol Play/Pause/Stop/Seek di laci notifikasi dan lockscreen.
+*   [x] Integrasikan plugin audio background (seperti `just_audio` + `audio_service` atau setup background session `audioplayers`).
+*   [x] Tampilkan judul surah, qori, dan tombol Play/Pause/Stop/Seek di laci notifikasi dan lockscreen.
 
 ### 8. 🎯 Target & Pelacak Tilawah Harian (Daily Tilawah Tracker)
 Membantu pengguna tetap konsisten dalam membaca Al-Quran dengan target harian dan sistem streak tilawah.

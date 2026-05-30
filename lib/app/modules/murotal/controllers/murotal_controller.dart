@@ -1,6 +1,7 @@
 import 'dart:io';
-import 'package:flutter/widgets.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../../data/models/surah_model.dart';
@@ -51,17 +52,17 @@ class MurotalController extends GetxController {
     _audioPlayer = AudioPlayer();
 
     // Bind audio player streams to Rx variables
-    _audioPlayer.onPositionChanged.listen((p) {
+    _audioPlayer.positionStream.listen((p) {
       position.value = p;
     });
-    _audioPlayer.onDurationChanged.listen((d) {
-      duration.value = d;
+    _audioPlayer.durationStream.listen((d) {
+      duration.value = d ?? Duration.zero;
     });
-    _audioPlayer.onPlayerStateChanged.listen((state) {
-      isPlaying.value = state == PlayerState.playing;
-    });
-    _audioPlayer.onPlayerComplete.listen((_) {
-      playNext(isAuto: true);
+    _audioPlayer.playerStateStream.listen((state) {
+      isPlaying.value = state.playing;
+      if (state.processingState == ProcessingState.completed) {
+        playNext(isAuto: true);
+      }
     });
 
     loadSurahs();
@@ -150,7 +151,20 @@ class MurotalController extends GetxController {
       // Play local file - Zero Delay!
       try {
         await _audioPlayer.stop();
-        await _audioPlayer.play(DeviceFileSource(localPath));
+        final qoriName = qoriList.firstWhere((q) => q['id'] == qori)['name'] ?? 'Unknown Qori';
+        await _audioPlayer.setAudioSource(
+          AudioSource.file(
+            localPath,
+            tag: MediaItem(
+              id: 'murotal_${surah.nomor}_$qori',
+              album: 'Murotal Al-Qur\'an',
+              title: 'Surah ${surah.namaLatin}',
+              artist: qoriName,
+              artUri: Uri.parse('https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Gilded_Quran_Cover.jpg/430px-Gilded_Quran_Cover.jpg'),
+            ),
+          ),
+        );
+        _audioPlayer.play();
         print('Memutar file lokal offline: $localPath');
       } catch (e) {
         print('Gagal memutar file lokal, fallback ke URL: $e');
@@ -174,7 +188,20 @@ class MurotalController extends GetxController {
 
     try {
       await _audioPlayer.stop();
-      await _audioPlayer.play(UrlSource(audioUrl));
+      final qoriName = qoriList.firstWhere((q) => q['id'] == qori)['name'] ?? 'Unknown Qori';
+      await _audioPlayer.setAudioSource(
+        AudioSource.uri(
+          Uri.parse(audioUrl),
+          tag: MediaItem(
+            id: 'murotal_${surah.nomor}_$qori',
+            album: 'Murotal Al-Qur\'an',
+            title: 'Surah ${surah.namaLatin}',
+            artist: qoriName,
+            artUri: Uri.parse('https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Gilded_Quran_Cover.jpg/430px-Gilded_Quran_Cover.jpg'),
+          ),
+        ),
+      );
+      _audioPlayer.play();
     } catch (e) {
       Get.snackbar('Error', 'Gagal memutar audio: $e');
     }
@@ -290,7 +317,7 @@ class MurotalController extends GetxController {
       if (position.value == Duration.zero) {
         await playAudio();
       } else {
-        await _audioPlayer.resume();
+        await _audioPlayer.play();
       }
     }
   }

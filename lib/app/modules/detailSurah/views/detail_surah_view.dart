@@ -23,30 +23,28 @@ class DetailSurahView extends GetView<DetailSurahController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _bg,
-      appBar: AppBar(
+    return Obx(() {
+      // Force dependency on isDarkMode so it rebuilds when theme changes
+      ThemeController.to.isDarkMode.value;
+      return Scaffold(
         backgroundColor: _bg,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, color: _goldLight),
-          onPressed: () => Get.back(),
-        ),
-        title: Obx(() {
-          final title = controller.detailSurah.value?.data.namaLatin ?? R.string.loading;
-          return Text(
-            title,
+        appBar: AppBar(
+          backgroundColor: _bg,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios_new_rounded, color: _goldLight),
+            onPressed: () => Get.back(),
+          ),
+          title: Text(
+            controller.detailSurah.value?.data.namaLatin ?? R.string.loading,
             style: R.textStyle.large(
               color: _goldLight,
               fontWeight: FontWeight.bold,
             ).copyWith(fontSize: 20),
-          );
-        }),
-        centerTitle: true,
-        actions: [
-          Obx(() {
-            final isDark = ThemeController.to.isDarkMode.value;
-            return IconButton(
+          ),
+          centerTitle: true,
+          actions: [
+            IconButton(
               icon: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 500),
                 transitionBuilder: (child, animation) {
@@ -59,8 +57,8 @@ class DetailSurahView extends GetView<DetailSurahController> {
                   );
                 },
                 child: Icon(
-                  isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-                  key: ValueKey<bool>(isDark),
+                  ThemeController.to.isDarkMode.value ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                  key: ValueKey<bool>(ThemeController.to.isDarkMode.value),
                   color: _goldLight,
                 ),
               ),
@@ -68,484 +66,484 @@ class DetailSurahView extends GetView<DetailSurahController> {
               onPressed: () {
                 ThemeController.to.toggleTheme();
               },
+            ),
+            IconButton(
+              icon: Icon(Icons.tune_rounded, color: _goldLight),
+              tooltip: 'Pengaturan Tampilan',
+              onPressed: () => _showSettingsBottomSheet(context),
+            ),
+          ],
+        ),
+        body: Obx(() {
+          if (controller.isLoading.value) {
+            return Center(
+              child: CustomLoader(size: 60),
             );
-          }),
-          IconButton(
-            icon: Icon(Icons.tune_rounded, color: _goldLight),
-            tooltip: 'Pengaturan Tampilan',
-            onPressed: () => _showSettingsBottomSheet(context),
-          ),
-        ],
-      ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return Center(
-            child: CustomLoader(size: 60),
-          );
-        }
+          }
 
-        if (controller.errorMessage.isNotEmpty) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 60),
-                  const SizedBox(height: 16),
-                  Text(
-                    controller.errorMessage.value,
-                    textAlign: TextAlign.center,
-                    style: R.textStyle.medium(color: _textSoft),
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton.icon(
-                    onPressed: () => controller.fetchDetailSurah(),
-                    icon: const Icon(Icons.refresh_rounded),
-                    label: Text(R.string.tryAgain),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _gold,
-                      foregroundColor: _bg,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+          if (controller.errorMessage.isNotEmpty) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 60),
+                    const SizedBox(height: 16),
+                    Text(
+                      controller.errorMessage.value,
+                      textAlign: TextAlign.center,
+                      style: R.textStyle.medium(color: _textSoft),
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton.icon(
+                      onPressed: () => controller.fetchDetailSurah(),
+                      icon: const Icon(Icons.refresh_rounded),
+                      label: Text(R.string.tryAgain),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _gold,
+                        foregroundColor: _bg,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          final detailResponse = controller.detailSurah.value;
+          if (detailResponse == null) {
+            return Center(
+              child: Text(
+                R.string.detailSurahNotFound,
+                style: R.textStyle.medium(color: _textSoft),
+              ),
+            );
+          }
+
+          final detail = detailResponse.data;
+
+          return ListView(
+            controller: controller.scrollController,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            children: [
+              // ── Surah Card Header ──────────────────────────────────────────
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [_emeraldDark, _emeraldMedium],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    border: Border.all(
+                      color: _goldDim.withValues(alpha: 0.3),
+                      width: 1.5,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: _gold.withValues(alpha: 0.08),
+                        blurRadius: 20,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: Stack(
+                    children: [
+                      // Islamic Pattern overlay
+                      Positioned.fill(
+                        child: Opacity(
+                          opacity: 0.06,
+                          child: CustomPaint(
+                            painter: DetailCardPatternPainter(color: _gold),
+                          ),
+                        ),
+                      ),
+                      // Card Content
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+                        child: Column(
+                          children: [
+                            Text(
+                              detail.namaLatin,
+                              style: R.textStyle.large(
+                                color: _goldLight,
+                                fontWeight: FontWeight.bold,
+                              ).copyWith(fontSize: 24),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              detail.arti,
+                              style: R.textStyle.medium(
+                                color: _textSoft.withValues(alpha: 0.7),
+                              ).copyWith(fontSize: 14),
+                            ),
+                            const SizedBox(height: 12),
+                            Divider(
+                              color: _goldDim.withValues(alpha: 0.3),
+                              thickness: 1,
+                            ),
+                            const SizedBox(height: 12),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  detail.tempatTurun.toUpperCase(),
+                                  style: R.textStyle.small(
+                                    color: _goldLight,
+                                    fontWeight: FontWeight.w600,
+                                  ).copyWith(letterSpacing: 1.5, fontSize: 12),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                  child: Icon(Icons.circle, color: _goldDim, size: 6),
+                                ),
+                                Text(
+                                  '${detail.jumlahAyat} AYAT',
+                                  style: R.textStyle.small(
+                                    color: _goldLight,
+                                    fontWeight: FontWeight.w600,
+                                  ).copyWith(letterSpacing: 1.5, fontSize: 12),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            // Full Surah Audio Player Controls (Gabungan)
+                            Obx(() {
+                              final isPlaying = controller.isPlayingFullSurah.value;
+                              final currentAyat = controller.currentlyPlayingAyat.value;
+                              return Column(
+                                children: [
+                                  ElevatedButton.icon(
+                                    onPressed: () {
+                                      controller.togglePlayFullSurah();
+                                    },
+                                    icon: Icon(
+                                      isPlaying ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded,
+                                      color: const Color(0xFF0D1F17),
+                                      size: 20,
+                                    ),
+                                    label: Text(
+                                      isPlaying ? 'JEDA MURATTAL PENUH' : 'PUTAR MURATTAL PENUH',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF0D1F17),
+                                        letterSpacing: 1.2,
+                                        fontSize: 12,
+                                        fontFamily: 'Poppins',
+                                      ),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: _gold,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                    ),
+                                  ),
+                                  if (isPlaying && currentAyat != null) ...[
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Memutar ayat $currentAyat dari ${detail.jumlahAyat}',
+                                      style: R.textStyle.small(
+                                        color: _goldLight.withValues(alpha: 0.8),
+                                      ).copyWith(fontStyle: FontStyle.italic, fontSize: 12),
+                                    ),
+                                  ]
+                                ],
+                              );
+                            }),
+                            // Beautiful Bismillah (except for Al-Fatihah which has it as verse 1 and At-Tawbah which does not have it)
+                            if (detail.nomor != 1 && detail.nomor != 9) ...[
+                              const SizedBox(height: 24),
+                              Text(
+                                R.string.bismillah,
+                                textAlign: TextAlign.center,
+                                style: R.textStyle.large(
+                                  color: _goldLight,
+                                ).copyWith(
+                                  fontSize: 24,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
+
+              // ── Ayat List ──────────────────────────────────────────────────
+              Obx(() {
+                // Force GetX to track changes for settings variables
+                final _ = controller.arabicFontSize.value;
+                final __ = controller.showLatin.value;
+                final ___ = controller.showTranslation.value;
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: controller.visibleAyat.length,
+                  itemBuilder: (context, index) {
+                    final ayat = controller.visibleAyat[index];
+                    final key = controller.ayatKeys.putIfAbsent(ayat.nomorAyat, () => GlobalKey());
+                    return Padding(
+                      key: key,
+                      padding: const EdgeInsets.only(bottom: 24),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: _bg2.withValues(alpha: 0.4),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: _goldDim.withValues(alpha: 0.1),
+                            width: 1,
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            // Ayat Header (Number & Action Bar)
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: _bg2.withValues(alpha: 0.6),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 36,
+                                    height: 36,
+                                    alignment: Alignment.center,
+                                    child: CustomPaint(
+                                      size: const Size(36, 36),
+                                      painter: DiamondNumberPainter(
+                                        number: ayat.nomorAyat,
+                                        color: _goldDim,
+                                        textColor: _goldLight,
+                                      ),
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  // Play Audio Button
+                                  IconButton(
+                                    icon: Obx(() {
+                                      final isPlaying = controller.currentlyPlayingAyat.value == ayat.nomorAyat &&
+                                          controller.isAudioPlaying.value;
+                                      return Icon(
+                                        isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                                        color: isPlaying ? _gold : _goldDim,
+                                        size: 22,
+                                      );
+                                    }),
+                                    onPressed: () {
+                                      controller.togglePlayAudio(ayat);
+                                    },
+                                  ),
+                                  // Tandai Terakhir Dibaca Button
+                                  IconButton(
+                                    icon: Obx(() => Icon(
+                                          controller.lastReadAyatNomor.value == ayat.nomorAyat
+                                              ? Icons.bookmark_added_rounded
+                                              : Icons.bookmark_add_outlined,
+                                          color: controller.lastReadAyatNomor.value == ayat.nomorAyat
+                                              ? _gold
+                                              : _goldDim,
+                                          size: 20,
+                                        )),
+                                    onPressed: () {
+                                      controller.markAsLastRead(
+                                        detail.nomor,
+                                        detail.namaLatin,
+                                        ayat.nomorAyat,
+                                      );
+                                      CustomToast.show(
+                                        context,
+                                        message: 'Ayat ${ayat.nomorAyat} ditandai sebagai terakhir dibaca',
+                                        type: ToastType.success,
+                                      );
+                                    },
+                                  ),
+                                  // Copy Button
+                                  IconButton(
+                                    icon: Icon(Icons.copy_rounded, color: _goldDim, size: 20),
+                                    onPressed: () {
+                                      Clipboard.setData(ClipboardData(
+                                        text: '${ayat.teksArab}\n${ayat.teksLatin}\n${ayat.teksIndonesia}',
+                                      ));
+                                      CustomToast.show(
+                                        context,
+                                        message: 'Ayat ${ayat.nomorAyat} ${R.string.copySuccess.toLowerCase()}',
+                                        type: ToastType.success,
+                                      );
+                                    },
+                                  ),
+                                  // Share Button
+                                  IconButton(
+                                    icon: Icon(Icons.share_rounded, color: _goldDim, size: 20),
+                                    onPressed: () {
+                                      // Share content (simple copy notification as fallback)
+                                      Clipboard.setData(ClipboardData(
+                                        text: 'QS. ${detail.namaLatin} [${detail.nomor}:${ayat.nomorAyat}]\n\n'
+                                            '${ayat.teksArab}\n\n'
+                                            'Artinya: "${ayat.teksIndonesia}"',
+                                      ));
+                                      CustomToast.show(
+                                        context,
+                                        message: R.string.shareText,
+                                        type: ToastType.success,
+                                      );
+                                    },
+                                  ),
+                                  // Tafsir Button
+                                  IconButton(
+                                    icon: Icon(Icons.menu_book_rounded, color: _goldDim, size: 20),
+                                    onPressed: () {
+                                      _showTafsirBottomSheet(context, detail, ayat.nomorAyat);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Arabic Text
+                            Text(
+                              ayat.teksArab,
+                              textAlign: TextAlign.right,
+                              style: R.textStyle.large(
+                                color: _goldLight,
+                                fontWeight: FontWeight.w500,
+                              ).copyWith(
+                                fontFamily: 'Poppins',
+                                fontSize: controller.arabicFontSize.value,
+                                height: 1.8,
+                              ),
+                            ),
+                            if (controller.showLatin.value || controller.showTranslation.value) ...[
+                              const SizedBox(height: 18),
+                            ],
+                            if (controller.showLatin.value) ...[
+                              Text(
+                                ayat.teksLatin,
+                                textAlign: TextAlign.left,
+                                style: R.textStyle.medium(
+                                  color: _goldLight.withValues(alpha: 0.9),
+                                ).copyWith(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 14,
+                                  fontStyle: FontStyle.italic,
+                                  height: 1.4,
+                                ),
+                              ),
+                              if (controller.showTranslation.value) ...[
+                                const SizedBox(height: 10),
+                              ],
+                            ],
+                            if (controller.showTranslation.value) ...[
+                              Text(
+                                ayat.teksIndonesia,
+                                textAlign: TextAlign.left,
+                                style: R.textStyle.small(
+                                  color: _textSoft.withValues(alpha: 0.8),
+                                ).copyWith(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 14,
+                                  height: 1.4,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }),
+
+              // Loading Indicator for Pagination
+              Obx(() {
+                if (controller.isMoreLoading.value) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(_gold),
+                      ),
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              }),
+
+              const SizedBox(height: 24),
+
+              // ── Elegant Islamic Divider & Sadaqallahul 'Adzim ───────────────────
+              const SizedBox(height: 32),
+              Row(
+                children: [
+                  Expanded(
+                    child: Divider(
+                      color: _goldDim.withValues(alpha: 0.2),
+                      thickness: 1,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Icon(
+                      Icons.brightness_7_rounded, // Islamic-style star/flower shape
+                      color: _goldDim.withValues(alpha: 0.5),
+                      size: 20,
+                    ),
+                  ),
+                  Expanded(
+                    child: Divider(
+                      color: _goldDim.withValues(alpha: 0.2),
+                      thickness: 1,
                     ),
                   ),
                 ],
               ),
-            ),
+              const SizedBox(height: 24),
+              Center(
+                child: Text(
+                  'صَدَقَ اللهُ الْعَظِيْمُ',
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: _goldLight,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Center(
+                child: Text(
+                  '"Maha benar Allah yang Maha Agung"',
+                  style: R.textStyle.small(
+                    color: _textSoft.withValues(alpha: 0.6),
+                  ).copyWith(
+                    fontStyle: FontStyle.italic,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 48),
+            ],
           );
-        }
-
-        final detailResponse = controller.detailSurah.value;
-        if (detailResponse == null) {
-          return Center(
-            child: Text(
-              R.string.detailSurahNotFound,
-              style: R.textStyle.medium(color: _textSoft),
-            ),
-          );
-        }
-
-        final detail = detailResponse.data;
-
-        return ListView(
-          controller: controller.scrollController,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          children: [
-            // ── Surah Card Header ──────────────────────────────────────────
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [_emeraldDark, _emeraldMedium],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  border: Border.all(
-                    color: _goldDim.withValues(alpha: 0.3),
-                    width: 1.5,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: _gold.withValues(alpha: 0.08),
-                      blurRadius: 20,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-                child: Stack(
-                  children: [
-                    // Islamic Pattern overlay
-                    Positioned.fill(
-                      child: Opacity(
-                        opacity: 0.06,
-                        child: CustomPaint(
-                          painter: DetailCardPatternPainter(color: _gold),
-                        ),
-                      ),
-                    ),
-                    // Card Content
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-                      child: Column(
-                        children: [
-                          Text(
-                            detail.namaLatin,
-                            style: R.textStyle.large(
-                              color: _goldLight,
-                              fontWeight: FontWeight.bold,
-                            ).copyWith(fontSize: 24),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            detail.arti,
-                            style: R.textStyle.medium(
-                              color: _textSoft.withValues(alpha: 0.7),
-                            ).copyWith(fontSize: 14),
-                          ),
-                          const SizedBox(height: 12),
-                          Divider(
-                            color: _goldDim.withValues(alpha: 0.3),
-                            thickness: 1,
-                          ),
-                          const SizedBox(height: 12),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                detail.tempatTurun.toUpperCase(),
-                                style: R.textStyle.small(
-                                  color: _goldLight,
-                                  fontWeight: FontWeight.w600,
-                                ).copyWith(letterSpacing: 1.5, fontSize: 12),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8),
-                                child: Icon(Icons.circle, color: _goldDim, size: 6),
-                              ),
-                              Text(
-                                '${detail.jumlahAyat} AYAT',
-                                style: R.textStyle.small(
-                                  color: _goldLight,
-                                  fontWeight: FontWeight.w600,
-                                ).copyWith(letterSpacing: 1.5, fontSize: 12),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          // Full Surah Audio Player Controls (Gabungan)
-                          Obx(() {
-                            final isPlaying = controller.isPlayingFullSurah.value;
-                            final currentAyat = controller.currentlyPlayingAyat.value;
-                            return Column(
-                              children: [
-                                ElevatedButton.icon(
-                                  onPressed: () {
-                                    controller.togglePlayFullSurah();
-                                  },
-                                  icon: Icon(
-                                    isPlaying ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded,
-                                    color: _emeraldDark,
-                                    size: 20,
-                                  ),
-                                  label: Text(
-                                    isPlaying ? 'JEDA MURATTAL PENUH' : 'PUTAR MURATTAL PENUH',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: _emeraldDark,
-                                      letterSpacing: 1.2,
-                                      fontSize: 12,
-                                      fontFamily: 'Poppins',
-                                    ),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: _gold,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                  ),
-                                ),
-                                if (isPlaying && currentAyat != null) ...[
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'Memutar ayat $currentAyat dari ${detail.jumlahAyat}',
-                                    style: R.textStyle.small(
-                                      color: _goldLight.withValues(alpha: 0.8),
-                                    ).copyWith(fontStyle: FontStyle.italic, fontSize: 12),
-                                  ),
-                                ]
-                              ],
-                            );
-                          }),
-                          // Beautiful Bismillah (except for Al-Fatihah which has it as verse 1 and At-Tawbah which does not have it)
-                          if (detail.nomor != 1 && detail.nomor != 9) ...[
-                            const SizedBox(height: 24),
-                            Text(
-                              R.string.bismillah,
-                              textAlign: TextAlign.center,
-                              style: R.textStyle.large(
-                                color: _goldLight,
-                              ).copyWith(
-                                fontSize: 24,
-                                letterSpacing: 1,
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 32),
-
-            // ── Ayat List ──────────────────────────────────────────────────
-            Obx(() {
-              // Force GetX to track changes for settings variables
-              final _ = controller.arabicFontSize.value;
-              final __ = controller.showLatin.value;
-              final ___ = controller.showTranslation.value;
-
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: controller.visibleAyat.length,
-                itemBuilder: (context, index) {
-                final ayat = controller.visibleAyat[index];
-                final key = controller.ayatKeys.putIfAbsent(ayat.nomorAyat, () => GlobalKey());
-                return Padding(
-                  key: key,
-                  padding: const EdgeInsets.only(bottom: 24),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: _bg2.withValues(alpha: 0.4),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: _goldDim.withValues(alpha: 0.1),
-                        width: 1,
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // Ayat Header (Number & Action Bar)
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: _bg2.withValues(alpha: 0.6),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 36,
-                                height: 36,
-                                alignment: Alignment.center,
-                                child: CustomPaint(
-                                  size: const Size(36, 36),
-                                  painter: DiamondNumberPainter(
-                                    number: ayat.nomorAyat,
-                                    color: _goldDim,
-                                    textColor: _goldLight,
-                                  ),
-                                ),
-                              ),
-                              const Spacer(),
-                              // Play Audio Button
-                              IconButton(
-                                icon: Obx(() {
-                                  final isPlaying = controller.currentlyPlayingAyat.value == ayat.nomorAyat &&
-                                      controller.isAudioPlaying.value;
-                                  return Icon(
-                                    isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                                    color: isPlaying ? _gold : _goldDim,
-                                    size: 22,
-                                  );
-                                }),
-                                onPressed: () {
-                                  controller.togglePlayAudio(ayat);
-                                },
-                              ),
-                              // Tandai Terakhir Dibaca Button
-                              IconButton(
-                                icon: Obx(() => Icon(
-                                      controller.lastReadAyatNomor.value == ayat.nomorAyat
-                                          ? Icons.bookmark_added_rounded
-                                          : Icons.bookmark_add_outlined,
-                                      color: controller.lastReadAyatNomor.value == ayat.nomorAyat
-                                          ? _gold
-                                          : _goldDim,
-                                      size: 20,
-                                    )),
-                                onPressed: () {
-                                  controller.markAsLastRead(
-                                    detail.nomor,
-                                    detail.namaLatin,
-                                    ayat.nomorAyat,
-                                  );
-                                  CustomToast.show(
-                                    context,
-                                    message: 'Ayat ${ayat.nomorAyat} ditandai sebagai terakhir dibaca',
-                                    type: ToastType.success,
-                                  );
-                                },
-                              ),
-                              // Copy Button
-                              IconButton(
-                                icon: Icon(Icons.copy_rounded, color: _goldDim, size: 20),
-                                onPressed: () {
-                                  Clipboard.setData(ClipboardData(
-                                    text: '${ayat.teksArab}\n${ayat.teksLatin}\n${ayat.teksIndonesia}',
-                                  ));
-                                  CustomToast.show(
-                                    context,
-                                    message: 'Ayat ${ayat.nomorAyat} ${R.string.copySuccess.toLowerCase()}',
-                                    type: ToastType.success,
-                                  );
-                                },
-                              ),
-                              // Share Button
-                              IconButton(
-                                icon: Icon(Icons.share_rounded, color: _goldDim, size: 20),
-                                onPressed: () {
-                                  // Share content (simple copy notification as fallback)
-                                  Clipboard.setData(ClipboardData(
-                                    text: 'QS. ${detail.namaLatin} [${detail.nomor}:${ayat.nomorAyat}]\n\n'
-                                        '${ayat.teksArab}\n\n'
-                                        'Artinya: "${ayat.teksIndonesia}"',
-                                  ));
-                                  CustomToast.show(
-                                    context,
-                                    message: R.string.shareText,
-                                    type: ToastType.success,
-                                  );
-                                },
-                              ),
-                              // Tafsir Button
-                              IconButton(
-                                icon: Icon(Icons.menu_book_rounded, color: _goldDim, size: 20),
-                                onPressed: () {
-                                  _showTafsirBottomSheet(context, detail, ayat.nomorAyat);
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-
-                        // Arabic Text
-                        Text(
-                          ayat.teksArab,
-                          textAlign: TextAlign.right,
-                          style: R.textStyle.large(
-                            color: _goldLight,
-                            fontWeight: FontWeight.w500,
-                          ).copyWith(
-                            fontFamily: 'Poppins',
-                            fontSize: controller.arabicFontSize.value,
-                            height: 1.8,
-                          ),
-                        ),
-                        if (controller.showLatin.value || controller.showTranslation.value) ...[
-                          const SizedBox(height: 18),
-                        ],
-                        if (controller.showLatin.value) ...[
-                          Text(
-                            ayat.teksLatin,
-                            textAlign: TextAlign.left,
-                            style: R.textStyle.medium(
-                              color: _goldLight.withValues(alpha: 0.9),
-                            ).copyWith(
-                              fontFamily: 'Poppins',
-                              fontSize: 14,
-                              fontStyle: FontStyle.italic,
-                              height: 1.4,
-                            ),
-                          ),
-                          if (controller.showTranslation.value) ...[
-                            const SizedBox(height: 10),
-                          ],
-                        ],
-                        if (controller.showTranslation.value) ...[
-                          Text(
-                            ayat.teksIndonesia,
-                            textAlign: TextAlign.left,
-                            style: R.textStyle.small(
-                              color: _textSoft.withValues(alpha: 0.8),
-                            ).copyWith(
-                              fontFamily: 'Poppins',
-                              fontSize: 14,
-                              height: 1.4,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          }),
-            
-            // Loading Indicator for Pagination
-            Obx(() {
-              if (controller.isMoreLoading.value) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(_gold),
-                    ),
-                  ),
-                );
-              }
-              return const SizedBox.shrink();
-            }),
-            
-            const SizedBox(height: 24),
-
-            // ── Elegant Islamic Divider & Sadaqallahul 'Adzim ───────────────────
-            const SizedBox(height: 32),
-            Row(
-              children: [
-                Expanded(
-                  child: Divider(
-                    color: _goldDim.withValues(alpha: 0.2),
-                    thickness: 1,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Icon(
-                    Icons.brightness_7_rounded, // Islamic-style star/flower shape
-                    color: _goldDim.withValues(alpha: 0.5),
-                    size: 20,
-                  ),
-                ),
-                Expanded(
-                  child: Divider(
-                    color: _goldDim.withValues(alpha: 0.2),
-                    thickness: 1,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Center(
-              child: Text(
-                'صَدَقَ اللهُ الْعَظِيْمُ',
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: _goldLight,
-                  letterSpacing: 0.5,
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Center(
-              child: Text(
-                '"Maha benar Allah yang Maha Agung"',
-                style: R.textStyle.small(
-                  color: _textSoft.withValues(alpha: 0.6),
-                ).copyWith(
-                  fontStyle: FontStyle.italic,
-                  fontSize: 13,
-                ),
-              ),
-            ),
-            const SizedBox(height: 48),
-          ],
-        );
-      }),
-    );
+        }),
+      );
+    });
   }
 
   void _showTafsirBottomSheet(BuildContext context, Data detail, int nomorAyat) {

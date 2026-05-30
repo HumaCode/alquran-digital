@@ -10,6 +10,11 @@ Aplikasi mobile komprehensif yang dirancang untuk membantu umat Muslim dalam men
 * **Jadwal Imsakiyah**: Jadwal imsak dan buka puasa untuk panduan ibadah puasa.
 * **Arah Kiblat**: Kompas penunjuk arah kiblat yang presisi.
 * **Murottal**: Fitur pemutar audio Al-Quran (Murottal).
+* **Bookmark Ayat Al-Quran**: Menyimpan ayat favorit secara offline ke database SQLite lokal dengan tombol interaktif dan animasi getar gelombang yang halus saat dihapus.
+* **Pencarian Ayat Global**: Mencari kata kunci tertentu di seluruh Al-Quran (transliterasi latin & terjemahan Indonesia) lengkap dengan highlight kuning pada kata yang cocok.
+* **Pengaturan Adzan Kustom**: Fleksibilitas untuk menyalakan/mematikan (mute) suara adzan per waktu sholat (Subuh, Dzuhur, Ashar, Maghrib, Isya) secara granular.
+* **Pengingat Sebelum Adzan**: Opsi alarm pengingat bersiap wudhu (5-30 menit sebelum adzan) menggunakan notifikasi lokal.
+* **Widget Layar Utama (Home Screen)**: Widget native Android 3x2 bertema dark emerald premium yang menampilkan hitung mundur sholat berikutnya serta jadwal sholat hari ini secara real-time.
 
 ## 📸 Cuplikan Layar (Screenshots)
 
@@ -54,10 +59,12 @@ Aplikasi mobile komprehensif yang dirancang untuk membantu umat Muslim dalam men
 
 ## 🛠️ Teknologi yang Digunakan
 
-*(Silakan ubah bagian ini sesuai dengan teknologi yang kamu pakai)*
-* **Framework:** Flutter / Dart (atau React Native / Android Native Kotlin)
-* **State Management:** Provider / GetX / Bloc
-* **API:** Al-Quran API / Prayer Times API
+* **Framework:** Flutter / Dart
+* **State Management:** GetX
+* **Database Lokal:** SQLite (via `sqflite`)
+* **Notifikasi & Alarm:** `flutter_local_notifications` & `timezone`
+* **Widget Layar Utama:** `home_widget` (integrasi native Android AppWidget)
+* **Audio Player:** `audioplayers`
 
 ## 🚀 Cara Menjalankan Proyek (Getting Started)
 

@@ -1115,7 +1115,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
               TextField(
                 controller: textCtrl,
                 maxLines: 4,
-                style: TextStyle(color: R.color.text, fontSize: 14, fontFamily: 'Poppins'),
+                style: TextStyle(color: _textSoft, fontSize: 14, fontFamily: 'Poppins'),
                 decoration: InputDecoration(
                   hintText: 'Tulis tadabbur, refleksi, atau catatan penting mengenai ayat ini...',
                   hintStyle: TextStyle(color: _textSoft.withValues(alpha: 0.5), fontSize: 13),
@@ -1150,10 +1150,10 @@ class DetailSurahView extends GetView<DetailSurahController> {
                           type: ToastType.success,
                         );
                       },
-                      icon: Icon(Icons.delete_outline_rounded, color: R.color.error, size: 18),
-                      label: Text(
+                      icon: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent, size: 18),
+                      label: const Text(
                         'Hapus',
-                        style: TextStyle(color: R.color.error, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
+                        style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
                       ),
                     ),
                   const Spacer(),

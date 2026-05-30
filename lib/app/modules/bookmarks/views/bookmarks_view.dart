@@ -351,7 +351,7 @@ class BookmarksView extends GetView<BookmarksController> {
                     Text(
                       teksCatatan,
                       textAlign: TextAlign.left,
-                      style: R.textStyle.medium(color: R.color.text).copyWith(
+                      style: R.textStyle.medium(color: _text).copyWith(
                         fontFamily: 'Poppins',
                         height: 1.4,
                       ),
@@ -592,7 +592,7 @@ class BookmarksView extends GetView<BookmarksController> {
               TextField(
                 controller: textCtrl,
                 maxLines: 4,
-                style: TextStyle(color: R.color.text, fontSize: 14, fontFamily: 'Poppins'),
+                style: TextStyle(color: _text, fontSize: 14, fontFamily: 'Poppins'),
                 decoration: InputDecoration(
                   hintText: 'Tulis tadabbur, refleksi, atau catatan penting...',
                   hintStyle: TextStyle(color: _text.withValues(alpha: 0.5), fontSize: 13),

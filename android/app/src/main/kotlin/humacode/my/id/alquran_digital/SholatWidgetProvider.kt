@@ -1,0 +1,48 @@
+package humacode.my.id.alquran_digital
+
+import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetProvider
+import android.content.Context
+import android.widget.RemoteViews
+import android.content.SharedPreferences
+
+class SholatWidgetProvider : AppWidgetProvider() {
+    override fun onUpdate(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
+    ) {
+        for (appWidgetId in appWidgetIds) {
+            val views = RemoteViews(context.packageName, R.layout.sholat_widget)
+            
+            // Read from Shared Preferences (HomeWidgetPrefs, written by home_widget)
+            val prefs = context.getSharedPreferences("HomeWidgetPrefs", Context.MODE_PRIVATE)
+            
+            val location = prefs.getString("location", "Kota Pekalongan")
+            val nextPrayerName = prefs.getString("next_prayer_name", "-")
+            val nextPrayerTime = prefs.getString("next_prayer_time", "--:--")
+            val countdown = prefs.getString("countdown", "")
+            
+            val subuh = prefs.getString("time_subuh", "--:--")
+            val dzuhur = prefs.getString("time_dzuhur", "--:--")
+            val ashar = prefs.getString("time_ashar", "--:--")
+            val maghrib = prefs.getString("time_maghrib", "--:--")
+            val isya = prefs.getString("time_isya", "--:--")
+            
+            // Update Views
+            views.setTextViewText(R.id.widget_location, location)
+            views.setTextViewText(R.id.widget_next_name, nextPrayerName)
+            views.setTextViewText(R.id.widget_next_time, nextPrayerTime)
+            views.setTextViewText(R.id.widget_countdown, countdown)
+            
+            views.setTextViewText(R.id.widget_time_subuh, subuh)
+            views.setTextViewText(R.id.widget_time_dzuhur, dzuhur)
+            views.setTextViewText(R.id.widget_time_ashar, ashar)
+            views.setTextViewText(R.id.widget_time_maghrib, maghrib)
+            views.setTextViewText(R.id.widget_time_isya, isya)
+            
+            // Tell the AppWidgetManager to perform an update on the current app widget
+            appWidgetManager.updateAppWidget(appWidgetId, views)
+        }
+    }
+}

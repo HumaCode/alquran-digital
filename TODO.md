@@ -39,8 +39,8 @@ Memberikan waktu persiapan wudhu sebelum masuknya waktu sholat utama.
 
 ### 5. 📱 Widget Layar Utama (Home Screen Widget)
 Menampilkan jadwal sholat hari ini di halaman depan ponsel pengguna.
-*   [ ] Integrasikan paket integrasi widget native seperti `home_widget` untuk Android & iOS.
-*   [ ] Desain widget dengan estetika modern, menampilkan waktu sholat terdekat dan hitung mundur.
+*   [x] Integrasikan paket integrasi widget native seperti `home_widget` untuk Android & iOS.
+*   [x] Desain widget dengan estetika modern, menampilkan waktu sholat terdekat dan hitung mundur.
 
 ---
 

@@ -9,6 +9,7 @@ import '../controllers/jadwal_sholat_controller.dart';
 import '../../../data/models/jadwal_sholat_model.dart';
 import 'package:alquran_digital/app/constants/r.dart';
 import 'package:alquran_digital/app/routes/app_pages.dart';
+import '../../../data/providers/widget_helper.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // MODEL WAKTU SHOLAT
@@ -192,6 +193,12 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
     final initialToday = _controller.todayJadwal.value;
     if (initialToday != null) {
       _updateSholatTimes(initialToday);
+      _calcSholatBerikut();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _updateWidgetData();
+        }
+      });
     }
     
     _buildDates();
@@ -203,6 +210,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
         setState(() {
           _updateSholatTimes(today);
           _calcSholatBerikut();
+          _updateWidgetData();
         });
       }
     });
@@ -214,6 +222,11 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
           _now = DateTime.now();
           _calcSholatBerikut();
           _checkAndPlayPrayerTime();
+          
+          // Perbarui data widget setiap menit
+          if (_now.second == 0) {
+            _updateWidgetData();
+          }
         });
       }
     });
@@ -350,6 +363,34 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
       targetDt = targetDt.add(const Duration(days: 1));
     }
     _countdown = targetDt.difference(_now);
+  }
+
+  void _updateWidgetData() {
+    final today = _controller.todayJadwal.value;
+    if (today == null) return;
+
+    final target = _sholat[_sholatBerikutIdx];
+    final remainingMinutes = _countdown.inMinutes;
+    String countStr = '';
+    if (remainingMinutes > 60) {
+      final hours = remainingMinutes ~/ 60;
+      final mins = remainingMinutes % 60;
+      countStr = '$hours jam $mins mnt lagi';
+    } else {
+      countStr = '$remainingMinutes mnt lagi';
+    }
+
+    WidgetHelper.updateSholatWidget(
+      location: _controller.selectedKabKota.value,
+      nextPrayerName: target.nama,
+      nextPrayerTime: _fmt(target.waktu),
+      countdown: countStr,
+      subuh: _fmt(_sholat[0].waktu),
+      dzuhur: _fmt(_sholat[1].waktu),
+      ashar: _fmt(_sholat[2].waktu),
+      maghrib: _fmt(_sholat[3].waktu),
+      isya: _fmt(_sholat[4].waktu),
+    );
   }
 
   void _checkAndPlayPrayerTime() {

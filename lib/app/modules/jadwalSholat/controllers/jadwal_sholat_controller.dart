@@ -7,6 +7,7 @@ import '../../../data/repositories/jadwal_sholat_repository.dart';
 import '../../../data/models/jadwal_sholat_model.dart';
 import '../../../data/providers/database_helper.dart';
 import '../../../data/providers/notification_helper.dart';
+import '../../home/controllers/home_controller.dart';
 
 class JadwalSholatController extends GetxController {
   final JadwalSholatRepository _repository;
@@ -443,6 +444,11 @@ class JadwalSholatController extends GetxController {
 
       // Update data hari ini
       updateTodayJadwal();
+
+      // Sync home screen widget
+      if (Get.isRegistered<HomeController>()) {
+        Get.find<HomeController>().updateSholatWidgetFromCache();
+      }
 
       // Schedule local notifications if enabled
       if (isNotifEnabled.value) {

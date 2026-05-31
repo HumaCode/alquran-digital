@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../data/models/surah_model.dart';
+import '../../../data/models/jadwal_sholat_model.dart';
 import '../../../data/repositories/surah_repository.dart';
 import '../../../data/providers/database_helper.dart';
 import '../../../data/providers/notification_helper.dart';
@@ -82,6 +84,7 @@ class HomeController extends GetxController {
     _loadReminderSettings();
     loadSearchHistory();
     fetchAndSetDailyAyat();
+    updateSholatWidgetFromCache();
   }
 
   @override
@@ -549,6 +552,106 @@ class HomeController extends GetxController {
       }
     } catch (e) {
       print('Gagal memuat progres khatam: $e');
+    }
+  }
+
+  Future<void> updateSholatWidgetFromCache() async {
+    try {
+      final db = DatabaseHelper.instance;
+      final cachedJson = await db.getMetadata('jadwal_sholat_cached');
+      if (cachedJson == null) {
+        print('Widget sholat: Tidak ada cache jadwal sholat.');
+        return;
+      }
+
+      final decoded = jsonDecode(cachedJson);
+      final schedule = JadwalSholat.fromJson(decoded as Map<String, dynamic>);
+      
+      final now = DateTime.now();
+      print('Widget sholat: now is $now');
+      final today = schedule.data.jadwal.firstWhereOrNull(
+        (j) =>
+            j.tanggalLengkap.day == now.day &&
+            j.tanggalLengkap.month == now.month &&
+            j.tanggalLengkap.year == now.year,
+      );
+
+      if (today == null) {
+        print('Widget sholat: Tidak ditemukan jadwal sholat untuk hari ini. Jadwal count: ${schedule.data.jadwal.length}');
+        for (var item in schedule.data.jadwal.take(3)) {
+          print('Widget sholat: Available date in cache: ${item.tanggalLengkap}');
+        }
+        return;
+      }
+
+      print('Widget sholat: found today: ${today.tanggalLengkap}, subuh: ${today.subuh}, dzuhur: ${today.dzuhur}, ashar: ${today.ashar}, maghrib: ${today.maghrib}, isya: ${today.isya}');
+
+      // Hitung jadwal sholat berikutnya
+      final prayers = [
+        {'nama': 'Subuh', 'waktu': today.subuh},
+        {'nama': 'Dzuhur', 'waktu': today.dzuhur},
+        {'nama': 'Ashar', 'waktu': today.ashar},
+        {'nama': 'Maghrib', 'waktu': today.maghrib},
+        {'nama': 'Isya', 'waktu': today.isya},
+      ];
+
+      final nowMin = now.hour * 60 + now.minute;
+      var nextPrayerName = 'Subuh';
+      var nextPrayerTime = today.subuh;
+      var found = false;
+
+      for (var p in prayers) {
+        final timeStr = p['waktu']!;
+        final parts = timeStr.trim().split(':');
+        final hour = int.parse(parts[0]);
+        final minute = int.parse(parts[1]);
+        final sMin = hour * 60 + minute;
+        
+        if (sMin > nowMin) {
+          nextPrayerName = p['nama']!;
+          nextPrayerTime = timeStr;
+          found = true;
+          break;
+        }
+      }
+
+      var targetDt = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        int.parse(nextPrayerTime.split(':')[0]),
+        int.parse(nextPrayerTime.split(':')[1]),
+      );
+      if (!found) {
+        // Jika sudah lewat Isya, jadwal berikutnya adalah Subuh esok hari
+        targetDt = targetDt.add(const Duration(days: 1));
+      }
+
+      final countdownDuration = targetDt.difference(now);
+      final remainingMinutes = countdownDuration.inMinutes;
+      String countStr = '';
+      if (remainingMinutes > 60) {
+        final hours = remainingMinutes ~/ 60;
+        final mins = remainingMinutes % 60;
+        countStr = '$hours jam $mins mnt lagi';
+      } else {
+        countStr = '$remainingMinutes mnt lagi';
+      }
+
+      await WidgetHelper.updateSholatWidget(
+        location: schedule.data.kabkota,
+        nextPrayerName: nextPrayerName,
+        nextPrayerTime: nextPrayerTime,
+        countdown: countStr,
+        subuh: today.subuh,
+        dzuhur: today.dzuhur,
+        ashar: today.ashar,
+        maghrib: today.maghrib,
+        isya: today.isya,
+      );
+      print('Widget sholat berhasil diperbarui dari cache di HomeController.');
+    } catch (e) {
+      print('Gagal memperbarui widget sholat dari cache: $e');
     }
   }
 }

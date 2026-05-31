@@ -106,62 +106,64 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
 
         return LayoutBuilder(
           builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
-                child: IntrinsicHeight(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Spacer(flex: 1),
-                        // Qori Selector
-                        _buildQoriSelector(context),
-                        const Spacer(flex: 2),
+            return Obx(() {
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
+                  ),
+                  child: IntrinsicHeight(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Spacer(flex: 1),
+                          // Qori Selector
+                          _buildQoriSelector(context),
+                          const Spacer(flex: 2),
 
-                        // Rotating Disk
-                        _buildRotatingDisk(controller.selectedSurah.value),
-                        const Spacer(flex: 2),
+                          // Rotating Disk
+                          _buildRotatingDisk(),
+                          const Spacer(flex: 2),
 
-                        // Surah info
-                        if (controller.selectedSurah.value != null) ...[
-                          Text(
-                            controller.selectedSurah.value!.namaLatin,
-                            style: TextStyle(
-                              fontSize: 26,
-                              fontWeight: FontWeight.w800,
-                              color: R.color.textSoft,
-                              letterSpacing: 0.5,
+                          // Surah info
+                          if (controller.selectedSurah.value != null) ...[
+                            Text(
+                              controller.selectedSurah.value!.namaLatin,
+                              style: TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.w800,
+                                color: R.color.textSoft,
+                                letterSpacing: 0.5,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            'Surah Ke-${controller.selectedSurah.value!.nomor} • ${controller.selectedSurah.value!.arti}',
-                            style: TextStyle(fontSize: 14, color: R.color.textMuted),
-                          ),
+                            const SizedBox(height: 6),
+                            Text(
+                              'Surah Ke-${controller.selectedSurah.value!.nomor} • ${controller.selectedSurah.value!.arti}',
+                              style: TextStyle(fontSize: 14, color: R.color.textMuted),
+                            ),
+                            const SizedBox(height: 12),
+                            // Offline indicator badge
+                            _buildOfflineBadge(controller.selectedSurah.value!),
+                          ],
+                          const Spacer(flex: 2),
+
+                          // Progress Slider
+                          _buildProgressSlider(),
                           const SizedBox(height: 12),
-                          // Offline indicator badge
-                          _buildOfflineBadge(controller.selectedSurah.value!),
+
+                          // Player Controls
+                          _buildPlayerControls(context),
+                          const Spacer(flex: 3),
                         ],
-                        const Spacer(flex: 2),
-
-                        // Progress Slider
-                        _buildProgressSlider(),
-                        const SizedBox(height: 12),
-
-                        // Player Controls
-                        _buildPlayerControls(context),
-                        const Spacer(flex: 3),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
+              );
+            });
           },
         );
       }),
@@ -470,9 +472,10 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
     );
   }
 
-  Widget _buildRotatingDisk(DataSurah? currentSurah) {
+  Widget _buildRotatingDisk() {
     return Obx(() {
       final isPlaying = controller.isPlaying.value;
+      final currentSurah = controller.selectedSurah.value;
       return Center(
         child: AnimatedBuilder(
           animation: _rotationController,

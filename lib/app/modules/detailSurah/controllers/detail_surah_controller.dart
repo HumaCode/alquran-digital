@@ -6,6 +6,7 @@ import '../../../data/models/detail_surah_model.dart';
 import '../../../data/models/tafsir_model.dart';
 import '../../../data/repositories/surah_repository.dart';
 import '../../home/controllers/home_controller.dart';
+import '../../statistik/controllers/statistik_controller.dart';
 import '../../../constants/r.dart';
 
 class DetailSurahController extends GetxController {
@@ -173,9 +174,6 @@ class DetailSurahController extends GetxController {
       _loadedCount = 0;
       loadNextPage();
 
-      // Log progress tilawah otomatis
-      _logTilawahCount();
-
       if (targetAyat != null) {
         final index = _allAyat.indexWhere((element) => element.nomorAyat == targetAyat);
         if (index != -1) {
@@ -224,8 +222,17 @@ class DetailSurahController extends GetxController {
 
   Future<void> markAsLastRead(int nomorSurah, String namaLatin, int nomorAyat) async {
     try {
+      final prevAyat = lastReadAyatNomor.value;
       await _repository.saveLastRead(nomorSurah, namaLatin, nomorAyat);
       lastReadAyatNomor.value = nomorAyat;
+
+      // Log progress tilawah secara dinamis berdasarkan selisih ayat dibaca
+      int diff = nomorAyat - prevAyat;
+      if (diff > 0) {
+        await _logTilawahCount(diff);
+      } else if (prevAyat == 0) {
+        await _logTilawahCount(nomorAyat);
+      }
     } catch (e) {
       print('Gagal menyimpan ayat terakhir dibaca: $e');
     }
@@ -434,14 +441,20 @@ class DetailSurahController extends GetxController {
     }
   }
 
-  Future<void> _logTilawahCount() async {
+  Future<void> _logTilawahCount(int count) async {
     try {
       final now = DateTime.now();
       final dateStr = "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
-      await _repository.logTilawah(dateStr, _allAyat.length);
-      // Trigger update on HomeController if registered
+      await _repository.logTilawah(dateStr, count);
+      
+      // Trigger update pada HomeController jika aktif
       if (Get.isRegistered<HomeController>()) {
         Get.find<HomeController>().fetchTilawahTracker();
+      }
+      
+      // Trigger update pada StatistikController jika aktif
+      if (Get.isRegistered<StatistikController>()) {
+        Get.find<StatistikController>().fetchStats();
       }
     } catch (e) {
       print('Gagal mencatat tilawah otomatis: $e');
@@ -484,6 +497,11 @@ class DetailSurahController extends GetxController {
       final nextStatus = !isCompleted.value;
       await _repository.markSurahAsCompleted(nomorSurah, detail.namaLatin, nextStatus);
       isCompleted.value = nextStatus;
+
+      // Jika ditandai selesai, tandai juga ayat terakhir sebagai terakhir dibaca (otomatis mencatat sisa progress tilawah)
+      if (nextStatus) {
+        await markAsLastRead(nomorSurah, detail.namaLatin, detail.jumlahAyat);
+      }
       
       if (Get.isRegistered<HomeController>()) {
         Get.find<HomeController>().fetchKhatamProgress();

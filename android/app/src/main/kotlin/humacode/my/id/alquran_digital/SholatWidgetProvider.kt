@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.widget.RemoteViews
 import android.content.SharedPreferences
+import es.antonborri.home_widget.HomeWidgetPlugin
 
 class SholatWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(
@@ -15,8 +16,11 @@ class SholatWidgetProvider : AppWidgetProvider() {
         for (appWidgetId in appWidgetIds) {
             val views = RemoteViews(context.packageName, R.layout.sholat_widget)
             
-            // Read from Shared Preferences (HomeWidgetPrefs, written by home_widget)
-            val prefs = context.getSharedPreferences("HomeWidgetPrefs", Context.MODE_PRIVATE)
+            // Read from Shared Preferences via HomeWidgetPlugin
+            val prefs = HomeWidgetPlugin.getData(context)
+            
+            System.out.println("DEBUG_WIDGET: SholatWidgetProvider.onUpdate called. All keys in prefs: ${prefs.all.keys}")
+            System.out.println("DEBUG_WIDGET: location: ${prefs.getString("location", null)}, subuh: ${prefs.getString("time_subuh", null)}")
             
             val location = prefs.getString("location", "Kota Pekalongan")
             val nextPrayerName = prefs.getString("next_prayer_name", "-")
@@ -42,6 +46,19 @@ class SholatWidgetProvider : AppWidgetProvider() {
             views.setTextViewText(R.id.widget_time_ashar, ashar)
             views.setTextViewText(R.id.widget_time_maghrib, maghrib)
             views.setTextViewText(R.id.widget_time_isya, isya)
+            
+            // Click action to refresh widget manually by tapping the "Jadwal Sholat" title
+            val refreshIntent = android.content.Intent(context, SholatWidgetProvider::class.java).apply {
+                action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, intArrayOf(appWidgetId))
+            }
+            val pendingIntent = android.app.PendingIntent.getBroadcast(
+                context,
+                appWidgetId,
+                refreshIntent,
+                android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
+            )
+            views.setOnClickPendingIntent(R.id.widget_title, pendingIntent)
             
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views)

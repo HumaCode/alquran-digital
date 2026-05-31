@@ -5,6 +5,8 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.widget.RemoteViews
 
+import es.antonborri.home_widget.HomeWidgetPlugin
+
 class ProgressWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
@@ -13,7 +15,7 @@ class ProgressWidgetProvider : AppWidgetProvider() {
     ) {
         for (appWidgetId in appWidgetIds) {
             val views = RemoteViews(context.packageName, R.layout.progress_widget)
-            val prefs = context.getSharedPreferences("HomeWidgetPrefs", Context.MODE_PRIVATE)
+            val prefs = HomeWidgetPlugin.getData(context)
             
             val today = prefs.getInt("tilawah_today", 0)
             val target = prefs.getInt("tilawah_target", 10)

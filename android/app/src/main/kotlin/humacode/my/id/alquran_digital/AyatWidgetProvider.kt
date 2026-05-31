@@ -5,6 +5,8 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.widget.RemoteViews
 
+import es.antonborri.home_widget.HomeWidgetPlugin
+
 class AyatWidgetProvider : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
@@ -13,7 +15,7 @@ class AyatWidgetProvider : AppWidgetProvider() {
     ) {
         for (appWidgetId in appWidgetIds) {
             val views = RemoteViews(context.packageName, R.layout.ayat_widget)
-            val prefs = context.getSharedPreferences("HomeWidgetPrefs", Context.MODE_PRIVATE)
+            val prefs = HomeWidgetPlugin.getData(context)
             
             val arab = prefs.getString("ayat_arab", "كُتِبَ عَلَيْكُمُ الصِّيَامُ")
             val indo = prefs.getString("ayat_indo", "Diwajibkan atas kamu berpuasa...")

@@ -82,10 +82,33 @@ class NotificationHelper {
       sound: RawResourceAndroidNotificationSound('adzhan'),
     );
 
-    await _localNotifications
+    const AndroidNotificationChannel preReminderChannel = AndroidNotificationChannel(
+      'pre_sholat_reminder_channel',
+      'Pengingat Sebelum Adzan',
+      description: 'Pengingat bersiap wudhu sebelum masuk waktu sholat',
+      importance: Importance.high,
+      playSound: true,
+      enableVibration: true,
+    );
+
+    const AndroidNotificationChannel tilawahChannel = AndroidNotificationChannel(
+      'tilawah_reminder_channel',
+      'Reminder Tilawah Harian',
+      description: 'Pengingat untuk memenuhi target tilawah Al-Quran harian',
+      importance: Importance.high,
+      playSound: true,
+      enableVibration: true,
+    );
+
+    final androidPlugin = _localNotifications
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(adzanChannel);
+            AndroidFlutterLocalNotificationsPlugin>();
+
+    if (androidPlugin != null) {
+      await androidPlugin.createNotificationChannel(adzanChannel);
+      await androidPlugin.createNotificationChannel(preReminderChannel);
+      await androidPlugin.createNotificationChannel(tilawahChannel);
+    }
   }
 
   static Future<void> schedulePrayerNotifications(JadwalSholat schedule) async {
@@ -134,8 +157,8 @@ class NotificationHelper {
       'pre_sholat_reminder_channel',
       'Pengingat Sebelum Adzan',
       channelDescription: 'Pengingat bersiap wudhu sebelum masuk waktu sholat',
-      importance: Importance.defaultImportance,
-      priority: Priority.defaultPriority,
+      importance: Importance.high,
+      priority: Priority.high,
       playSound: true,
       enableVibration: true,
     );

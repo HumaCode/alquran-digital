@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../../app/routes/app_pages.dart';
@@ -263,13 +264,13 @@ class _SplashViewState extends State<SplashView>
                         children: [
                           const Spacer(flex: 2),
                           _buildOrnamentTop(),
-                          const SizedBox(height: 54),
+                          SizedBox(height: 54.h),
                           _buildLogo(),
-                          const SizedBox(height: 54),
+                          SizedBox(height: 54.h),
                           _buildTexts(),
                           const Spacer(flex: 2),
                           _buildProgressArea(),
-                          const SizedBox(height: 48),
+                          SizedBox(height: 48.h),
                         ],
                       ),
                     ),
@@ -287,54 +288,54 @@ class _SplashViewState extends State<SplashView>
   List<Widget> _buildGeometricBg() {
     return [
       Positioned(
-        top: -80,
-        right: -80,
+        top: -80.h,
+        right: -80.w,
         child: AnimatedBuilder(
           animation: _bgController,
           builder: (context, _) => Opacity(
             opacity: _bgAnim.value * 0.06,
             child: Container(
-              width: 320,
-              height: 320,
+              width: 320.r,
+              height: 320.r,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: _gold, width: 1),
+                border: Border.all(color: _gold, width: 1.w),
               ),
             ),
           ),
         ),
       ),
       Positioned(
-        top: -40,
-        right: -40,
+        top: -40.h,
+        right: -40.w,
         child: AnimatedBuilder(
           animation: _bgController,
           builder: (context, _) => Opacity(
             opacity: _bgAnim.value * 0.05,
             child: Container(
-              width: 200,
-              height: 200,
+              width: 200.r,
+              height: 200.r,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: _gold, width: 1),
+                border: Border.all(color: _gold, width: 1.w),
               ),
             ),
           ),
         ),
       ),
       Positioned(
-        bottom: -100,
-        left: -80,
+        bottom: -100.h,
+        left: -80.w,
         child: AnimatedBuilder(
           animation: _bgController,
           builder: (context, _) => Opacity(
             opacity: _bgAnim.value * 0.05,
             child: Container(
-              width: 350,
-              height: 350,
+              width: 350.r,
+              height: 350.r,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: _emerald, width: 1),
+                border: Border.all(color: _emerald, width: 1.w),
               ),
             ),
           ),
@@ -364,8 +365,8 @@ class _SplashViewState extends State<SplashView>
           child: Transform.rotate(
             angle: _ornamentRotateAnim.value,
             child: SizedBox(
-              width: 80,
-              height: 80,
+              width: 80.r,
+              height: 80.r,
               child: CustomPaint(painter: CrescentStarPainter(color: _gold)),
             ),
           ),
@@ -387,31 +388,31 @@ class _SplashViewState extends State<SplashView>
             children: [
               // Mandala hiasan di belakang logo
               SizedBox(
-                width: 250,
-                height: 250,
+                width: 250.r,
+                height: 250.r,
                 child: CustomPaint(
                   painter: MandalaPainter(color: _gold),
                 ),
               ),
               // Glow luar
               Container(
-                width: 148 * _pulseAnim.value,
-                height: 148 * _pulseAnim.value,
+                width: 148.r * _pulseAnim.value,
+                height: 148.r * _pulseAnim.value,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: _gold.withOpacity(0.15 * _pulseAnim.value),
-                      blurRadius: 40,
-                      spreadRadius: 10,
+                      color: _gold.withValues(alpha: 0.15 * _pulseAnim.value),
+                      blurRadius: 40.r,
+                      spreadRadius: 10.r,
                     ),
                   ],
                 ),
               ),
               // Ring emas
               Container(
-                width: 130,
-                height: 130,
+                width: 130.r,
+                height: 130.r,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: SweepGradient(
@@ -419,17 +420,17 @@ class _SplashViewState extends State<SplashView>
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: _gold.withOpacity(0.3),
-                      blurRadius: 20,
-                      spreadRadius: 2,
+                      color: _gold.withValues(alpha: 0.3),
+                      blurRadius: 20.r,
+                      spreadRadius: 2.r,
                     ),
                   ],
                 ),
               ),
               // Inner circle
               Container(
-                width: 118,
-                height: 118,
+                width: 118.r,
+                height: 118.r,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
@@ -448,18 +449,18 @@ class _SplashViewState extends State<SplashView>
                           fontWeight: FontWeight.w600,
                         ).copyWith(
                           fontFamily: 'serif',
-                          fontSize: 26,
+                          fontSize: 26.sp,
                           height: 1.1,
                           shadows: [
                             Shadow(
-                              color: _gold.withOpacity(0.6),
-                              blurRadius: 8,
+                              color: _gold.withValues(alpha: 0.6),
+                              blurRadius: 8.r,
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 2),
-                      Container(width: 40, height: 1, color: _goldDim),
+                      SizedBox(height: 2.h),
+                      Container(width: 40.w, height: 1.h, color: _goldDim),
                     ],
                   ),
                 ),
@@ -490,10 +491,10 @@ class _SplashViewState extends State<SplashView>
                     color: _goldLight,
                     fontWeight: FontWeight.w500,
                   ).copyWith(
-                    fontSize: 20,
+                    fontSize: 20.sp,
                     height: 1.8,
                     shadows: [
-                      Shadow(color: _gold.withOpacity(0.5), blurRadius: 12),
+                      Shadow(color: _gold.withValues(alpha: 0.5), blurRadius: 12.r),
                     ],
                   ),
                 ),
@@ -501,39 +502,39 @@ class _SplashViewState extends State<SplashView>
             ),
           ),
 
-          const SizedBox(height: 6),
+          SizedBox(height: 6.h),
 
           // Divider ornamen
           Opacity(
             opacity: _dividerAnim.value,
             child: ClipRect(
               child: SizedBox(
-                width: 180 * _dividerAnim.value,
-                height: 20,
+                width: 180.w * _dividerAnim.value,
+                height: 20.h,
                 child: OverflowBox(
                   minWidth: 0,
-                  maxWidth: 180,
+                  maxWidth: 180.w,
                   minHeight: 0,
-                  maxHeight: 20,
+                  maxHeight: 20.h,
                   child: Row(
                     children: [
                       Expanded(
                         child: Container(
-                          height: 1,
-                          color: _goldDim.withOpacity(0.5),
+                          height: 1.h,
+                          color: _goldDim.withValues(alpha: 0.5),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        padding: EdgeInsets.symmetric(horizontal: 10.w),
                         child: Text(
                           '✦',
-                          style: R.textStyle.small(color: _gold).copyWith(fontSize: 10),
+                          style: R.textStyle.small(color: _gold).copyWith(fontSize: 10.sp),
                         ),
                       ),
                       Expanded(
                         child: Container(
-                          height: 1,
-                          color: _goldDim.withOpacity(0.5),
+                          height: 1.h,
+                          color: _goldDim.withValues(alpha: 0.5),
                         ),
                       ),
                     ],
@@ -543,7 +544,7 @@ class _SplashViewState extends State<SplashView>
             ),
           ),
 
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
 
           // Judul app
           ClipRect(
@@ -563,7 +564,7 @@ class _SplashViewState extends State<SplashView>
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
                     ).copyWith(
-                      fontSize: 42,
+                      fontSize: 42.sp,
                       letterSpacing: 2,
                       height: 1.1,
                     ),
@@ -573,7 +574,7 @@ class _SplashViewState extends State<SplashView>
             ),
           ),
 
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
 
           // Subtitle
           ClipRect(
@@ -584,10 +585,10 @@ class _SplashViewState extends State<SplashView>
                 child: Text(
                   R.string.subtitle,
                   style: R.textStyle.medium(
-                    color: _textSoft.withOpacity(0.7),
+                    color: _textSoft.withValues(alpha: 0.7),
                     fontWeight: FontWeight.w300,
                   ).copyWith(
-                    fontSize: 15,
+                    fontSize: 15.sp,
                     letterSpacing: 4,
                   ),
                 ),
@@ -606,7 +607,7 @@ class _SplashViewState extends State<SplashView>
       builder: (context, _) => Opacity(
         opacity: math.min(_progressAnim.value * 4, 1.0),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 60),
+          padding: EdgeInsets.symmetric(horizontal: 60.w),
           child: Column(
             children: [
               // Loading dots
@@ -626,12 +627,12 @@ class _SplashViewState extends State<SplashView>
                   return AnimatedBuilder(
                     animation: _pulseController,
                     builder: (context, _) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      padding: EdgeInsets.symmetric(horizontal: 5.w),
                       child: Opacity(
                         opacity: dotAnim.value,
                         child: Container(
-                          width: 5,
-                          height: 5,
+                          width: 5.r,
+                          height: 5.r,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: _gold,
@@ -642,13 +643,13 @@ class _SplashViewState extends State<SplashView>
                   );
                 }),
               ),
-              const SizedBox(height: 14),
+              SizedBox(height: 14.h),
               // Progress bar
               ClipRRect(
-                borderRadius: BorderRadius.circular(100),
+                borderRadius: BorderRadius.circular(100.r),
                 child: Container(
-                  height: 3,
-                  color: _goldDim.withOpacity(0.2),
+                  height: 3.h,
+                  color: _goldDim.withValues(alpha: 0.2),
                   child: FractionallySizedBox(
                     alignment: Alignment.centerLeft,
                     widthFactor: _progressAnim.value,
@@ -659,8 +660,8 @@ class _SplashViewState extends State<SplashView>
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: _gold.withOpacity(0.6),
-                            blurRadius: 6,
+                            color: _gold.withValues(alpha: 0.6),
+                            blurRadius: 6.r,
                           ),
                         ],
                       ),
@@ -668,13 +669,13 @@ class _SplashViewState extends State<SplashView>
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Text(
                 R.string.loading,
                 style: R.textStyle.small(
-                  color: _textSoft.withOpacity(0.35),
+                  color: _textSoft.withValues(alpha: 0.35),
                 ).copyWith(
-                  fontSize: 11,
+                  fontSize: 11.sp,
                   letterSpacing: 2,
                 ),
               ),

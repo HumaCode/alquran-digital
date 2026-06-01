@@ -162,5 +162,5 @@ Meningkatkan personalisasi tampilan aplikasi.
 *   [x] Hapus atau ganti `print` debug log dengan `developer.log` di dalam file controller.
 
 ### 20. ⚙️ Penanganan Optimal Notifikasi Standby
-*   [ ] Sediakan edukasi/halaman panduan optimasi baterai di menu Settings agar OS tidak menolak/menunda alarm pra-sholat saat standby.
+*   [x] Sediakan edukasi/halaman panduan optimasi baterai di menu Settings agar OS tidak menolak/menunda alarm pra-sholat saat standby.
 

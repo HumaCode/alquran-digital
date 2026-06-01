@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../constants/r.dart';
 import '../../../data/providers/theme_controller.dart';
+import '../../../data/providers/battery_helper.dart';
 import '../../home/controllers/home_controller.dart';
 import 'package:alquran_digital/app/components/widgets/widgets.dart';
 
@@ -14,6 +15,23 @@ class SettingsView extends StatefulWidget {
 
 class _SettingsViewState extends State<SettingsView> {
   final HomeController _homeController = Get.find<HomeController>();
+
+  bool _isIgnoringBattery = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkBatteryStatus();
+  }
+
+  Future<void> _checkBatteryStatus() async {
+    final status = await BatteryHelper.isIgnoringBatteryOptimizations();
+    if (mounted) {
+      setState(() {
+        _isIgnoringBattery = status;
+      });
+    }
+  }
 
   Color get _bg => R.color.bg1;
   Color get _bg2 => R.color.bg2;
@@ -352,6 +370,111 @@ class _SettingsViewState extends State<SettingsView> {
                     ],
                   ),
                 ),
+                const SizedBox(height: 28),
+
+                // 4. Battery Optimization Section
+                Text(
+                  R.string.settingsBatteryTitle,
+                  style: R.textStyle.medium(fontWeight: FontWeight.bold, color: _goldLight),
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: _bg2.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: _goldDim.withValues(alpha: 0.15)),
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Status Display
+                      Row(
+                        children: [
+                          Icon(
+                            _isIgnoringBattery ? Icons.gpp_good_rounded : Icons.gpp_maybe_rounded,
+                            color: _isIgnoringBattery ? R.color.emerald : _gold,
+                            size: 24,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _isIgnoringBattery
+                                      ? R.string.settingsBatteryStatusIgnored
+                                      : R.string.settingsBatteryStatusOptimized,
+                                  style: R.textStyle.mediumBold.copyWith(
+                                    color: _isIgnoringBattery ? R.color.emerald : _goldLight,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  R.string.settingsBatteryDesc,
+                                  style: R.textStyle.small(color: _textMuted),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Divider(color: _goldDim.withValues(alpha: 0.15), height: 1),
+                      const SizedBox(height: 16),
+                      
+                      // Actions (Buttons)
+                      Row(
+                        children: [
+                          if (!_isIgnoringBattery) ...[
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: _gold,
+                                  foregroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                ),
+                                icon: const Icon(Icons.battery_alert_rounded, size: 18),
+                                label: Text(
+                                  R.string.settingsBatteryDisableBtn,
+                                  style: R.textStyle.smallBold.copyWith(color: Colors.black),
+                                ),
+                                onPressed: () async {
+                                  await BatteryHelper.requestIgnoreBatteryOptimizations();
+                                  // Re-check after returning from request/settings
+                                  Future.delayed(const Duration(seconds: 1), _checkBatteryStatus);
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                          ],
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: _goldLight,
+                                side: BorderSide(color: _goldDim.withValues(alpha: 0.4)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                              ),
+                              icon: const Icon(Icons.help_outline_rounded, size: 18),
+                              label: Text(
+                                R.string.settingsBatteryGuideBtn,
+                                style: R.textStyle.smallBold.copyWith(color: _goldLight),
+                              ),
+                              onPressed: () => _showBatteryGuideDialog(context),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 40),
               ],
             ),
@@ -572,5 +695,107 @@ class _SettingsViewState extends State<SettingsView> {
     final hStr = hour.toString().padLeft(2, '0');
     final mStr = minute.toString().padLeft(2, '0');
     return '$hStr:$mStr';
+  }
+
+  void _showBatteryGuideDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: _bg2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+            side: BorderSide(color: _gold.withValues(alpha: 0.2)),
+          ),
+          title: Row(
+            children: [
+              Icon(Icons.battery_charging_full_rounded, color: _gold),
+              const SizedBox(width: 10),
+              Text(
+                'Panduan Optimasi Baterai',
+                style: R.textStyle.medium(fontWeight: FontWeight.bold, color: _goldLight),
+              ),
+            ],
+          ),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Agar notifikasi adzan tepat waktu dan tidak ditunda oleh sistem operasi ponsel Anda:',
+                    style: R.textStyle.small(color: _textSoft),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildBrandGuide('Umum (Semua Android)', [
+                    'Buka Pengaturan HP -> Aplikasi -> Al-Quran Digital.',
+                    'Pilih opsi Baterai / Penghemat Baterai.',
+                    'Pilih opsi "Tidak Dibatasi" atau "Jangan Optimalkan".',
+                  ]),
+                  _buildBrandGuide('Xiaomi / Redmi (MIUI / HyperOS)', [
+                    'Buka Pengaturan -> Aplikasi -> Kelola Aplikasi -> Al-Quran Digital.',
+                    'Aktifkan "Mulai Otomatis" (Autostart).',
+                    'Di bagian Penghemat Baterai, ubah ke "Tidak Ada Pembatasan".',
+                  ]),
+                  _buildBrandGuide('Samsung (One UI)', [
+                    'Buka Pengaturan -> Aplikasi -> Al-Quran Digital -> Baterai.',
+                    'Ubah pengaturan dari "Dioptimalkan" ke "Tidak Dibatasi".',
+                  ]),
+                  _buildBrandGuide('Oppo / Realme (ColorOS / Realme UI)', [
+                    'Buka Pengaturan -> Manajemen Aplikasi -> Al-Quran Digital.',
+                    'Pilih Penggunaan Baterai -> Aktifkan "Izinkan Aktivitas Latar Belakang" & "Izinkan Mulai Otomatis".',
+                  ]),
+                  _buildBrandGuide('Vivo (Funtouch OS)', [
+                    'Buka Pengaturan -> Baterai -> Pengelolaan Konsumsi Daya Latar Belakang.',
+                    'Pilih Al-Quran Digital -> Ubah ke "Konsumsi Daya Latar Belakang Tinggi".',
+                  ]),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                'Tutup',
+                style: R.textStyle.mediumBold.copyWith(color: _gold),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildBrandGuide(String brand, List<String> steps) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            brand,
+            style: R.textStyle.smallBold.copyWith(color: _goldLight, fontSize: 13),
+          ),
+          const SizedBox(height: 6),
+          ...steps.map((step) => Padding(
+                padding: const EdgeInsets.only(left: 8, bottom: 4),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('• ', style: TextStyle(color: _gold)),
+                    Expanded(
+                      child: Text(
+                        step,
+                        style: R.textStyle.small(color: _textMuted).copyWith(fontSize: 11),
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+        ],
+      ),
+    );
   }
 }

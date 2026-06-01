@@ -171,4 +171,12 @@ class Strings {
   final String settingsActive = 'Aktif';
   final String settingsToastTargetSaved = 'Target tilawah berhasil disimpan.';
   final String settingsToastReminderSaved = 'Waktu pengingat berhasil diubah.';
+
+  // battery optimization settings strings
+  final String settingsBatteryTitle = 'Optimasi Baterai & Notifikasi';
+  final String settingsBatteryDesc = 'Mencegah sistem menunda atau mematikan alarm adzan saat ponsel standby (Doze Mode)';
+  final String settingsBatteryStatusOptimized = 'Dibatasi (Dioptimalkan oleh OS)';
+  final String settingsBatteryStatusIgnored = 'Tidak Dibatasi (Aman & Tepat Waktu)';
+  final String settingsBatteryDisableBtn = 'Nonaktifkan Optimasi Baterai';
+  final String settingsBatteryGuideBtn = 'Lihat Panduan Pengecualian';
 }

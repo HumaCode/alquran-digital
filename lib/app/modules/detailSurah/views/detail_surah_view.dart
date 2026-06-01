@@ -573,48 +573,6 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                     );
                                   }),
                                   const SizedBox(width: 4),
-                                  // Tandai Terakhir Dibaca Button
-                                  Obx(
-                                    () => Material(
-                                      color: Colors.transparent,
-                                      child: InkWell(
-                                        borderRadius: BorderRadius.circular(8),
-                                        onTap: () {
-                                          controller.markAsLastRead(
-                                            detail.nomor,
-                                            detail.namaLatin,
-                                            ayat.nomorAyat,
-                                          );
-                                          CustomToast.show(
-                                            context,
-                                            message:
-                                                'Ayat ${ayat.nomorAyat} ditandai sebagai terakhir dibaca',
-                                            type: ToastType.success,
-                                          );
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(6),
-                                          child: Icon(
-                                            controller
-                                                        .lastReadAyatNomor
-                                                        .value ==
-                                                    ayat.nomorAyat
-                                                ? Icons.bookmark_added_rounded
-                                                : Icons.bookmark_add_outlined,
-                                            color:
-                                                controller
-                                                        .lastReadAyatNomor
-                                                        .value ==
-                                                    ayat.nomorAyat
-                                                ? _gold
-                                                : _goldDim,
-                                            size: 20,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 4),
                                   // Simpan Bookmark Button
                                   Obx(
                                     () => Material(
@@ -704,36 +662,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                     );
                                   }),
                                   const SizedBox(width: 4),
-                                  // Catatan Ayat (Tadabbur) Button
-                                  Obx(() {
-                                    final hasNote = controller.versesWithNotes
-                                        .contains(ayat.nomorAyat);
-                                    return Material(
-                                      color: Colors.transparent,
-                                      child: InkWell(
-                                        borderRadius: BorderRadius.circular(8),
-                                        onTap: () {
-                                          _showAddNoteBottomSheet(
-                                            context,
-                                            detail,
-                                            ayat,
-                                          );
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(6),
-                                          child: Icon(
-                                            hasNote
-                                                ? Icons.edit_note_rounded
-                                                : Icons.note_add_outlined,
-                                            color: hasNote ? _gold : _goldDim,
-                                            size: 20,
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                  const SizedBox(width: 4),
-                                  // Opsi Lainnya (Salin, Bagikan, Tafsir)
+                                  // Opsi Lainnya (Salin, Bagikan, Tafsir, Terakhir Dibaca, Catatan)
                                   Theme(
                                     data: Theme.of(context).copyWith(
                                       cardColor: _bg2,
@@ -772,40 +701,106 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                             detail,
                                             ayat.nomorAyat,
                                           );
+                                        } else if (val == 'last_read') {
+                                          controller.markAsLastRead(
+                                            detail.nomor,
+                                            detail.namaLatin,
+                                            ayat.nomorAyat,
+                                          );
+                                          CustomToast.show(
+                                            context,
+                                            message: 'Ayat ${ayat.nomorAyat} ditandai sebagai terakhir dibaca',
+                                            type: ToastType.success,
+                                          );
+                                        } else if (val == 'note') {
+                                          _showAddNoteBottomSheet(
+                                            context,
+                                            detail,
+                                            ayat,
+                                          );
                                         }
                                       },
-                                      itemBuilder: (context) => [
-                                        PopupMenuItem(
-                                          value: 'copy',
-                                          child: Row(
-                                            children: [
-                                              Icon(Icons.copy_rounded, color: _goldDim, size: 18),
-                                              const SizedBox(width: 8),
-                                              Text('Salin Ayat', style: TextStyle(color: _textSoft, fontFamily: 'Poppins', fontSize: 13)),
-                                            ],
-                                          ),
-                                        ),
-                                        PopupMenuItem(
-                                          value: 'share',
-                                          child: Row(
-                                            children: [
-                                              Icon(Icons.share_rounded, color: _goldDim, size: 18),
-                                              const SizedBox(width: 8),
-                                              Text('Bagikan', style: TextStyle(color: _textSoft, fontFamily: 'Poppins', fontSize: 13)),
-                                            ],
-                                          ),
-                                        ),
-                                        PopupMenuItem(
-                                          value: 'tafsir',
-                                          child: Row(
-                                            children: [
-                                              Icon(Icons.menu_book_rounded, color: _goldDim, size: 18),
-                                              const SizedBox(width: 8),
-                                              Text('Lihat Tafsir', style: TextStyle(color: _textSoft, fontFamily: 'Poppins', fontSize: 13)),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
+                                      itemBuilder: (context) {
+                                        return Obx(() {
+                                          final isLastRead = controller.lastReadAyatNomor.value == ayat.nomorAyat;
+                                          final hasNote = controller.versesWithNotes.contains(ayat.nomorAyat);
+                                          return [
+                                            PopupMenuItem(
+                                              value: 'copy',
+                                              child: Row(
+                                                children: [
+                                                  Icon(Icons.copy_rounded, color: _goldDim, size: 18),
+                                                  const SizedBox(width: 8),
+                                                  Text('Salin Ayat', style: TextStyle(color: _textSoft, fontFamily: 'Poppins', fontSize: 13)),
+                                                ],
+                                              ),
+                                            ),
+                                            PopupMenuItem(
+                                              value: 'share',
+                                              child: Row(
+                                                children: [
+                                                  Icon(Icons.share_rounded, color: _goldDim, size: 18),
+                                                  const SizedBox(width: 8),
+                                                  Text('Bagikan', style: TextStyle(color: _textSoft, fontFamily: 'Poppins', fontSize: 13)),
+                                                ],
+                                              ),
+                                            ),
+                                            PopupMenuItem(
+                                              value: 'tafsir',
+                                              child: Row(
+                                                children: [
+                                                  Icon(Icons.menu_book_rounded, color: _goldDim, size: 18),
+                                                  const SizedBox(width: 8),
+                                                  Text('Lihat Tafsir', style: TextStyle(color: _textSoft, fontFamily: 'Poppins', fontSize: 13)),
+                                                ],
+                                              ),
+                                            ),
+                                            const PopupMenuDivider(),
+                                            PopupMenuItem(
+                                              value: 'last_read',
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    isLastRead ? Icons.bookmark_added_rounded : Icons.bookmark_add_outlined,
+                                                    color: isLastRead ? _gold : _goldDim,
+                                                    size: 18,
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                    isLastRead ? 'Terakhir Dibaca (Aktif)' : 'Tandai Terakhir Dibaca',
+                                                    style: TextStyle(
+                                                      color: isLastRead ? _gold : _textSoft,
+                                                      fontFamily: 'Poppins',
+                                                      fontSize: 13,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            PopupMenuItem(
+                                              value: 'note',
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    hasNote ? Icons.edit_note_rounded : Icons.note_add_outlined,
+                                                    color: hasNote ? _gold : _goldDim,
+                                                    size: 18,
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                    hasNote ? 'Edit Catatan Tadabbur' : 'Tambah Catatan Tadabbur',
+                                                    style: TextStyle(
+                                                      color: hasNote ? _gold : _textSoft,
+                                                      fontFamily: 'Poppins',
+                                                      fontSize: 13,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ];
+                                        });
+                                      },
                                     ),
                                   ),
                                 ],

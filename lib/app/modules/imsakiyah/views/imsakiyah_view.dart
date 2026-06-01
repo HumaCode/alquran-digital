@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../data/models/imsakiyah_model.dart';
@@ -38,7 +39,7 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                 topRight: Radius.circular(24),
               ),
               border: Border(
-                top: BorderSide(color: R.color.goldDim.withOpacity(0.15)),
+                top: BorderSide(color: R.color.goldDim.withValues(alpha: 0.15)),
               ),
             ),
             child: Column(
@@ -51,7 +52,7 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                     height: 4,
                     margin: const EdgeInsets.only(bottom: 20),
                     decoration: BoxDecoration(
-                      color: R.color.textMutedJadwal.withOpacity(0.3),
+                      color: R.color.textMutedJadwal.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -93,7 +94,7 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: R.color.emerald.withOpacity(0.3),
+                          color: R.color.emerald.withValues(alpha: 0.3),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
@@ -134,7 +135,7 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                   decoration: BoxDecoration(
                     color: R.color.surface2Jadwal,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: R.color.goldDim.withOpacity(0.2)),
+                    border: Border.all(color: R.color.goldDim.withValues(alpha: 0.2)),
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
@@ -197,13 +198,13 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(
-                        color: R.color.goldDim.withOpacity(0.2),
+                        color: R.color.goldDim.withValues(alpha: 0.2),
                       ),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(
-                        color: R.color.goldDim.withOpacity(0.2),
+                        color: R.color.goldDim.withValues(alpha: 0.2),
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -245,7 +246,7 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   tileColor: isSelected
-                                      ? R.color.emerald.withOpacity(0.1)
+                                      ? R.color.emerald.withValues(alpha: 0.1)
                                       : Colors.transparent,
                                   contentPadding: const EdgeInsets.symmetric(
                                     horizontal: 8,
@@ -461,7 +462,7 @@ class ImsakiyahView extends GetView<ImsakiyahController> {
                                   children: [
                                     Icon(
                                       Icons.swipe_left_rounded,
-                                      color: R.color.goldDim.withOpacity(0.6),
+                                      color: R.color.goldDim.withValues(alpha: 0.6),
                                       size: 14,
                                     ),
                                     const SizedBox(width: 4),
@@ -510,10 +511,10 @@ class _YearBanner extends StatelessWidget {
       decoration: BoxDecoration(
         color: R.color.surfaceJadwal,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: R.color.goldDim.withOpacity(0.15)),
+        border: Border.all(color: R.color.goldDim.withValues(alpha: 0.15)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha: 0.2),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -524,7 +525,7 @@ class _YearBanner extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: R.color.emerald.withOpacity(0.1),
+              color: R.color.emerald.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
@@ -642,14 +643,14 @@ class _HighlightCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [startColor.withOpacity(0.85), endColor],
+          colors: [startColor.withValues(alpha: 0.85), endColor],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: startColor.withOpacity(0.3),
+            color: startColor.withValues(alpha: 0.3),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -686,7 +687,7 @@ class _HighlightCard extends StatelessWidget {
           Text(
             subtitle,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.75),
+              color: Colors.white.withValues(alpha: 0.75),
               fontSize: 10,
               fontWeight: FontWeight.w600,
             ),
@@ -710,10 +711,10 @@ class _TimetableTable extends StatelessWidget {
       decoration: BoxDecoration(
         color: R.color.surfaceJadwal,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: R.color.goldDim.withOpacity(0.15)),
+        border: Border.all(color: R.color.goldDim.withValues(alpha: 0.15)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha: 0.2),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -733,10 +734,10 @@ class _TimetableTable extends StatelessWidget {
               // Header
               TableRow(
                 decoration: BoxDecoration(
-                  color: R.color.emerald.withOpacity(0.15),
+                  color: R.color.emerald.withValues(alpha: 0.15),
                   border: Border(
                     bottom: BorderSide(
-                      color: R.color.goldDim.withOpacity(0.3),
+                      color: R.color.goldDim.withValues(alpha: 0.3),
                       width: 1.5,
                     ),
                   ),
@@ -758,9 +759,9 @@ class _TimetableTable extends StatelessWidget {
               ...data.imsakiyah.map((element) {
                 final isToday = element.tanggal == now.day;
                 final rowBgColor = isToday
-                    ? R.color.emerald.withOpacity(0.15)
+                    ? R.color.emerald.withValues(alpha: 0.15)
                     : (element.tanggal % 2 == 0
-                          ? R.color.surface2Jadwal.withOpacity(0.5)
+                          ? R.color.surface2Jadwal.withValues(alpha: 0.5)
                           : Colors.transparent);
 
                 return TableRow(
@@ -770,7 +771,7 @@ class _TimetableTable extends StatelessWidget {
                       bottom: BorderSide(
                         color: isToday
                             ? R.color.goldDim
-                            : R.color.goldDim.withOpacity(0.06),
+                            : R.color.goldDim.withValues(alpha: 0.06),
                         width: isToday ? 1.5 : 0.8,
                       ),
                     ),
@@ -881,7 +882,7 @@ class _GeoBgPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = R.color.goldDim.withOpacity(0.04)
+      ..color = R.color.goldDim.withValues(alpha: 0.04)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.6;
 

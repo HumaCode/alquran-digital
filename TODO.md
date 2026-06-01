@@ -149,15 +149,15 @@ Meningkatkan personalisasi tampilan aplikasi.
 ## 🛠️ Pekerjaan Rumah (Technical Debt & Pembersihan) - Juni 2026
 
 ### 18. 📱 Migrasi Responsivitas Sisa Modul (ScreenUtil)
-*   [ ] Migrasikan **DetailSurahView** agar ukuran font terjemahan (`.sp`) dan margin terbebas dari overflow di landscape mode.
-*   [ ] Migrasikan **MurotalView** (disk pemutar, tombol play, progress slider, list drawer).
-*   [ ] Migrasikan **JadwalSholatView** (tabel bulanan, kartu waktu sholat).
-*   [ ] Migrasikan **ImsakiyahView** (tabel bulanan, highlight cards).
-*   [ ] Migrasikan **ArahKiblatView** (lingkaran kompas, status bar indicator).
-*   [ ] Migrasikan **DoaView**, **BookmarksView**, **StatistikView**, dan **SettingsView** agar responsive di seluruh ukuran layar.
+*   [x] Migrasikan **DetailSurahView** agar ukuran font terjemahan (`.sp`) dan margin terbebas dari overflow di landscape mode.
+*   [x] Migrasikan **MurotalView** (disk pemutar, tombol play, progress slider, list drawer).
+*   [x] Migrasikan **JadwalSholatView** (tabel bulanan, kartu waktu sholat).
+*   [x] Migrasikan **ImsakiyahView** (tabel bulanan, highlight cards).
+*   [x] Migrasikan **ArahKiblatView** (lingkaran kompas, status bar indicator).
+*   [x] Migrasikan **DoaView**, **BookmarksView**, **StatistikView**, dan **SettingsView** agar responsive di seluruh ukuran layar.
 
 ### 19. 🧹 Pembersihan Warning Analisis (Dart Analyzer)
-*   [ ] Ganti sisa penggunaan `.withOpacity()` dengan `.withValues(alpha: ...)` pada **MurotalView** dan **ArahKiblatView**.
+*   [x] Ganti sisa penggunaan `.withOpacity()` dengan `.withValues(alpha: ...)` pada **MurotalView**, **JadwalSholatView**, **ImsakiyahView**, dan **ArahKiblatView**.
 *   [ ] Ubah penamaan rute di `app_routes.dart` dari UPPER_SNAKE_CASE menjadi `lowerCamelCase` (misal `Routes.home`).
 *   [ ] Hapus atau ganti `print` debug log dengan `developer.log` di dalam file controller.
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../constants/r.dart';
 import '../../../data/models/surah_model.dart';
 import '../controllers/murotal_controller.dart';
@@ -72,7 +73,7 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
           style: TextStyle(
             color: R.color.goldLight,
             fontWeight: FontWeight.w700,
-            fontSize: 20,
+            fontSize: 20.sp,
             letterSpacing: 0.5,
           ),
         ),
@@ -87,7 +88,7 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
           Builder(
             builder: (context) {
               return IconButton(
-                icon: Icon(Icons.playlist_play_rounded, color: R.color.goldLight, size: 28),
+                icon: Icon(Icons.playlist_play_rounded, color: R.color.goldLight, size: 28.r),
                 tooltip: 'Daftar Surah',
                 onPressed: () {
                   Scaffold.of(context).openEndDrawer();
@@ -114,7 +115,7 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
                   ),
                   child: IntrinsicHeight(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -133,7 +134,7 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
                             Text(
                               controller.selectedSurah.value!.namaLatin,
                               style: TextStyle(
-                                fontSize: 26,
+                                fontSize: 26.sp,
                                 fontWeight: FontWeight.w800,
                                 color: R.color.textSoft,
                                 letterSpacing: 0.5,
@@ -142,7 +143,7 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
                             const SizedBox(height: 6),
                             Text(
                               'Surah Ke-${controller.selectedSurah.value!.nomor} • ${controller.selectedSurah.value!.arti}',
-                              style: TextStyle(fontSize: 14, color: R.color.textMuted),
+                              style: TextStyle(fontSize: 14.sp, color: R.color.textMuted),
                             ),
                             const SizedBox(height: 12),
                             // Offline indicator badge
@@ -180,7 +181,7 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
             children: [
               // Drawer Header
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -189,7 +190,7 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
                       style: TextStyle(
                         color: R.color.goldLight,
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 18.sp,
                       ),
                     ),
                     IconButton(
@@ -199,28 +200,28 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
                   ],
                 ),
               ),
-              Divider(color: R.color.goldDim.withOpacity(0.15), height: 1),
+              Divider(color: R.color.goldDim.withValues(alpha: 0.15), height: 1),
 
               // Search Bar
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 8.h),
                 child: TextField(
                   onChanged: controller.searchSurah,
                   style: TextStyle(color: R.color.textSoft, fontSize: 14),
                   decoration: InputDecoration(
                     hintText: 'Cari surah murotal...',
-                    hintStyle: TextStyle(color: R.color.textMuted.withOpacity(0.7)),
-                    prefixIcon: Icon(Icons.search_rounded, color: R.color.goldLight, size: 20),
+                    hintStyle: TextStyle(color: R.color.textMuted.withValues(alpha: 0.7)),
+                    prefixIcon: Icon(Icons.search_rounded, color: R.color.goldLight, size: 20.r),
                     filled: true,
-                    fillColor: R.color.bg1.withOpacity(0.6),
+                    fillColor: R.color.bg1.withValues(alpha: 0.6),
                     contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide(color: R.color.goldDim.withOpacity(0.2)),
+                      borderRadius: BorderRadius.circular(30.r),
+                      borderSide: BorderSide(color: R.color.goldDim.withValues(alpha: 0.2)),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide(color: R.color.goldLight.withOpacity(0.5)),
+                      borderRadius: BorderRadius.circular(30.r),
+                      borderSide: BorderSide(color: R.color.goldLight.withValues(alpha: 0.5)),
                     ),
                   ),
                 ),
@@ -228,7 +229,7 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
 
               // Surah count chip
               Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 6),
+                padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 6.h),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -243,12 +244,12 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
                 child: ListView.builder(
                   controller: _scrollController,
                   itemCount: controller.displayedSurahs.length + (controller.hasMore.value ? 1 : 0),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 0),
                   itemBuilder: (context, idx) {
                     // Load more indicator at bottom
                     if (idx == controller.displayedSurahs.length) {
                       return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
                         child: Center(
                           child: controller.isLoadingMore.value
                               ? SizedBox(
@@ -261,7 +262,7 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
                                 )
                               : TextButton.icon(
                                   onPressed: controller.loadMoreSurahs,
-                                  icon: Icon(Icons.expand_more_rounded, color: R.color.gold, size: 18),
+                                  icon: Icon(Icons.expand_more_rounded, color: R.color.gold, size: 18.r),
                                   label: Text(
                                     'Muat Lebih Banyak',
                                     style: TextStyle(color: R.color.gold, fontSize: 12),
@@ -290,11 +291,11 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
 
     if (isDownloading) {
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
         decoration: BoxDecoration(
-          color: R.color.gold.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: R.color.gold.withOpacity(0.3)),
+          color: R.color.gold.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(color: R.color.gold.withValues(alpha: 0.3)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -312,16 +313,16 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
 
     if (isDownloaded) {
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
         decoration: BoxDecoration(
-          color: R.color.emerald.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: R.color.emerald.withOpacity(0.4)),
+          color: R.color.emerald.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(color: R.color.emerald.withValues(alpha: 0.4)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.offline_pin_rounded, color: R.color.emeraldLight, size: 12),
+            Icon(Icons.offline_pin_rounded, color: R.color.emeraldLight, size: 12.r),
             const SizedBox(width: 6),
             Text('Tersedia Offline', style: TextStyle(color: R.color.emeraldLight, fontSize: 11)),
           ],
@@ -333,16 +334,16 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
     return GestureDetector(
       onTap: () => controller.downloadMurotalManual(surah, controller.selectedQori.value),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
         decoration: BoxDecoration(
-          color: R.color.bg2.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: R.color.goldDim.withOpacity(0.3)),
+          color: R.color.bg2.withValues(alpha: 0.5),
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(color: R.color.goldDim.withValues(alpha: 0.3)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.download_rounded, color: R.color.goldDim, size: 12),
+            Icon(Icons.download_rounded, color: R.color.goldDim, size: 12.r),
             const SizedBox(width: 6),
             Text('Unduh untuk Offline', style: TextStyle(color: R.color.goldDim, fontSize: 11)),
           ],
@@ -358,17 +359,17 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
     final isDownloading = controller.downloadingTracks.contains(cacheKey);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 7),
+      margin: EdgeInsets.only(bottom: 7.h),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        color: isCurrent ? R.color.gold.withOpacity(0.09) : Colors.transparent,
+        borderRadius: BorderRadius.circular(14.r),
+        color: isCurrent ? R.color.gold.withValues(alpha: 0.09) : Colors.transparent,
         border: Border.all(
-          color: isCurrent ? R.color.gold.withOpacity(0.2) : R.color.goldDim.withOpacity(0.07),
+          color: isCurrent ? R.color.gold.withValues(alpha: 0.2) : R.color.goldDim.withValues(alpha: 0.07),
         ),
       ),
       child: ListTile(
         dense: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+        contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 2.h),
         onTap: () {
           controller.selectSurah(surah);
           if (Navigator.canPop(context)) {
@@ -381,17 +382,17 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: isCurrent
-                ? R.color.gold.withOpacity(0.2)
-                : R.color.bg1.withOpacity(0.8),
+                ? R.color.gold.withValues(alpha: 0.2)
+                : R.color.bg1.withValues(alpha: 0.8),
           ),
           child: Center(
             child: isCurrent && controller.isPlaying.value
-                ? Icon(Icons.volume_up_rounded, color: R.color.gold, size: 16)
+                ? Icon(Icons.volume_up_rounded, color: R.color.gold, size: 16.r)
                 : Text(
                     '${surah.nomor}',
                     style: TextStyle(
                       color: isCurrent ? R.color.gold : R.color.textMuted,
-                      fontSize: 11,
+                      fontSize: 11.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -402,7 +403,7 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
           style: TextStyle(
             color: isCurrent ? R.color.goldLight : R.color.textSoft,
             fontWeight: isCurrent ? FontWeight.bold : FontWeight.w600,
-            fontSize: 13,
+            fontSize: 13.sp,
           ),
         ),
         subtitle: Text(
@@ -419,11 +420,11 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
                 child: CircularProgressIndicator(color: R.color.gold, strokeWidth: 1.5),
               )
             else if (isDownloaded)
-              Icon(Icons.offline_pin_rounded, color: R.color.emeraldLight, size: 14)
+              Icon(Icons.offline_pin_rounded, color: R.color.emeraldLight, size: 14.r)
             else
               GestureDetector(
                 onTap: () => controller.downloadMurotalManual(surah, controller.selectedQori.value),
-                child: Icon(Icons.download_for_offline_rounded, color: R.color.goldDim.withOpacity(0.4), size: 16),
+                child: Icon(Icons.download_for_offline_rounded, color: R.color.goldDim.withValues(alpha: 0.4), size: 16.r),
               ),
             const SizedBox(width: 8),
             // Arabic surah name
@@ -431,7 +432,7 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
               surah.nama,
               style: TextStyle(
                 color: R.color.goldLight,
-                fontSize: 18,
+                fontSize: 18.sp,
                 fontFamily: 'serif',
               ),
             ),
@@ -449,23 +450,23 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
     return GestureDetector(
       onTap: () => _showQoriSelectionSheet(context),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         decoration: BoxDecoration(
-          color: R.color.gold.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: R.color.gold.withOpacity(0.25)),
+          color: R.color.gold.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(color: R.color.gold.withValues(alpha: 0.25)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.mic_external_on_rounded, color: R.color.goldLight, size: 16),
+            Icon(Icons.mic_external_on_rounded, color: R.color.goldLight, size: 16.r),
             const SizedBox(width: 8),
             Text(
               currentQoriName,
-              style: TextStyle(color: R.color.goldLight, fontSize: 12.5, fontWeight: FontWeight.w600),
+              style: TextStyle(color: R.color.goldLight, fontSize: 12.5.sp, fontWeight: FontWeight.w600),
             ),
             const SizedBox(width: 4),
-            Icon(Icons.keyboard_arrow_down_rounded, color: R.color.goldLight, size: 16),
+            Icon(Icons.keyboard_arrow_down_rounded, color: R.color.goldLight, size: 16.r),
           ],
         ),
       ),
@@ -486,13 +487,13 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
             );
           },
           child: Container(
-            width: 180,
-            height: 180,
+            width: 180.w,
+            height: 180.w,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: (isPlaying ? R.color.gold : R.color.goldDim).withOpacity(0.12),
+                  color: (isPlaying ? R.color.gold : R.color.goldDim).withValues(alpha: 0.12),
                   blurRadius: 22,
                   spreadRadius: 6,
                 )
@@ -502,11 +503,11 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(5),
+              padding: EdgeInsets.all(5.r),
               child: Container(
                 decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFF0D1F17)),
                 child: Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding: EdgeInsets.all(10.r),
                   child: Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -516,19 +517,19 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
                     ),
                     child: Center(
                       child: Container(
-                        width: 72,
-                        height: 72,
+                        width: 72.w,
+                        height: 72.w,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: R.color.bg1,
-                          border: Border.all(color: R.color.gold.withOpacity(0.3), width: 2),
+                          border: Border.all(color: R.color.gold.withValues(alpha: 0.3), width: 2),
                         ),
                         child: Center(
                           child: Text(
                             currentSurah?.nama ?? 'القرآن',
                             style: TextStyle(
                               fontFamily: 'serif',
-                              fontSize: currentSurah != null && currentSurah.nama.length > 5 ? 16 : 20,
+                              fontSize: currentSurah != null && currentSurah.nama.length > 5 ? 16.sp : 20.sp,
                               color: R.color.goldLight,
                               fontWeight: FontWeight.bold,
                             ),
@@ -563,9 +564,9 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
             data: SliderThemeData(
               trackHeight: 4,
               activeTrackColor: R.color.goldLight,
-              inactiveTrackColor: R.color.goldDim.withOpacity(0.2),
+              inactiveTrackColor: R.color.goldDim.withValues(alpha: 0.2),
               thumbColor: R.color.goldLight,
-              overlayColor: R.color.goldLight.withOpacity(0.1),
+              overlayColor: R.color.goldLight.withValues(alpha: 0.1),
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
             ),
             child: Slider(
@@ -577,7 +578,7 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -627,9 +628,9 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
 
           return InkWell(
             onTap: () => controller.cycleRepeatMode(context),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12.r),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -638,7 +639,7 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
                   Text(
                     label,
                     style: TextStyle(
-                      fontSize: 9,
+                      fontSize: 9.sp,
                       fontWeight: FontWeight.w600,
                       color: color,
                     ),
@@ -653,7 +654,7 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
         // Previous
         IconButton(
           onPressed: () => controller.playPrevious(),
-          iconSize: 30,
+          iconSize: 30.r,
           icon: Icon(Icons.skip_previous_rounded, color: R.color.textSoft),
         ),
         const SizedBox(width: 16),
@@ -664,8 +665,8 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
           return GestureDetector(
             onTap: controller.togglePlay,
             child: Container(
-              width: 60,
-              height: 60,
+              width: 60.w,
+              height: 60.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: R.color.goldLight,
@@ -677,7 +678,7 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
                 child: Icon(
                   isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
                   color: R.color.bg1,
-                  size: 34,
+                  size: 34.r,
                 ),
               ),
             ),
@@ -689,7 +690,7 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
         // Next
         IconButton(
           onPressed: () => controller.playNext(isAuto: false),
-          iconSize: 30,
+          iconSize: 30.r,
           icon: Icon(Icons.skip_next_rounded, color: R.color.textSoft),
         ),
 
@@ -716,7 +717,7 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
     showModalBottomSheet(
       context: context,
       backgroundColor: R.color.bg2,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24.r))),
       builder: (context) {
         return SafeArea(
           child: Padding(
@@ -730,13 +731,13 @@ class _MurotalViewState extends State<MurotalView> with SingleTickerProviderStat
                   height: 4,
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
-                    color: R.color.goldDim.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(2),
+                    color: R.color.goldDim.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2.r),
                   ),
                 ),
                 Text(
                   'Pilih Qari Murotal',
-                  style: TextStyle(color: R.color.goldLight, fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: R.color.goldLight, fontSize: 16.sp, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
                 ...controller.qoriList.map((qori) {

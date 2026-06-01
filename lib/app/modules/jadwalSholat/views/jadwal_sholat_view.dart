@@ -515,7 +515,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
             backgroundColor: R.color.surfaceJadwal,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
-              side: BorderSide(color: R.color.goldDim.withOpacity(0.3)),
+              side: BorderSide(color: R.color.goldDim.withValues(alpha: 0.3)),
             ),
             title: Row(
               children: [
@@ -608,7 +608,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                 topRight: Radius.circular(24),
               ),
               border: Border(
-                top: BorderSide(color: R.color.goldDim.withOpacity(0.15)),
+                top: BorderSide(color: R.color.goldDim.withValues(alpha: 0.15)),
               ),
             ),
             child: Column(
@@ -621,7 +621,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                     height: 4,
                     margin: const EdgeInsets.only(bottom: 20),
                     decoration: BoxDecoration(
-                      color: R.color.textMutedJadwal.withOpacity(0.3),
+                      color: R.color.textMutedJadwal.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -663,7 +663,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: R.color.emerald.withOpacity(0.3),
+                          color: R.color.emerald.withValues(alpha: 0.3),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
@@ -704,7 +704,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                   decoration: BoxDecoration(
                     color: R.color.surface2Jadwal,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: R.color.goldDim.withOpacity(0.2)),
+                    border: Border.all(color: R.color.goldDim.withValues(alpha: 0.2)),
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
@@ -767,13 +767,13 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(
-                        color: R.color.goldDim.withOpacity(0.2),
+                        color: R.color.goldDim.withValues(alpha: 0.2),
                       ),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(
-                        color: R.color.goldDim.withOpacity(0.2),
+                        color: R.color.goldDim.withValues(alpha: 0.2),
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -815,7 +815,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   tileColor: isSelected
-                                      ? R.color.emerald.withOpacity(0.1)
+                                      ? R.color.emerald.withValues(alpha: 0.1)
                                       : Colors.transparent,
                                   contentPadding: const EdgeInsets.symmetric(
                                     horizontal: 8,
@@ -885,7 +885,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
               topRight: Radius.circular(24),
             ),
             border: Border(
-              top: BorderSide(color: R.color.goldDim.withOpacity(0.15)),
+              top: BorderSide(color: R.color.goldDim.withValues(alpha: 0.15)),
             ),
           ),
           child: Column(
@@ -898,7 +898,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                   height: 4,
                   margin: const EdgeInsets.only(bottom: 20),
                   decoration: BoxDecoration(
-                    color: R.color.textMutedJadwal.withOpacity(0.3),
+                    color: R.color.textMutedJadwal.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -930,7 +930,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: R.color.goldLight.withOpacity(0.9),
+                  color: R.color.goldLight.withValues(alpha: 0.9),
                 ),
               ),
               const SizedBox(height: 8),
@@ -943,8 +943,8 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: currentVal > 0
-                          ? R.color.emerald.withOpacity(0.15)
-                          : R.color.goldDim.withOpacity(0.08),
+                          ? R.color.emerald.withValues(alpha: 0.15)
+                          : R.color.goldDim.withValues(alpha: 0.08),
                     ),
                   ),
                   child: DropdownButtonHideUnderline(
@@ -999,7 +999,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: R.color.goldLight.withOpacity(0.9),
+                  color: R.color.goldLight.withValues(alpha: 0.9),
                 ),
               ),
               const SizedBox(height: 12),
@@ -1042,7 +1042,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: R.color.goldLight.withOpacity(0.9),
+                  color: R.color.goldLight.withValues(alpha: 0.9),
                 ),
               ),
               const SizedBox(height: 12),
@@ -1065,8 +1065,8 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
                               color: enabled
-                                  ? R.color.gold.withOpacity(0.2)
-                                  : R.color.goldDim.withOpacity(0.08),
+                                  ? R.color.gold.withValues(alpha: 0.2)
+                                  : R.color.goldDim.withValues(alpha: 0.08),
                             ),
                           ),
                           child: Row(
@@ -1078,8 +1078,8 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
                                       color: enabled
-                                          ? R.color.gold.withOpacity(0.1)
-                                          : R.color.textMutedJadwal.withOpacity(
+                                          ? R.color.gold.withValues(alpha: 0.1)
+                                          : R.color.textMutedJadwal.withValues(alpha: 
                                               0.05,
                                             ),
                                       shape: BoxShape.circle,
@@ -1126,7 +1126,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                               Switch(
                                 value: enabled,
                                 activeThumbColor: R.color.gold,
-                                activeTrackColor: R.color.gold.withOpacity(0.3),
+                                activeTrackColor: R.color.gold.withValues(alpha: 0.3),
                                 inactiveThumbColor: R.color.textMutedJadwal,
                                 inactiveTrackColor: R.color.surfaceJadwal,
                                 onChanged: (val) async {
@@ -1189,7 +1189,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                                 color: R.color.surface2Jadwal,
                                 borderRadius: BorderRadius.circular(16),
                                 border: Border.all(
-                                  color: R.color.gold.withOpacity(0.15),
+                                  color: R.color.gold.withValues(alpha: 0.15),
                                 ),
                               ),
                               child: Row(
@@ -1251,8 +1251,8 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isEnabled
-                ? R.color.emerald.withOpacity(0.15)
-                : R.color.goldDim.withOpacity(0.08),
+                ? R.color.emerald.withValues(alpha: 0.15)
+                : R.color.goldDim.withValues(alpha: 0.08),
           ),
         ),
         child: Row(
@@ -1264,8 +1264,8 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: isEnabled
-                        ? R.color.emerald.withOpacity(0.1)
-                        : R.color.textMutedJadwal.withOpacity(0.05),
+                        ? R.color.emerald.withValues(alpha: 0.1)
+                        : R.color.textMutedJadwal.withValues(alpha: 0.05),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
@@ -1294,7 +1294,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
             Switch(
               value: isEnabled,
               activeThumbColor: R.color.emeraldLight,
-              activeTrackColor: R.color.emerald.withOpacity(0.3),
+              activeTrackColor: R.color.emerald.withValues(alpha: 0.3),
               inactiveThumbColor: R.color.textMutedJadwal,
               inactiveTrackColor: R.color.surfaceJadwal,
               onChanged: (_) {
@@ -1454,7 +1454,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    R.color.goldDim.withOpacity(0.3),
+                    R.color.goldDim.withValues(alpha: 0.3),
                     Colors.transparent,
                   ],
                 ),
@@ -1543,7 +1543,7 @@ class _JadwalSholatAppBar extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: R.color.surface2Jadwal,
-                  border: Border.all(color: R.color.goldDim.withOpacity(0.3)),
+                  border: Border.all(color: R.color.goldDim.withValues(alpha: 0.3)),
                 ),
                 child: Icon(
                   Icons.arrow_back_ios_new_rounded,
@@ -1613,12 +1613,12 @@ class _JadwalSholatAppBar extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: notifEnabled
-                      ? R.color.emerald.withOpacity(0.2)
+                      ? R.color.emerald.withValues(alpha: 0.2)
                       : R.color.surface2Jadwal,
                   border: Border.all(
                     color: notifEnabled
-                        ? R.color.emeraldLight.withOpacity(0.5)
-                        : R.color.goldDim.withOpacity(0.2),
+                        ? R.color.emeraldLight.withValues(alpha: 0.5)
+                        : R.color.goldDim.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Icon(
@@ -1641,7 +1641,7 @@ class _JadwalSholatAppBar extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: R.color.surface2Jadwal,
-                  border: Border.all(color: R.color.goldDim.withOpacity(0.2)),
+                  border: Border.all(color: R.color.goldDim.withValues(alpha: 0.2)),
                 ),
                 child: Icon(
                   Icons.settings_rounded,
@@ -1690,13 +1690,13 @@ class _HeroCountdown extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    R.color.gold.withOpacity(0.2),
+                    R.color.gold.withValues(alpha: 0.2),
                     R.color.surfaceJadwal,
                   ],
                 )
               : null,
           border: Border.all(
-            color: isSholatActive ? R.color.gold : R.color.goldDim.withOpacity(0.15),
+            color: isSholatActive ? R.color.gold : R.color.goldDim.withValues(alpha: 0.15),
             width: isSholatActive ? 2 : 1,
           ),
         ),
@@ -1723,7 +1723,7 @@ class _HeroCountdown extends StatelessWidget {
                             color: sholat.accent,
                             boxShadow: [
                               BoxShadow(
-                                color: sholat.accent.withOpacity(0.6),
+                                color: sholat.accent.withValues(alpha: 0.6),
                                 blurRadius: 6,
                               ),
                             ],
@@ -1780,9 +1780,9 @@ class _HeroCountdown extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
-                            color: sholat.accent.withOpacity(0.15),
+                            color: sholat.accent.withValues(alpha: 0.15),
                             border: Border.all(
-                              color: sholat.accent.withOpacity(0.35),
+                              color: sholat.accent.withValues(alpha: 0.35),
                             ),
                           ),
                           child: Text(
@@ -1805,7 +1805,7 @@ class _HeroCountdown extends StatelessWidget {
                     const SizedBox(height: 20),
                     Container(
                       height: 1,
-                      color: R.color.goldDim.withOpacity(0.15),
+                      color: R.color.goldDim.withValues(alpha: 0.15),
                     ),
                     const SizedBox(height: 20),
 
@@ -1947,7 +1947,7 @@ class _SholatProgressBar extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           color: R.color.surfaceJadwal,
-          border: Border.all(color: R.color.goldDim.withOpacity(0.12)),
+          border: Border.all(color: R.color.goldDim.withValues(alpha: 0.12)),
         ),
         child: Column(
           children: [
@@ -1999,7 +1999,7 @@ class _SholatProgressBar extends StatelessWidget {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: R.color.emeraldLight.withOpacity(0.4),
+                          color: R.color.emeraldLight.withValues(alpha: 0.4),
                           blurRadius: 8,
                         ),
                       ],
@@ -2022,7 +2022,7 @@ class _SholatProgressBar extends StatelessWidget {
                         border: Border.all(
                           color: done
                               ? R.color.emeraldLight
-                              : R.color.goldDim.withOpacity(0.3),
+                              : R.color.goldDim.withValues(alpha: 0.3),
                           width: 1,
                         ),
                       ),
@@ -2125,7 +2125,7 @@ class _JadwalSholatBottomRow extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    R.color.goldDim.withOpacity(0.3),
+                    R.color.goldDim.withValues(alpha: 0.3),
                     Colors.transparent,
                   ],
                 ),
@@ -2174,7 +2174,7 @@ class _JadwalSholatBottomRow extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
           color: R.color.surfaceJadwal,
-          border: Border.all(color: R.color.goldDim.withOpacity(0.15)),
+          border: Border.all(color: R.color.goldDim.withValues(alpha: 0.15)),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(18),
@@ -2317,7 +2317,7 @@ class _JadwalSholatBottomRow extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
           color: R.color.surfaceJadwal,
-          border: Border.all(color: R.color.goldDim.withOpacity(0.15)),
+          border: Border.all(color: R.color.goldDim.withValues(alpha: 0.15)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -2378,7 +2378,7 @@ class _JadwalSholatBottomRow extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
         color: R.color.surfaceJadwal,
-        border: Border.all(color: R.color.goldDim.withOpacity(0.12)),
+        border: Border.all(color: R.color.goldDim.withValues(alpha: 0.12)),
       ),
       child: Stack(
         children: [
@@ -2389,7 +2389,7 @@ class _JadwalSholatBottomRow extends StatelessWidget {
               '❝',
               style: TextStyle(
                 fontSize: 40,
-                color: R.color.goldDim.withOpacity(0.15),
+                color: R.color.goldDim.withValues(alpha: 0.15),
                 height: 0.8,
               ),
             ),
@@ -2414,7 +2414,7 @@ class _JadwalSholatBottomRow extends StatelessWidget {
                 style: TextStyle(
                   fontStyle: FontStyle.italic,
                   fontSize: 12,
-                  color: R.color.textJadwal.withOpacity(0.7),
+                  color: R.color.textJadwal.withValues(alpha: 0.7),
                   height: 1.6,
                 ),
               ),
@@ -2488,17 +2488,17 @@ class _SholatCard extends StatelessWidget {
           margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
-            color: isActive ? R.color.gold.withOpacity(0.1) : R.color.surfaceJadwal,
+            color: isActive ? R.color.gold.withValues(alpha: 0.1) : R.color.surfaceJadwal,
             border: Border.all(
               color: isActive
                   ? R.color.gold
-                  : (isBerikutnya ? accent.withOpacity(0.5) : R.color.goldDim.withOpacity(0.12)),
+                  : (isBerikutnya ? accent.withValues(alpha: 0.5) : R.color.goldDim.withValues(alpha: 0.12)),
               width: isActive || isBerikutnya ? 1.5 : 1,
             ),
             boxShadow: isActive || isBerikutnya
                 ? [
                     BoxShadow(
-                      color: (isActive ? R.color.gold : accent).withOpacity(0.15),
+                      color: (isActive ? R.color.gold : accent).withValues(alpha: 0.15),
                       blurRadius: 20,
                       spreadRadius: 2,
                     ),
@@ -2557,7 +2557,7 @@ class _SholatCard extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [accent.withOpacity(0.08), Colors.transparent],
+                  colors: [accent.withValues(alpha: 0.08), Colors.transparent],
                 ),
               ),
             ),
@@ -2574,8 +2574,8 @@ class _SholatCard extends StatelessWidget {
                     height: 44,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      color: accent.withOpacity(0.12),
-                      border: Border.all(color: accent.withOpacity(0.25)),
+                      color: accent.withValues(alpha: 0.12),
+                      border: Border.all(color: accent.withValues(alpha: 0.25)),
                     ),
                     child: Center(
                       child: Text(
@@ -2619,7 +2619,7 @@ class _SholatCard extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(6),
-                              color: R.color.gold.withOpacity(0.2),
+                              color: R.color.gold.withValues(alpha: 0.2),
                               border: Border.all(
                                 color: R.color.gold,
                               ),
@@ -2642,9 +2642,9 @@ class _SholatCard extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(6),
-                              color: accent.withOpacity(0.2),
+                              color: accent.withValues(alpha: 0.2),
                               border: Border.all(
-                                color: accent.withOpacity(0.4),
+                                color: accent.withValues(alpha: 0.4),
                               ),
                             ),
                             child: Text(
@@ -2665,7 +2665,7 @@ class _SholatCard extends StatelessWidget {
                           const SizedBox(width: 8),
                           Icon(
                             Icons.check_circle_rounded,
-                            color: R.color.emeraldLight.withOpacity(0.6),
+                            color: R.color.emeraldLight.withValues(alpha: 0.6),
                             size: 14,
                           ),
                         ],
@@ -2734,12 +2734,12 @@ class _SholatCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: R.color.goldDim.withOpacity(0.12)),
+          top: BorderSide(color: R.color.goldDim.withValues(alpha: 0.12)),
         ),
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [accent.withOpacity(0.05), R.color.surface2Jadwal],
+          colors: [accent.withValues(alpha: 0.05), R.color.surface2Jadwal],
         ),
       ),
       padding: const EdgeInsets.fromLTRB(18, 14, 18, 14),
@@ -2751,7 +2751,7 @@ class _SholatCard extends StatelessWidget {
             _keutamaan[index],
             style: TextStyle(
               fontSize: 12,
-              color: R.color.textJadwal.withOpacity(0.7),
+              color: R.color.textJadwal.withValues(alpha: 0.7),
               height: 1.6,
             ),
           ),
@@ -2809,7 +2809,7 @@ class _InfoTile extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: R.color.surfaceJadwal,
-        border: Border.all(color: R.color.goldDim.withOpacity(0.12)),
+        border: Border.all(color: R.color.goldDim.withValues(alpha: 0.12)),
       ),
       child: Row(
         children: [
@@ -2818,8 +2818,8 @@ class _InfoTile extends StatelessWidget {
             height: 36,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: accent.withOpacity(0.15),
-              border: Border.all(color: accent.withOpacity(0.3)),
+              color: accent.withValues(alpha: 0.15),
+              border: Border.all(color: accent.withValues(alpha: 0.3)),
             ),
             child: Icon(icon, color: accent, size: 17),
           ),
@@ -2876,8 +2876,8 @@ class _InfoBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: color.withOpacity(0.12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        color: color.withValues(alpha: 0.12),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -2919,7 +2919,7 @@ class _GeoBgPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = R.color.goldDim.withOpacity(0.04)
+      ..color = R.color.goldDim.withValues(alpha: 0.04)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.6;
 
@@ -3040,7 +3040,7 @@ class _HeroOrnamenPainter extends CustomPainter {
     final cx = size.width;
     final cy = 0.0;
     final paint = Paint()
-      ..color = accent.withOpacity(0.06)
+      ..color = accent.withValues(alpha: 0.06)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.8;
 
@@ -3061,14 +3061,14 @@ class _HeroOrnamenPainter extends CustomPainter {
       canvas.drawCircle(
         Offset.zero,
         r,
-        paint..color = accent.withOpacity(0.04),
+        paint..color = accent.withValues(alpha: 0.04),
       );
     }
 
     canvas.restore();
 
     final paint2 = Paint()
-      ..color = R.color.goldDim.withOpacity(0.04)
+      ..color = R.color.goldDim.withValues(alpha: 0.04)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.5;
 
@@ -3097,7 +3097,7 @@ class _CompassBgPainter extends CustomPainter {
     final cx = size.width / 2;
     final cy = size.height / 2;
     final paint = Paint()
-      ..color = color.withOpacity(0.05)
+      ..color = color.withValues(alpha: 0.05)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.5;
 
@@ -3147,7 +3147,7 @@ class _QiblaCompassPainter extends CustomPainter {
 
     // Lingkaran luar kompas
     final ringPaint = Paint()
-      ..color = goldDim.withOpacity(0.4)
+      ..color = goldDim.withValues(alpha: 0.4)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
 
@@ -3160,7 +3160,7 @@ class _QiblaCompassPainter extends CustomPainter {
 
     // Garis-garis kecil derajat arah mata angin
     final tickPaint = Paint()
-      ..color = goldDim.withOpacity(0.4)
+      ..color = goldDim.withValues(alpha: 0.4)
       ..strokeWidth = 1;
     for (int i = 0; i < 32; i++) {
       final a = i * math.pi / 16;
@@ -3182,7 +3182,7 @@ class _QiblaCompassPainter extends CustomPainter {
         text: TextSpan(
           text: labels[i],
           style: TextStyle(
-            color: i == 0 ? goldColor : goldDim.withOpacity(0.5),
+            color: i == 0 ? goldColor : goldDim.withValues(alpha: 0.5),
             fontSize: 8,
             fontWeight: FontWeight.w700,
           ),
@@ -3199,7 +3199,7 @@ class _QiblaCompassPainter extends CustomPainter {
     canvas.rotate(needleAngle);
 
     final needleColor = Paint()..color = goldColor;
-    final needleShadow = Paint()..color = goldDim.withOpacity(0.5);
+    final needleShadow = Paint()..color = goldDim.withValues(alpha: 0.5);
 
     // Jarum atas penunjuk arah kiblat
     final top = Path()
@@ -3210,7 +3210,7 @@ class _QiblaCompassPainter extends CustomPainter {
     canvas.drawPath(top, needleColor);
 
     // Jarum bawah kompas
-    final bot = Paint()..color = goldDim.withOpacity(0.4);
+    final bot = Paint()..color = goldDim.withValues(alpha: 0.4);
     final botPath = Path()
       ..moveTo(0, r - 18)
       ..lineTo(-5, 8)

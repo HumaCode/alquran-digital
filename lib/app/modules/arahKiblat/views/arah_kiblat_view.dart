@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../constants/r.dart';
 import '../controllers/arah_kiblat_controller.dart';
@@ -115,9 +116,9 @@ class _ArahKiblatViewState extends State<ArahKiblatView>
                                     height: 250 + (_pulseCtrl.value * 25),
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: R.color.emeraldLight.withOpacity(0.12 * (1.0 - _pulseCtrl.value)),
+                                      color: R.color.emeraldLight.withValues(alpha: 0.12 * (1.0 - _pulseCtrl.value)),
                                       border: Border.all(
-                                        color: R.color.emeraldLight.withOpacity(0.25 * (1.0 - _pulseCtrl.value)),
+                                        color: R.color.emeraldLight.withValues(alpha: 0.25 * (1.0 - _pulseCtrl.value)),
                                         width: 1.5,
                                       ),
                                     ),
@@ -134,15 +135,15 @@ class _ArahKiblatViewState extends State<ArahKiblatView>
                                 color: R.color.surfaceJadwal,
                                 border: Border.all(
                                   color: (hasCompass && isFacing)
-                                      ? R.color.emeraldLight.withOpacity(0.6)
-                                      : R.color.goldDim.withOpacity(0.2),
+                                      ? R.color.emeraldLight.withValues(alpha: 0.6)
+                                      : R.color.goldDim.withValues(alpha: 0.2),
                                   width: 2,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
                                     color: (hasCompass && isFacing)
-                                        ? R.color.emerald.withOpacity(0.15)
-                                        : Colors.black.withOpacity(0.3),
+                                        ? R.color.emerald.withValues(alpha: 0.15)
+                                        : Colors.black.withValues(alpha: 0.3),
                                     blurRadius: 16,
                                     spreadRadius: 2,
                                   ),
@@ -193,9 +194,9 @@ class _ArahKiblatViewState extends State<ArahKiblatView>
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
         decoration: BoxDecoration(
-          color: R.color.error.withOpacity(0.08),
+          color: R.color.error.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: R.color.error.withOpacity(0.3)),
+          border: Border.all(color: R.color.error.withValues(alpha: 0.3)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -219,9 +220,9 @@ class _ArahKiblatViewState extends State<ArahKiblatView>
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
         decoration: BoxDecoration(
-          color: R.color.emerald.withOpacity(0.12),
+          color: R.color.emerald.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: R.color.emeraldLight.withOpacity(0.4)),
+          border: Border.all(color: R.color.emeraldLight.withValues(alpha: 0.4)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -245,9 +246,9 @@ class _ArahKiblatViewState extends State<ArahKiblatView>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
       decoration: BoxDecoration(
-        color: R.color.gold.withOpacity(0.08),
+        color: R.color.gold.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: R.color.goldDim.withOpacity(0.3)),
+        border: Border.all(color: R.color.goldDim.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -380,7 +381,7 @@ class _ArahKiblatViewState extends State<ArahKiblatView>
       decoration: BoxDecoration(
         color: R.color.surfaceJadwal,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: R.color.goldDim.withOpacity(0.12)),
+        border: Border.all(color: R.color.goldDim.withValues(alpha: 0.12)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -419,7 +420,7 @@ class _ArahKiblatViewState extends State<ArahKiblatView>
       decoration: BoxDecoration(
         color: R.color.surfaceJadwal,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: R.color.goldDim.withOpacity(0.12)),
+        border: Border.all(color: R.color.goldDim.withValues(alpha: 0.12)),
       ),
       child: Row(
         children: [
@@ -469,7 +470,7 @@ class _ArahKiblatViewState extends State<ArahKiblatView>
       height: 4,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: R.color.textMuted.withOpacity(0.5),
+        color: R.color.textMuted.withValues(alpha: 0.5),
       ),
     );
   }
@@ -480,7 +481,7 @@ class _ArahKiblatViewState extends State<ArahKiblatView>
       decoration: BoxDecoration(
         color: R.color.surface2Jadwal,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: R.color.goldDim.withOpacity(0.08)),
+        border: Border.all(color: R.color.goldDim.withValues(alpha: 0.08)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -514,7 +515,7 @@ class _GeoBgPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = R.color.goldDim.withOpacity(0.025)
+      ..color = R.color.goldDim.withValues(alpha: 0.025)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.5;
 
@@ -575,14 +576,14 @@ class _QiblaCompassDetailedPainter extends CustomPainter {
 
     // Outer Dial Ring
     final dialRing = Paint()
-      ..color = isAligned ? emeraldLight.withOpacity(0.4) : goldDim.withOpacity(0.3)
+      ..color = isAligned ? emeraldLight.withValues(alpha: 0.4) : goldDim.withValues(alpha: 0.3)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
     canvas.drawCircle(Offset.zero, r, dialRing);
 
     // Ticks (graduations)
     final tickPaint = Paint()
-      ..color = isAligned ? emeraldLight.withOpacity(0.5) : goldDim.withOpacity(0.4)
+      ..color = isAligned ? emeraldLight.withValues(alpha: 0.5) : goldDim.withValues(alpha: 0.4)
       ..strokeWidth = 1.0;
     for (int i = 0; i < 72; i++) {
       final a = i * math.pi / 36;
@@ -608,7 +609,7 @@ class _QiblaCompassDetailedPainter extends CustomPainter {
       final labelStyle = TextStyle(
         color: isNorth 
             ? (isAligned ? emeraldLight : goldColor)
-            : goldDim.withOpacity(0.7),
+            : goldDim.withValues(alpha: 0.7),
         fontWeight: FontWeight.bold,
         fontSize: isNorth ? 14 : 11,
       );
@@ -633,7 +634,7 @@ class _QiblaCompassDetailedPainter extends CustomPainter {
         text: TextSpan(
           text: '${i * 30}',
           style: TextStyle(
-            color: goldDim.withOpacity(0.35),
+            color: goldDim.withValues(alpha: 0.35),
             fontSize: 7.5,
           ),
         ),
@@ -651,7 +652,7 @@ class _QiblaCompassDetailedPainter extends CustomPainter {
 
     // Glow needle shadow
     final needleGlow = Paint()
-      ..color = isAligned ? emeraldLight.withOpacity(0.4) : goldColor.withOpacity(0.15)
+      ..color = isAligned ? emeraldLight.withValues(alpha: 0.4) : goldColor.withValues(alpha: 0.15)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
     final glowPath = Path()
       ..moveTo(0, -(r - 30))
@@ -670,7 +671,7 @@ class _QiblaCompassDetailedPainter extends CustomPainter {
     canvas.drawPath(topNeedle, needleColor);
 
     // Bottom pointer (South)
-    final bottomPointer = Paint()..color = goldDim.withOpacity(0.35);
+    final bottomPointer = Paint()..color = goldDim.withValues(alpha: 0.35);
     final botNeedle = Path()
       ..moveTo(0, r - 28)
       ..lineTo(-5, 10)
@@ -679,7 +680,7 @@ class _QiblaCompassDetailedPainter extends CustomPainter {
     canvas.drawPath(botNeedle, bottomPointer);
 
     // Central joint rings
-    canvas.drawCircle(Offset.zero, 12, Paint()..color = goldDim.withOpacity(0.2));
+    canvas.drawCircle(Offset.zero, 12, Paint()..color = goldDim.withValues(alpha: 0.2));
     canvas.drawCircle(Offset.zero, 7, Paint()..color = isAligned ? emeraldLight : goldColor);
     canvas.drawCircle(Offset.zero, 3, Paint()..color = const Color(0xFF090F0C));
 

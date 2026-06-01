@@ -6,6 +6,7 @@ import 'package:alquran_digital/app/routes/app_pages.dart';
 import '../controllers/home_controller.dart';
 import '../widgets/surah_tile.dart';
 import '../widgets/home_pattern_painter.dart';
+import '../widgets/home_ornament_painter.dart';
 import 'package:alquran_digital/app/components/widgets/widgets.dart';
 import '../../../data/providers/theme_controller.dart';
 
@@ -141,6 +142,14 @@ class _HomeViewState extends State<HomeView>
                             opacity: 0.04,
                             child: CustomPaint(
                               painter: HomePatternPainter(color: _gold),
+                            ),
+                          ),
+                        ),
+                        Positioned.fill(
+                          child: CustomPaint(
+                            painter: HomeOrnamentPainter(
+                              color: _gold,
+                              isDarkMode: ThemeController.to.isDarkMode.value,
                             ),
                           ),
                         ),

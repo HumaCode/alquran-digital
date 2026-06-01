@@ -20,14 +20,7 @@ class IslamicPatternPainter extends CustomPainter {
       }
     }
 
-    // 2. Center Mandala (Behind Logo)
-    final mandalaPaint = Paint()
-      ..color = color.withValues(alpha: 0.04)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.6;
-    _drawMandala(canvas, Offset(size.width / 2, size.height * 0.38), mandalaPaint);
-
-    // 3. Corner Ornaments (Top and Bottom)
+    // 2. Corner Ornaments (Top and Bottom)
     final cornerPaint = Paint()
       ..color = color.withValues(alpha: 0.06)
       ..style = PaintingStyle.stroke
@@ -42,7 +35,7 @@ class IslamicPatternPainter extends CustomPainter {
     // Bottom Right
     _drawCorner(canvas, Offset(size.width, size.height), -1, -1, cornerPaint);
 
-    // 4. Hanging Lanterns on Left and Right sides
+    // 3. Hanging Lanterns on Left and Right sides
     final lanternPaint = Paint()
       ..color = color.withValues(alpha: 0.08)
       ..style = PaintingStyle.stroke
@@ -174,21 +167,43 @@ class IslamicPatternPainter extends CustomPainter {
     canvas.drawPath(tasselPath, paint);
   }
 
-  void _drawMandala(Canvas canvas, Offset center, Paint paint) {
-    // Concentric circles with dashes or dots
-    canvas.drawCircle(center, 155, paint);
+  @override
+  bool shouldRepaint(IslamicPatternPainter old) => old.color != color;
+}
+
+class MandalaPainter extends CustomPainter {
+  final Color color;
+  const MandalaPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final cx = size.width / 2;
+    final cy = size.height / 2;
+    final center = Offset(cx, cy);
+    final maxRadius = size.width / 2;
+
+    // Center circle
+    final radius = maxRadius * 0.95;
+
+    final paint = Paint()
+      ..color = color.withValues(alpha: 0.07)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.8;
+
+    // Concentric outer circle
+    canvas.drawCircle(center, radius, paint);
 
     final thinPaint = Paint()
-      ..color = paint.color.withValues(alpha: 0.7)
+      ..color = color.withValues(alpha: 0.04)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.4;
+      ..strokeWidth = 0.5;
 
     // 16-point star
     final starPath = Path();
     const points = 16;
     for (int i = 0; i < points * 2; i++) {
       final angle = i * math.pi / points;
-      final r = (i % 2 == 0) ? 145.0 : 110.0;
+      final r = (i % 2 == 0) ? radius * 0.95 : radius * 0.72;
       final x = center.dx + r * math.cos(angle);
       final y = center.dy + r * math.sin(angle);
       if (i == 0) {
@@ -200,11 +215,11 @@ class IslamicPatternPainter extends CustomPainter {
     starPath.close();
     canvas.drawPath(starPath, thinPaint);
 
-    // Outer octagram ring
+    // Inner 16-point star
     final starPath2 = Path();
     for (int i = 0; i < 16; i++) {
       final angle = i * math.pi / 8 + math.pi / 16;
-      final r = (i % 2 == 0) ? 95.0 : 70.0;
+      final r = (i % 2 == 0) ? radius * 0.65 : radius * 0.48;
       final x = center.dx + r * math.cos(angle);
       final y = center.dy + r * math.sin(angle);
       if (i == 0) {
@@ -216,15 +231,15 @@ class IslamicPatternPainter extends CustomPainter {
     starPath2.close();
     canvas.drawPath(starPath2, paint);
 
-    // Inner concentric details
-    final outerRingPaint = Paint()
-      ..color = paint.color.withValues(alpha: 0.3)
+    // Concentric rings
+    final thinOuterRingPaint = Paint()
+      ..color = color.withValues(alpha: 0.03)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = paint.strokeWidth;
-    canvas.drawCircle(center, 180, outerRingPaint);
-    canvas.drawCircle(center, 60, thinPaint);
+      ..strokeWidth = thinPaint.strokeWidth;
+    canvas.drawCircle(center, radius * 1.06, thinOuterRingPaint);
+    canvas.drawCircle(center, radius * 0.38, thinPaint);
   }
 
   @override
-  bool shouldRepaint(IslamicPatternPainter old) => old.color != color;
+  bool shouldRepaint(MandalaPainter old) => old.color != color;
 }

@@ -263,9 +263,9 @@ class _SplashViewState extends State<SplashView>
                         children: [
                           const Spacer(flex: 2),
                           _buildOrnamentTop(),
-                          const SizedBox(height: 32),
+                          const SizedBox(height: 54),
                           _buildLogo(),
-                          const SizedBox(height: 40),
+                          const SizedBox(height: 54),
                           _buildTexts(),
                           const Spacer(flex: 2),
                           _buildProgressArea(),
@@ -385,6 +385,14 @@ class _SplashViewState extends State<SplashView>
           child: Stack(
             alignment: Alignment.center,
             children: [
+              // Mandala hiasan di belakang logo
+              SizedBox(
+                width: 250,
+                height: 250,
+                child: CustomPaint(
+                  painter: MandalaPainter(color: _gold),
+                ),
+              ),
               // Glow luar
               Container(
                 width: 148 * _pulseAnim.value,

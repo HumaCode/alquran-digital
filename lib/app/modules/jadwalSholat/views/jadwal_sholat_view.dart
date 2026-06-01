@@ -56,6 +56,8 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
   late DateTime _now;
   Duration _countdown = Duration.zero;
   int _sholatBerikutIdx = 0;
+  bool _isSholatActive = false;
+  int _activeSholatIdx = -1;
 
   // Controllers untuk berbagai jenis animasi transisi dan ornamen
   late AnimationController _entranceCtrl;
@@ -357,34 +359,68 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
 
   // Menentukan index jadwal sholat terdekat berikutnya & durasi hitung mundurnya
   void _calcSholatBerikut() {
-    final nowMin = _now.hour * 60 + _now.minute;
-    int idx = -1;
+    final now = DateTime.now();
+    
+    // Cek apakah sedang dalam masa aktif sholat (10 menit sejak masuk waktu sholat)
+    int activeIdx = -1;
+    Duration activeRem = Duration.zero;
+    
     for (int i = 0; i < _sholat.length; i++) {
       final s = _sholat[i];
-      final sMin = s.waktu.hour * 60 + s.waktu.minute;
-      if (sMin > nowMin) {
-        idx = i;
+      final sTime = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        s.waktu.hour,
+        s.waktu.minute,
+      );
+      
+      final endActiveTime = sTime.add(const Duration(minutes: 10));
+      if (!now.isBefore(sTime) && now.isBefore(endActiveTime)) {
+        activeIdx = i;
+        activeRem = endActiveTime.difference(now);
         break;
       }
     }
-    if (idx == -1)
-      idx =
-          0; // Jika waktu sudah melewati Isya, sholat berikutnya adalah Subuh esok hari
 
-    _sholatBerikutIdx = idx;
+    if (activeIdx != -1) {
+      _isSholatActive = true;
+      _activeSholatIdx = activeIdx;
+      _sholatBerikutIdx = activeIdx; // Tampilkan sholat yang sedang aktif
+      _countdown = activeRem;
+    } else {
+      _isSholatActive = false;
+      _activeSholatIdx = -1;
 
-    final target = _sholat[idx];
-    var targetDt = DateTime(
-      _now.year,
-      _now.month,
-      _now.day,
-      target.waktu.hour,
-      target.waktu.minute,
-    );
-    if (targetDt.isBefore(_now)) {
-      targetDt = targetDt.add(const Duration(days: 1));
+      final nowMin = _now.hour * 60 + _now.minute;
+      int idx = -1;
+      for (int i = 0; i < _sholat.length; i++) {
+        final s = _sholat[i];
+        final sMin = s.waktu.hour * 60 + s.waktu.minute;
+        if (sMin > nowMin) {
+          idx = i;
+          break;
+        }
+      }
+      if (idx == -1) {
+        idx = 0; // Jika waktu sudah melewati Isya, sholat berikutnya adalah Subuh esok hari
+      }
+
+      _sholatBerikutIdx = idx;
+
+      final target = _sholat[idx];
+      var targetDt = DateTime(
+        _now.year,
+        _now.month,
+        _now.day,
+        target.waktu.hour,
+        target.waktu.minute,
+      );
+      if (targetDt.isBefore(_now)) {
+        targetDt = targetDt.add(const Duration(days: 1));
+      }
+      _countdown = targetDt.difference(_now);
     }
-    _countdown = targetDt.difference(_now);
   }
 
   void _updateWidgetData() {
@@ -1356,6 +1392,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                         countdownStr: _countdownStr,
                         pulseCtrl: _pulseCtrl,
                         entranceCtrl: _entranceCtrl,
+                        isSholatActive: _isSholatActive,
                       ),
                     ),
                     // 3. Penanggalan Masehi & Hijriah
@@ -1459,6 +1496,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
               HapticFeedback.selectionClick();
             },
             notifEnabled: _controller.isNotifEnabled.value,
+            isActive: _isSholatActive && i == _activeSholatIdx,
           ),
         ),
       );
@@ -1625,12 +1663,14 @@ class _HeroCountdown extends StatelessWidget {
   final String countdownStr;
   final AnimationController pulseCtrl;
   final AnimationController entranceCtrl;
+  final bool isSholatActive;
 
   const _HeroCountdown({
     required this.sholat,
     required this.countdownStr,
     required this.pulseCtrl,
     required this.entranceCtrl,
+    required this.isSholatActive,
   });
 
   @override
@@ -1644,8 +1684,21 @@ class _HeroCountdown extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
-          color: R.color.surfaceJadwal,
-          border: Border.all(color: R.color.goldDim.withOpacity(0.15)),
+          color: isSholatActive ? null : R.color.surfaceJadwal,
+          gradient: isSholatActive
+              ? LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    R.color.gold.withOpacity(0.2),
+                    R.color.surfaceJadwal,
+                  ],
+                )
+              : null,
+          border: Border.all(
+            color: isSholatActive ? R.color.gold : R.color.goldDim.withOpacity(0.15),
+            width: isSholatActive ? 2 : 1,
+          ),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(24),
@@ -1678,10 +1731,11 @@ class _HeroCountdown extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          R.string.nextPrayer,
+                          isSholatActive ? 'LAKSANAKAN SHOLAT' : R.string.nextPrayer,
                           style: TextStyle(
                             fontSize: 12,
-                            color: R.color.textMutedJadwal,
+                            color: isSholatActive ? R.color.goldLight : R.color.textMutedJadwal,
+                            fontWeight: isSholatActive ? FontWeight.bold : FontWeight.normal,
                             letterSpacing: 2,
                           ),
                         ),
@@ -1759,10 +1813,11 @@ class _HeroCountdown extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          R.string.timeRemaining,
+                          isSholatActive ? 'WAKTU TERSISA UNTUK SHOLAT' : R.string.timeRemaining,
                           style: TextStyle(
                             fontSize: 11,
-                            color: R.color.textMutedJadwal,
+                            color: isSholatActive ? R.color.goldDim : R.color.textMutedJadwal,
+                            fontWeight: isSholatActive ? FontWeight.w600 : FontWeight.normal,
                             letterSpacing: 2,
                           ),
                         ),
@@ -2393,6 +2448,7 @@ class _SholatCard extends StatelessWidget {
   final String Function(TimeOfDay) fmt;
   final VoidCallback onTap;
   final bool notifEnabled;
+  final bool isActive;
 
   const _SholatCard({
     required this.sholat,
@@ -2403,6 +2459,7 @@ class _SholatCard extends StatelessWidget {
     required this.fmt,
     required this.onTap,
     required this.notifEnabled,
+    required this.isActive,
   });
 
   // Jumlah rakaat masing-masing sholat fardhu
@@ -2420,7 +2477,7 @@ class _SholatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accent = sholat.accent;
-    final opacity = isSudahLewat && !isBerikutnya ? 0.5 : 1.0;
+    final opacity = isSudahLewat && !isBerikutnya && !isActive ? 0.5 : 1.0;
 
     return GestureDetector(
       onTap: onTap,
@@ -2431,17 +2488,17 @@ class _SholatCard extends StatelessWidget {
           margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(18),
-            color: R.color.surfaceJadwal,
+            color: isActive ? R.color.gold.withOpacity(0.1) : R.color.surfaceJadwal,
             border: Border.all(
-              color: isBerikutnya
-                  ? accent.withOpacity(0.5)
-                  : R.color.goldDim.withOpacity(0.12),
-              width: isBerikutnya ? 1.5 : 1,
+              color: isActive
+                  ? R.color.gold
+                  : (isBerikutnya ? accent.withOpacity(0.5) : R.color.goldDim.withOpacity(0.12)),
+              width: isActive || isBerikutnya ? 1.5 : 1,
             ),
-            boxShadow: isBerikutnya
+            boxShadow: isActive || isBerikutnya
                 ? [
                     BoxShadow(
-                      color: accent.withOpacity(0.15),
+                      color: (isActive ? R.color.gold : accent).withOpacity(0.15),
                       blurRadius: 20,
                       spreadRadius: 2,
                     ),
@@ -2553,7 +2610,30 @@ class _SholatCard extends StatelessWidget {
                             color: R.color.goldLight,
                           ),
                         ),
-                        if (isBerikutnya) ...[
+                        if (isActive) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 7,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6),
+                              color: R.color.gold.withOpacity(0.2),
+                              border: Border.all(
+                                color: R.color.gold,
+                              ),
+                            ),
+                            child: Text(
+                              'Laksanakan',
+                              style: TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w600,
+                                color: R.color.goldLight,
+                              ),
+                            ),
+                          ),
+                        ] else if (isBerikutnya) ...[
                           const SizedBox(width: 8),
                           Container(
                             padding: const EdgeInsets.symmetric(

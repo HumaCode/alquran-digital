@@ -721,85 +721,83 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                         }
                                       },
                                       itemBuilder: (context) {
-                                        return Obx(() {
-                                          final isLastRead = controller.lastReadAyatNomor.value == ayat.nomorAyat;
-                                          final hasNote = controller.versesWithNotes.contains(ayat.nomorAyat);
-                                          return [
-                                            PopupMenuItem(
-                                              value: 'copy',
-                                              child: Row(
-                                                children: [
-                                                  Icon(Icons.copy_rounded, color: _goldDim, size: 18),
-                                                  const SizedBox(width: 8),
-                                                  Text('Salin Ayat', style: TextStyle(color: _textSoft, fontFamily: 'Poppins', fontSize: 13)),
-                                                ],
-                                              ),
+                                        final isLastRead = controller.lastReadAyatNomor.value == ayat.nomorAyat;
+                                        final hasNote = controller.versesWithNotes.contains(ayat.nomorAyat);
+                                        return [
+                                          PopupMenuItem(
+                                            value: 'copy',
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.copy_rounded, color: _goldDim, size: 18),
+                                                const SizedBox(width: 8),
+                                                Text('Salin Ayat', style: TextStyle(color: _textSoft, fontFamily: 'Poppins', fontSize: 13)),
+                                              ],
                                             ),
-                                            PopupMenuItem(
-                                              value: 'share',
-                                              child: Row(
-                                                children: [
-                                                  Icon(Icons.share_rounded, color: _goldDim, size: 18),
-                                                  const SizedBox(width: 8),
-                                                  Text('Bagikan', style: TextStyle(color: _textSoft, fontFamily: 'Poppins', fontSize: 13)),
-                                                ],
-                                              ),
+                                          ),
+                                          PopupMenuItem(
+                                            value: 'share',
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.share_rounded, color: _goldDim, size: 18),
+                                                const SizedBox(width: 8),
+                                                Text('Bagikan', style: TextStyle(color: _textSoft, fontFamily: 'Poppins', fontSize: 13)),
+                                              ],
                                             ),
-                                            PopupMenuItem(
-                                              value: 'tafsir',
-                                              child: Row(
-                                                children: [
-                                                  Icon(Icons.menu_book_rounded, color: _goldDim, size: 18),
-                                                  const SizedBox(width: 8),
-                                                  Text('Lihat Tafsir', style: TextStyle(color: _textSoft, fontFamily: 'Poppins', fontSize: 13)),
-                                                ],
-                                              ),
+                                          ),
+                                          PopupMenuItem(
+                                            value: 'tafsir',
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.menu_book_rounded, color: _goldDim, size: 18),
+                                                const SizedBox(width: 8),
+                                                Text('Lihat Tafsir', style: TextStyle(color: _textSoft, fontFamily: 'Poppins', fontSize: 13)),
+                                              ],
                                             ),
-                                            const PopupMenuDivider(),
-                                            PopupMenuItem(
-                                              value: 'last_read',
-                                              child: Row(
-                                                children: [
-                                                  Icon(
-                                                    isLastRead ? Icons.bookmark_added_rounded : Icons.bookmark_add_outlined,
-                                                    color: isLastRead ? _gold : _goldDim,
-                                                    size: 18,
+                                          ),
+                                          const PopupMenuDivider(),
+                                          PopupMenuItem(
+                                            value: 'last_read',
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  isLastRead ? Icons.bookmark_added_rounded : Icons.bookmark_add_outlined,
+                                                  color: isLastRead ? _gold : _goldDim,
+                                                  size: 18,
+                                                ),
+                                                const SizedBox(width: 8),
+                                                Text(
+                                                  isLastRead ? 'Terakhir Dibaca (Aktif)' : 'Tandai Terakhir Dibaca',
+                                                  style: TextStyle(
+                                                    color: isLastRead ? _gold : _textSoft,
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: 13,
                                                   ),
-                                                  const SizedBox(width: 8),
-                                                  Text(
-                                                    isLastRead ? 'Terakhir Dibaca (Aktif)' : 'Tandai Terakhir Dibaca',
-                                                    style: TextStyle(
-                                                      color: isLastRead ? _gold : _textSoft,
-                                                      fontFamily: 'Poppins',
-                                                      fontSize: 13,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
-                                            PopupMenuItem(
-                                              value: 'note',
-                                              child: Row(
-                                                children: [
-                                                  Icon(
-                                                    hasNote ? Icons.edit_note_rounded : Icons.note_add_outlined,
-                                                    color: hasNote ? _gold : _goldDim,
-                                                    size: 18,
+                                          ),
+                                          PopupMenuItem(
+                                            value: 'note',
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  hasNote ? Icons.edit_note_rounded : Icons.note_add_outlined,
+                                                  color: hasNote ? _gold : _goldDim,
+                                                  size: 18,
+                                                ),
+                                                const SizedBox(width: 8),
+                                                Text(
+                                                  hasNote ? 'Edit Catatan Tadabbur' : 'Tambah Catatan Tadabbur',
+                                                  style: TextStyle(
+                                                    color: hasNote ? _gold : _textSoft,
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: 13,
                                                   ),
-                                                  const SizedBox(width: 8),
-                                                  Text(
-                                                    hasNote ? 'Edit Catatan Tadabbur' : 'Tambah Catatan Tadabbur',
-                                                    style: TextStyle(
-                                                      color: hasNote ? _gold : _textSoft,
-                                                      fontFamily: 'Poppins',
-                                                      fontSize: 13,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
-                                          ];
-                                        });
+                                          ),
+                                        ];
                                       },
                                     ),
                                   ),

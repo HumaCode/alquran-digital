@@ -450,6 +450,7 @@ class DetailSurahController extends GetxController {
       // Trigger update pada HomeController jika aktif
       if (Get.isRegistered<HomeController>()) {
         Get.find<HomeController>().fetchTilawahTracker();
+        Get.find<HomeController>().fetchLastRead();
       }
       
       // Trigger update pada StatistikController jika aktif
@@ -500,11 +501,26 @@ class DetailSurahController extends GetxController {
 
       // Jika ditandai selesai, tandai juga ayat terakhir sebagai terakhir dibaca (otomatis mencatat sisa progress tilawah)
       if (nextStatus) {
-        await markAsLastRead(nomorSurah, detail.namaLatin, detail.jumlahAyat);
+        final prevAyat = lastReadAyatNomor.value;
+        await _repository.saveLastRead(nomorSurah, detail.namaLatin, detail.jumlahAyat);
+        lastReadAyatNomor.value = detail.jumlahAyat;
+        
+        int diff = detail.jumlahAyat - prevAyat;
+        if (diff > 0) {
+          await _logTilawahCount(diff);
+        } else if (prevAyat == 0) {
+          await _logTilawahCount(detail.jumlahAyat);
+        }
+      } else {
+        // Batal tandai selesai: reset terakhir dibaca ke 0 dan kurangi progres tilawah sebanyak jumlah ayat surah ini
+        await _repository.saveLastRead(nomorSurah, detail.namaLatin, 0);
+        lastReadAyatNomor.value = 0;
+        await _logTilawahCount(-detail.jumlahAyat);
       }
       
       if (Get.isRegistered<HomeController>()) {
         Get.find<HomeController>().fetchKhatamProgress();
+        Get.find<HomeController>().fetchLastRead();
       }
 
       Get.snackbar(

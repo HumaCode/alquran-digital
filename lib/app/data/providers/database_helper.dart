@@ -611,13 +611,13 @@ class DatabaseHelper {
     if (list.isEmpty) {
       await db.insert('tilawah_progress', {
         'tanggal': tanggal,
-        'jumlahAyatDibaca': count,
+        'jumlahAyatDibaca': max(0, count),
       });
     } else {
       final current = list.first['jumlahAyatDibaca'] as int;
       await db.update(
         'tilawah_progress',
-        {'jumlahAyatDibaca': current + count},
+        {'jumlahAyatDibaca': max(0, current + count)},
         where: 'tanggal = ?',
         whereArgs: [tanggal],
       );

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 import 'dart:math' as math;
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
@@ -147,7 +148,7 @@ class JadwalSholatController extends GetxController {
         },
       );
     } catch (e) {
-      print('Gagal inisialisasi kompas: $e');
+      developer.log('Gagal inisialisasi kompas: $e');
       isCompassAvailable.value = false;
     }
   }
@@ -232,7 +233,7 @@ class JadwalSholatController extends GetxController {
         }
       }
     } catch (e) {
-      print('Gagal mendapatkan koordinat GPS: $e');
+      developer.log('Gagal mendapatkan koordinat GPS: $e');
     }
 
     String? detectedCityName;
@@ -262,7 +263,7 @@ class JadwalSholatController extends GetxController {
           }
         }
       } catch (e) {
-        print('Gagal reverse geocoding via Nominatim: $e');
+        developer.log('Gagal reverse geocoding via Nominatim: $e');
       }
     }
 
@@ -280,7 +281,7 @@ class JadwalSholatController extends GetxController {
           );
         }
       } catch (e) {
-        print('Gagal mendapatkan lokasi via IP: $e');
+        developer.log('Gagal mendapatkan lokasi via IP: $e');
       }
     }
 
@@ -380,7 +381,7 @@ class JadwalSholatController extends GetxController {
       final list = await _repository.getProvinsi();
       provinsiList.assignAll(list);
     } catch (e) {
-      print('Gagal memuat daftar provinsi: $e');
+      developer.log('Gagal memuat daftar provinsi: $e');
     }
   }
 
@@ -395,7 +396,7 @@ class JadwalSholatController extends GetxController {
         selectedKabKota.value = list.first;
       }
     } catch (e) {
-      print('Gagal memuat daftar kota: $e');
+      developer.log('Gagal memuat daftar kota: $e');
     } finally {
       isCitiesLoading.value = false;
     }

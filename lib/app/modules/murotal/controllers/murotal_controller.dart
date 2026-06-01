@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
@@ -75,7 +76,7 @@ class MurotalController extends GetxController {
       final keys = list.map((item) => '${item['surah_nomor']}_${item['qori_id']}').toSet();
       downloadedTracks.assignAll(keys);
     } catch (e) {
-      print('Gagal mengecek status download: $e');
+      developer.log('Gagal mengecek status download: $e');
     }
   }
 
@@ -92,7 +93,7 @@ class MurotalController extends GetxController {
         selectedSurah.value = list.first;
       }
     } catch (e) {
-      print('Gagal memuat surah untuk murotal: $e');
+      developer.log('Gagal memuat surah untuk murotal: $e');
     } finally {
       isLoading.value = false;
     }
@@ -165,9 +166,9 @@ class MurotalController extends GetxController {
           ),
         );
         _audioPlayer.play();
-        print('Memutar file lokal offline: $localPath');
+        developer.log('Memutar file lokal offline: $localPath');
       } catch (e) {
-        print('Gagal memutar file lokal, fallback ke URL: $e');
+        developer.log('Gagal memutar file lokal, fallback ke URL: $e');
         _playFromUrl(surah, qori);
       }
     } else {
@@ -221,10 +222,10 @@ class MurotalController extends GetxController {
       if (localPath != null) {
         await DatabaseHelper.instance.insertDownloadedMurotal(surah.nomor, qoriId, localPath);
         await checkDownloadedStatus();
-        print('Auto-download background murotal ${surah.namaLatin} sukses.');
+        developer.log('Auto-download background murotal ${surah.namaLatin} sukses.');
       }
     } catch (e) {
-      print('Auto-download background gagal: $e');
+      developer.log('Auto-download background gagal: $e');
     } finally {
       downloadingTracks.remove(cacheKey);
     }
@@ -286,7 +287,7 @@ class MurotalController extends GetxController {
 
       return file.path;
     } catch (e) {
-      print('_downloadFileToLocal error: $e');
+      developer.log('_downloadFileToLocal error: $e');
       return null;
     } finally {
       httpClient.close();

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'dart:developer' as developer;
 import 'package:geolocator/geolocator.dart';
 import '../../../data/repositories/jadwal_sholat_repository.dart';
 import '../../../data/models/imsakiyah_model.dart';
@@ -93,7 +94,7 @@ class ImsakiyahController extends GetxController {
         }
       }
     } catch (e) {
-      print('Gagal mendapatkan koordinat GPS: $e');
+      developer.log('Gagal mendapatkan koordinat GPS: $e');
     }
 
     String? detectedCityName;
@@ -114,7 +115,7 @@ class ImsakiyahController extends GetxController {
           }
         }
       } catch (e) {
-        print('Gagal reverse geocoding via Nominatim: $e');
+        developer.log('Gagal reverse geocoding via Nominatim: $e');
       }
     }
 
@@ -127,7 +128,7 @@ class ImsakiyahController extends GetxController {
           detectedProvinceName = _translateEnglishProvince(response.body['regionName']);
         }
       } catch (e) {
-        print('Gagal mendapatkan lokasi via IP: $e');
+        developer.log('Gagal mendapatkan lokasi via IP: $e');
       }
     }
 
@@ -216,7 +217,7 @@ class ImsakiyahController extends GetxController {
       final list = await _repository.getProvinsi();
       provinsiList.assignAll(list);
     } catch (e) {
-      print('Gagal memuat daftar provinsi: $e');
+      developer.log('Gagal memuat daftar provinsi: $e');
     }
   }
 
@@ -230,7 +231,7 @@ class ImsakiyahController extends GetxController {
         selectedKabKota.value = list.first;
       }
     } catch (e) {
-      print('Gagal memuat daftar kota: $e');
+      developer.log('Gagal memuat daftar kota: $e');
     } finally {
       isCitiesLoading.value = false;
     }

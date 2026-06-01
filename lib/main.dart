@@ -62,7 +62,7 @@ void main() async {
             fontFamily: 'Poppins',
           ),
           themeMode: ThemeMode.dark, // Default will be managed by ThemeController onInit
-          initialRoute: AppPages.INITIAL,
+          initialRoute: AppPages.initial,
           getPages: AppPages.routes,
           defaultTransition: Transition.rightToLeftWithFade,
           transitionDuration: const Duration(milliseconds: 350),

@@ -2077,7 +2077,7 @@ class _JadwalSholatBottomRow extends StatelessWidget {
               // Card Kompas Arah Kiblat
               Expanded(
                 child: GestureDetector(
-                  onTap: () => Get.toNamed(Routes.ARAH_KIBLAT),
+                  onTap: () => Get.toNamed(Routes.arahKiblat),
                   child: _buildQiblaCard(),
                 ),
               ),
@@ -2085,7 +2085,7 @@ class _JadwalSholatBottomRow extends StatelessWidget {
               // Card Waktu Tambahan (Imsak, Syuruq, dll)
               Expanded(
                 child: GestureDetector(
-                  onTap: () => Get.toNamed(Routes.IMSAKIYAH),
+                  onTap: () => Get.toNamed(Routes.imsakiyah),
                   child: _buildImsakCard(),
                 ),
               ),

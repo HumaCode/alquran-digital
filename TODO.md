@@ -158,8 +158,8 @@ Meningkatkan personalisasi tampilan aplikasi.
 
 ### 19. 🧹 Pembersihan Warning Analisis (Dart Analyzer)
 *   [x] Ganti sisa penggunaan `.withOpacity()` dengan `.withValues(alpha: ...)` pada **MurotalView**, **JadwalSholatView**, **ImsakiyahView**, dan **ArahKiblatView**.
-*   [ ] Ubah penamaan rute di `app_routes.dart` dari UPPER_SNAKE_CASE menjadi `lowerCamelCase` (misal `Routes.home`).
-*   [ ] Hapus atau ganti `print` debug log dengan `developer.log` di dalam file controller.
+*   [x] Ubah penamaan rute di `app_routes.dart` dari UPPER_SNAKE_CASE menjadi `lowerCamelCase` (misal `Routes.home`).
+*   [x] Hapus atau ganti `print` debug log dengan `developer.log` di dalam file controller.
 
 ### 20. ⚙️ Penanganan Optimal Notifikasi Standby
 *   [ ] Sediakan edukasi/halaman panduan optimasi baterai di menu Settings agar OS tidak menolak/menunda alarm pra-sholat saat standby.

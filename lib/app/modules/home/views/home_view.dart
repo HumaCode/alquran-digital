@@ -94,7 +94,7 @@ class _HomeViewState extends State<HomeView>
                     icon: Icon(Icons.bookmark_rounded, color: _gold),
                     tooltip: 'Bookmark Ayat',
                     onPressed: () async {
-                      await Get.toNamed(Routes.BOOKMARKS);
+                      await Get.toNamed(Routes.bookmarks);
                       _homeController.fetchBookmarks();
                       _homeController.fetchBookmarkedAyats();
                     },
@@ -226,12 +226,12 @@ class _HomeViewState extends State<HomeView>
                       onTap: () async {
                         if (hasLast) {
                           await Get.toNamed(
-                            Routes.DETAIL_SURAH,
+                            Routes.detailSurah,
                             arguments: {'nomor': surahNo, 'ayat': ayatNo},
                           );
                         } else {
                           // Mulai dari Al-Fatihah jika belum ada riwayat
-                          await Get.toNamed(Routes.DETAIL_SURAH, arguments: 1);
+                          await Get.toNamed(Routes.detailSurah, arguments: 1);
                         }
                         _homeController.fetchLastRead();
                       },
@@ -375,7 +375,7 @@ class _HomeViewState extends State<HomeView>
                               // Statistik Detail Button
                               InkWell(
                                 onTap: () async {
-                                  await Get.toNamed(Routes.STATISTIK);
+                                  await Get.toNamed(Routes.statistik);
                                   _homeController.fetchTilawahTracker();
                                 },
                                 child: Container(
@@ -919,7 +919,7 @@ class _HomeViewState extends State<HomeView>
                               borderRadius: BorderRadius.circular(18),
                               onTap: () async {
                                 await Get.toNamed(
-                                  Routes.DETAIL_SURAH,
+                                  Routes.detailSurah,
                                   arguments: {
                                     'nomor': nomorSurah,
                                     'ayat': nomorAyat,
@@ -1089,7 +1089,7 @@ class _HomeViewState extends State<HomeView>
                         },
                         onTap: () async {
                           await Get.toNamed(
-                            Routes.DETAIL_SURAH,
+                            Routes.detailSurah,
                             arguments: surahList[i].nomor,
                           );
                           _homeController.fetchLastRead();
@@ -1130,7 +1130,7 @@ class _HomeViewState extends State<HomeView>
                         child: GestureDetector(
                           onTap: () async {
                             await Get.toNamed(
-                              Routes.DETAIL_SURAH,
+                              Routes.detailSurah,
                               arguments: {
                                 'nomor':
                                     _homeController.lastReadSurahNomor.value,
@@ -1292,7 +1292,7 @@ class _HomeViewState extends State<HomeView>
                           },
                           onTap: () async {
                             await Get.toNamed(
-                              Routes.DETAIL_SURAH,
+                              Routes.detailSurah,
                               arguments: item.nomor,
                             );
                             _homeController.fetchLastRead();
@@ -1358,7 +1358,7 @@ class _HomeViewState extends State<HomeView>
                               borderRadius: BorderRadius.circular(18),
                               onTap: () async {
                                 await Get.toNamed(
-                                  Routes.DETAIL_SURAH,
+                                  Routes.detailSurah,
                                   arguments: {
                                     'nomor': nomorSurah,
                                     'ayat': nomorAyat,
@@ -1598,7 +1598,7 @@ class _HomeViewState extends State<HomeView>
                       subtitle: R.string.sidebarPrayersSubtitle,
                       onTap: () {
                         Navigator.pop(context);
-                        Get.toNamed(Routes.DOA);
+                        Get.toNamed(Routes.doa);
                       },
                     ),
                     const SizedBox(height: 10),
@@ -1608,7 +1608,7 @@ class _HomeViewState extends State<HomeView>
                       subtitle: R.string.sidebarPrayerTimesSubtitle,
                       onTap: () {
                         Navigator.pop(context);
-                        Get.toNamed(Routes.JADWAL_SHOLAT);
+                        Get.toNamed(Routes.jadwalSholat);
                       },
                     ),
                     const SizedBox(height: 10),
@@ -1618,7 +1618,7 @@ class _HomeViewState extends State<HomeView>
                       subtitle: R.string.sidebarImsakiyahSubtitle,
                       onTap: () {
                         Navigator.pop(context);
-                        Get.toNamed(Routes.IMSAKIYAH);
+                        Get.toNamed(Routes.imsakiyah);
                       },
                     ),
                     const SizedBox(height: 10),
@@ -1628,7 +1628,7 @@ class _HomeViewState extends State<HomeView>
                       subtitle: R.string.sidebarQiblaSubtitle,
                       onTap: () {
                         Navigator.pop(context);
-                        Get.toNamed(Routes.ARAH_KIBLAT);
+                        Get.toNamed(Routes.arahKiblat);
                       },
                     ),
                     const SizedBox(height: 10),
@@ -1638,7 +1638,7 @@ class _HomeViewState extends State<HomeView>
                       subtitle: R.string.sidebarMurotalSubtitle,
                       onTap: () {
                         Navigator.pop(context);
-                        Get.toNamed(Routes.MUROTAL);
+                        Get.toNamed(Routes.murotal);
                       },
                     ),
                     const SizedBox(height: 10),
@@ -1648,7 +1648,7 @@ class _HomeViewState extends State<HomeView>
                       subtitle: R.string.sidebarBookmarksSubtitle,
                       onTap: () async {
                         Navigator.pop(context);
-                        await Get.toNamed(Routes.BOOKMARKS);
+                        await Get.toNamed(Routes.bookmarks);
                         _homeController.fetchBookmarks();
                         _homeController.fetchBookmarkedAyats();
                       },
@@ -1660,7 +1660,7 @@ class _HomeViewState extends State<HomeView>
                       subtitle: R.string.sidebarStatistikSubtitle,
                       onTap: () async {
                         Navigator.pop(context);
-                        await Get.toNamed(Routes.STATISTIK);
+                        await Get.toNamed(Routes.statistik);
                         _homeController.fetchTilawahTracker();
                       },
                     ),
@@ -1671,7 +1671,7 @@ class _HomeViewState extends State<HomeView>
                       subtitle: 'Tema, target tilawah, & notifikasi',
                       onTap: () async {
                         Navigator.pop(context);
-                        await Get.toNamed(Routes.SETTINGS);
+                        await Get.toNamed(Routes.settings);
                         _homeController.fetchTilawahTracker();
                       },
                     ),

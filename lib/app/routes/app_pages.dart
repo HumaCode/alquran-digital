@@ -28,71 +28,71 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.SPLASH;
+  static const initial = Routes.splash;
 
   static final routes = [
     GetPage(
-      name: _Paths.HOME,
+      name: _Paths.home,
       page: () => const HomeView(),
       binding: HomeBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 500),
     ),
     GetPage(
-      name: _Paths.SPLASH,
+      name: _Paths.splash,
       page: () => const SplashView(),
       binding: SplashBinding(),
     ),
     GetPage(
-      name: _Paths.DOA,
+      name: _Paths.doa,
       page: () => const DoaView(),
       binding: DoaBinding(),
       transition: Transition.rightToLeftWithFade,
       transitionDuration: const Duration(milliseconds: 350),
     ),
     GetPage(
-      name: _Paths.DETAIL_SURAH,
+      name: _Paths.detailSurah,
       page: () => const DetailSurahView(),
       binding: DetailSurahBinding(),
       transition: Transition.rightToLeftWithFade,
       transitionDuration: const Duration(milliseconds: 350),
     ),
     GetPage(
-      name: _Paths.JADWAL_SHOLAT,
+      name: _Paths.jadwalSholat,
       page: () => const JadwalSholatView(),
       binding: JadwalSholatBinding(),
     ),
     GetPage(
-      name: _Paths.IMSAKIYAH,
+      name: _Paths.imsakiyah,
       page: () => const ImsakiyahView(),
       binding: ImsakiyahBinding(),
     ),
     GetPage(
-      name: _Paths.ARAH_KIBLAT,
+      name: _Paths.arahKiblat,
       page: () => const ArahKiblatView(),
       binding: ArahKiblatBinding(),
     ),
     GetPage(
-      name: _Paths.MUROTAL,
+      name: _Paths.murotal,
       page: () => const MurotalView(),
       binding: MurotalBinding(),
     ),
     GetPage(
-      name: _Paths.BOOKMARKS,
+      name: _Paths.bookmarks,
       page: () => const BookmarksView(),
       binding: BookmarksBinding(),
       transition: Transition.rightToLeftWithFade,
       transitionDuration: const Duration(milliseconds: 350),
     ),
     GetPage(
-      name: _Paths.STATISTIK,
+      name: _Paths.statistik,
       page: () => const StatistikView(),
       binding: StatistikBinding(),
       transition: Transition.rightToLeftWithFade,
       transitionDuration: const Duration(milliseconds: 350),
     ),
     GetPage(
-      name: _Paths.SETTINGS,
+      name: _Paths.settings,
       page: () => const SettingsView(),
       binding: SettingsBinding(),
       transition: Transition.rightToLeftWithFade,

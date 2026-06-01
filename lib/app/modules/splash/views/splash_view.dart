@@ -209,7 +209,7 @@ class _SplashViewState extends State<SplashView>
     await _exitController.forward();
 
     if (mounted) {
-      Get.offNamed(Routes.HOME);
+      Get.offNamed(Routes.home);
     }
   }
 

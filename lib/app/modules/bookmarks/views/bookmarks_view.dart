@@ -144,7 +144,7 @@ class BookmarksView extends GetView<BookmarksController> {
               borderRadius: BorderRadius.circular(18),
               onTap: () {
                 Get.toNamed(
-                  Routes.DETAIL_SURAH,
+                  Routes.detailSurah,
                   arguments: {
                     'nomor': nomorSurah,
                     'ayat': nomorAyat,
@@ -340,7 +340,7 @@ class BookmarksView extends GetView<BookmarksController> {
                     borderRadius: BorderRadius.circular(18),
                     onTap: () {
                       Get.toNamed(
-                        Routes.DETAIL_SURAH,
+                        Routes.detailSurah,
                         arguments: {
                           'nomor': nomorSurah,
                           'ayat': nomorAyat,

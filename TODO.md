@@ -143,3 +143,24 @@ Meningkatkan personalisasi tampilan aplikasi.
 > [!IMPORTANT]
 > **Registrasi Aset Suara Adzan Baru:**
 > Jika menambahkan file audio adzan baru ke dalam aset Android (`android/app/src/main/res/raw/`), pastikan untuk menaikkan versi ID channel notifikasi di `NotificationHelper` (contoh: dari `sholat_channel_v3` ke `sholat_channel_v4`) agar Android meregistrasi ulang file audio baru tersebut sebagai default ringtone channel.
+
+---
+
+## 🛠️ Pekerjaan Rumah (Technical Debt & Pembersihan) - Juni 2026
+
+### 18. 📱 Migrasi Responsivitas Sisa Modul (ScreenUtil)
+*   [ ] Migrasikan **DetailSurahView** agar ukuran font terjemahan (`.sp`) dan margin terbebas dari overflow di landscape mode.
+*   [ ] Migrasikan **MurotalView** (disk pemutar, tombol play, progress slider, list drawer).
+*   [ ] Migrasikan **JadwalSholatView** (tabel bulanan, kartu waktu sholat).
+*   [ ] Migrasikan **ImsakiyahView** (tabel bulanan, highlight cards).
+*   [ ] Migrasikan **ArahKiblatView** (lingkaran kompas, status bar indicator).
+*   [ ] Migrasikan **DoaView**, **BookmarksView**, **StatistikView**, dan **SettingsView** agar responsive di seluruh ukuran layar.
+
+### 19. 🧹 Pembersihan Warning Analisis (Dart Analyzer)
+*   [ ] Ganti sisa penggunaan `.withOpacity()` dengan `.withValues(alpha: ...)` pada **MurotalView** dan **ArahKiblatView**.
+*   [ ] Ubah penamaan rute di `app_routes.dart` dari UPPER_SNAKE_CASE menjadi `lowerCamelCase` (misal `Routes.home`).
+*   [ ] Hapus atau ganti `print` debug log dengan `developer.log` di dalam file controller.
+
+### 20. ⚙️ Penanganan Optimal Notifikasi Standby
+*   [ ] Sediakan edukasi/halaman panduan optimasi baterai di menu Settings agar OS tidak menolak/menunda alarm pra-sholat saat standby.
+

@@ -345,7 +345,7 @@ class _SplashViewState extends State<SplashView>
         child: AnimatedBuilder(
           animation: _bgController,
           builder: (context, _) => Opacity(
-            opacity: _bgAnim.value * 0.025,
+            opacity: _bgAnim.value,
             child: CustomPaint(painter: IslamicPatternPainter(color: _gold)),
           ),
         ),

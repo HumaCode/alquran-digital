@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -70,6 +71,21 @@ class NotificationHelper {
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.requestExactAlarmsPermission();
+
+    // Daftarkan saluran notifikasi adzan standar (v2) secara otomatis sejak aplikasi dibuka
+    const AndroidNotificationChannel adzanChannel = AndroidNotificationChannel(
+      'sholat_adzan_standard_v2',
+      'Notifikasi Adzan',
+      description: 'Mengumandangkan adzan ketika masuk waktu sholat',
+      importance: Importance.max,
+      playSound: true,
+      sound: RawResourceAndroidNotificationSound('adzhan'),
+    );
+
+    await _localNotifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(adzanChannel);
   }
 
   static Future<void> schedulePrayerNotifications(JadwalSholat schedule) async {
@@ -88,8 +104,13 @@ class NotificationHelper {
     final preReminderMin = int.tryParse(savedReminder ?? '0') ?? 0;
 
     final now = DateTime.now();
+    final bool canExact = await _localNotifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.canScheduleExactNotifications() ?? false;
+
     final androidDetails = AndroidNotificationDetails(
-      'sholat_channel_v3', // Diubah ke v3 untuk memaksa registrasi ulang custom sound adzan
+      'sholat_adzan_standard_v2', // Menggunakan tipe notifikasi standar v2 yang diizinkan Xiaomi/Poco
       'Notifikasi Adzan',
       channelDescription: 'Mengumandangkan adzan ketika masuk waktu sholat',
       importance: Importance.max,
@@ -97,6 +118,7 @@ class NotificationHelper {
       sound: const RawResourceAndroidNotificationSound('adzhan'),
       playSound: true,
       enableVibration: true,
+      visibility: NotificationVisibility.public, // Menampilkan notifikasi di layar kunci saat standby
       actions: <AndroidNotificationAction>[
         const AndroidNotificationAction(
           'mute_adzhan',
@@ -139,18 +161,25 @@ class NotificationHelper {
       };
 
       int prayerIdx = 1;
-      prayers.forEach((name, timeStr) async {
+      for (final entry in prayers.entries) {
+        final name = entry.key;
+        final timeStr = entry.value;
         bool isEnabled = true;
         if (name == 'Subuh') {
           isEnabled = isSubuhOn;
-        } else if (name == 'Dzuhur') isEnabled = isDzuhurOn;
-        else if (name == 'Ashar') isEnabled = isAsharOn;
-        else if (name == 'Maghrib') isEnabled = isMaghribOn;
-        else if (name == 'Isya') isEnabled = isIsyaOn;
+        } else if (name == 'Dzuhur') {
+          isEnabled = isDzuhurOn;
+        } else if (name == 'Ashar') {
+          isEnabled = isAsharOn;
+        } else if (name == 'Maghrib') {
+          isEnabled = isMaghribOn;
+        } else if (name == 'Isya') {
+          isEnabled = isIsyaOn;
+        }
 
         if (!isEnabled) {
           prayerIdx++;
-          return;
+          continue;
         }
 
         try {
@@ -176,7 +205,7 @@ class NotificationHelper {
               body: 'Telah memasuki waktu sholat $name untuk wilayah ${schedule.data.kabkota} dan sekitarnya.',
               scheduledDate: tz.TZDateTime.from(scheduledTime, tz.local),
               notificationDetails: notificationDetails,
-              androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+              androidScheduleMode: canExact ? AndroidScheduleMode.exactAllowWhileIdle : AndroidScheduleMode.inexactAllowWhileIdle,
             );
             count++;
           }
@@ -192,7 +221,7 @@ class NotificationHelper {
                 body: '$preReminderMin menit lagi masuk waktu sholat $name. Mari bersiap mengambil air wudhu.',
                 scheduledDate: tz.TZDateTime.from(reminderTime, tz.local),
                 notificationDetails: reminderDetails,
-                androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+                androidScheduleMode: canExact ? AndroidScheduleMode.exactAllowWhileIdle : AndroidScheduleMode.inexactAllowWhileIdle,
               );
               count++;
             }
@@ -201,7 +230,7 @@ class NotificationHelper {
           print('Gagal menjadwalkan sholat $name pada tanggal ${date.day}: $e');
         }
         prayerIdx++;
-      });
+      }
 
       // Batasi maksimal menjadwalkan 7 hari ke depan (35 alarm) agar tidak membebani sistem
       if (date.difference(now).inDays > 7) {

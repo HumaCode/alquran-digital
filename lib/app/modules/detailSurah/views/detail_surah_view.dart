@@ -313,7 +313,7 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                       SizedBox(width: 12.w),
                                       ElevatedButton.icon(
                                         onPressed: () {
-                                          controller.toggleCompleted();
+                                          controller.toggleCompleted(context);
                                         },
                                         icon: Icon(
                                           isComp

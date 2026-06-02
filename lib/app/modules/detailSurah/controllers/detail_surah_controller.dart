@@ -493,7 +493,7 @@ class DetailSurahController extends GetxController {
     }
   }
 
-  Future<void> toggleCompleted() async {
+  Future<void> toggleCompleted(BuildContext context) async {
     try {
       final detail = detailSurah.value?.data;
       if (detail == null) return;
@@ -526,9 +526,9 @@ class DetailSurahController extends GetxController {
         Get.find<HomeController>().fetchLastRead();
       }
 
-      if (Get.context != null) {
+      if (context.mounted) {
         CustomToast.show(
-          Get.context!,
+          context,
           message: nextStatus 
               ? 'Alhamdulillah, Anda telah menyelesaikan Surah ${detail.namaLatin}.'
               : 'Surah ${detail.namaLatin} kembali ditandai belum selesai.',

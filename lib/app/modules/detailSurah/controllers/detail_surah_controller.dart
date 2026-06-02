@@ -8,6 +8,7 @@ import '../../../data/repositories/surah_repository.dart';
 import '../../home/controllers/home_controller.dart';
 import '../../statistik/controllers/statistik_controller.dart';
 import '../../../constants/r.dart';
+import '../../../components/widgets/custom_toast.dart';
 
 class DetailSurahController extends GetxController {
   final SurahRepository _repository;
@@ -246,11 +247,13 @@ class DetailSurahController extends GetxController {
     final qoriName = qoriList.firstWhere((q) => q['id'] == selectedQori.value, orElse: () => {'name': 'Qari'})['name'];
     final audioUrl = ayat.audio[selectedQori.value];
     if (audioUrl == null) {
-      Get.snackbar(
-        'Audio Tidak Tersedia',
-        'Audio $qoriName tidak tersedia untuk ayat ini.',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      if (Get.context != null) {
+        CustomToast.show(
+          Get.context!,
+          message: 'Audio $qoriName tidak tersedia untuk ayat ini.',
+          type: ToastType.error,
+        );
+      }
       return;
     }
 
@@ -523,15 +526,15 @@ class DetailSurahController extends GetxController {
         Get.find<HomeController>().fetchLastRead();
       }
 
-      Get.snackbar(
-        nextStatus ? 'Surah Selesai Dibaca 🎉' : 'Batal Tandai Selesai',
-        nextStatus 
-            ? 'Alhamdulillah, Anda telah menyelesaikan Surah ${detail.namaLatin}.'
-            : 'Surah ${detail.namaLatin} kembali ditandai belum selesai.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: nextStatus ? R.color.emerald.withValues(alpha: 0.9) : R.color.gold.withValues(alpha: 0.9),
-        colorText: Colors.black,
-      );
+      if (Get.context != null) {
+        CustomToast.show(
+          Get.context!,
+          message: nextStatus 
+              ? 'Alhamdulillah, Anda telah menyelesaikan Surah ${detail.namaLatin}.'
+              : 'Surah ${detail.namaLatin} kembali ditandai belum selesai.',
+          type: nextStatus ? ToastType.success : ToastType.info,
+        );
+      }
     } catch (e) {
       print('Gagal mengubah status khatam surah: $e');
     }

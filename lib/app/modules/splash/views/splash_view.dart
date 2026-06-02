@@ -51,6 +51,7 @@ class _SplashViewState extends State<SplashView>
   late Animation<double> _dividerAnim;
   late Animation<double> _progressAnim;
   late Animation<double> _pulseAnim;
+  late Animation<double> _swingAnim;
   late Animation<double> _exitAnim;
 
   @override
@@ -186,6 +187,11 @@ class _SplashViewState extends State<SplashView>
     _exitAnim = Tween<double>(begin: 1.0, end: 0.0).animate(
       CurvedAnimation(parent: _exitController, curve: Curves.easeInOut),
     );
+
+    // Swaying / swinging animation for hanging lanterns (pendulum style)
+    _swingAnim = Tween<double>(begin: -0.06, end: 0.06).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
   }
 
   Future<void> _startSequence() async {
@@ -270,7 +276,9 @@ class _SplashViewState extends State<SplashView>
                           _buildTexts(),
                           const Spacer(flex: 2),
                           _buildProgressArea(),
-                          SizedBox(height: 48.h),
+                          SizedBox(height: 24.h),
+                          _buildFooterBranding(),
+                          SizedBox(height: 24.h),
                         ],
                       ),
                     ),
@@ -344,10 +352,15 @@ class _SplashViewState extends State<SplashView>
       // Star of David / Islamic geometric pattern (subtle)
       Positioned.fill(
         child: AnimatedBuilder(
-          animation: _bgController,
+          animation: Listenable.merge([_bgController, _pulseController]),
           builder: (context, _) => Opacity(
             opacity: _bgAnim.value,
-            child: CustomPaint(painter: IslamicPatternPainter(color: _gold)),
+            child: CustomPaint(
+              painter: IslamicPatternPainter(
+                color: _gold,
+                swingAngle: _swingAnim.value,
+              ),
+            ),
           ),
         ),
       ),
@@ -681,6 +694,43 @@ class _SplashViewState extends State<SplashView>
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  // ── Footer Branding ───────────────────────────────────────────────────────
+  Widget _buildFooterBranding() {
+    return AnimatedBuilder(
+      animation: _textController,
+      builder: (context, _) => Opacity(
+        opacity: _titleOpacityAnim.value * 0.7, // Fade in along with the main text
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Lembaga Pentashihan Mushaf Al-Qur\'an',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: _goldLight.withValues(alpha: 0.45),
+                fontSize: 10.sp,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 1.5,
+                fontFamily: 'Poppins',
+              ),
+            ),
+            SizedBox(height: 4.h),
+            Text(
+              'Kementerian Agama Republik Indonesia',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: _textSoft.withValues(alpha: 0.35),
+                fontSize: 9.sp,
+                letterSpacing: 1.2,
+                fontFamily: 'Poppins',
+              ),
+            ),
+          ],
         ),
       ),
     );

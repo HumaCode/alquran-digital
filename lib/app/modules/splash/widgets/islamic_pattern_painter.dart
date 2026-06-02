@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 class IslamicPatternPainter extends CustomPainter {
   final Color color;
-  const IslamicPatternPainter({required this.color});
+  final double swingAngle;
+  const IslamicPatternPainter({required this.color, this.swingAngle = 0.0});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -41,8 +42,8 @@ class IslamicPatternPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.8;
     
-    _drawHangingLantern(canvas, Offset(size.width * 0.15, size.height * 0.22), lanternPaint);
-    _drawHangingLantern(canvas, Offset(size.width * 0.85, size.height * 0.22), lanternPaint);
+    _drawHangingLantern(canvas, Offset(size.width * 0.15, size.height * 0.22), lanternPaint, swingAngle);
+    _drawHangingLantern(canvas, Offset(size.width * 0.85, size.height * 0.22), lanternPaint, -swingAngle);
   }
 
   void _drawOctagram(Canvas canvas, Offset center, double r, Paint paint) {
@@ -123,26 +124,34 @@ class IslamicPatternPainter extends CustomPainter {
     canvas.drawPath(path, paint);
   }
 
-  void _drawHangingLantern(Canvas canvas, Offset position, Paint paint) {
+  void _drawHangingLantern(Canvas canvas, Offset position, Paint paint, double angle) {
+    canvas.save();
+    // Translate to the pivot point at the top of the screen (x = position.dx, y = 0)
+    canvas.translate(position.dx, 0);
+    // Rotate canvas to swing the lantern
+    canvas.rotate(angle);
+    
+    final localPos = Offset(0, position.dy);
+
     // Draw hanging chain
-    canvas.drawLine(Offset(position.dx, 0), Offset(position.dx, position.dy - 35), paint);
+    canvas.drawLine(const Offset(0, 0), Offset(0, localPos.dy - 35), paint);
 
     // Lantern top cap
     final capPath = Path();
-    capPath.moveTo(position.dx - 12, position.dy - 35);
-    capPath.lineTo(position.dx + 12, position.dy - 35);
-    capPath.lineTo(position.dx, position.dy - 46);
+    capPath.moveTo(-12, localPos.dy - 35);
+    capPath.lineTo(12, localPos.dy - 35);
+    capPath.lineTo(0, localPos.dy - 46);
     capPath.close();
     canvas.drawPath(capPath, paint);
 
     // Lantern body shape
     final bodyPath = Path();
-    bodyPath.moveTo(position.dx - 12, position.dy - 35);
-    bodyPath.lineTo(position.dx + 12, position.dy - 35);
-    bodyPath.lineTo(position.dx + 18, position.dy - 10);
-    bodyPath.lineTo(position.dx + 8, position.dy + 12);
-    bodyPath.lineTo(position.dx - 8, position.dy + 12);
-    bodyPath.lineTo(position.dx - 18, position.dy - 10);
+    bodyPath.moveTo(-12, localPos.dy - 35);
+    bodyPath.lineTo(12, localPos.dy - 35);
+    bodyPath.lineTo(18, localPos.dy - 10);
+    bodyPath.lineTo(8, localPos.dy + 12);
+    bodyPath.lineTo(-8, localPos.dy + 12);
+    bodyPath.lineTo(-18, localPos.dy - 10);
     bodyPath.close();
 
     // Fill lantern with a very soft semi-transparent color for glass look
@@ -156,19 +165,21 @@ class IslamicPatternPainter extends CustomPainter {
     final glowPaint = Paint()
       ..color = paint.color.withValues(alpha: 0.4)
       ..style = PaintingStyle.fill;
-    canvas.drawCircle(Offset(position.dx, position.dy - 12), 4, glowPaint);
+    canvas.drawCircle(Offset(0, localPos.dy - 12), 4, glowPaint);
 
     // Bottom tassel
     final tasselPath = Path();
-    tasselPath.moveTo(position.dx, position.dy + 12);
-    tasselPath.lineTo(position.dx - 5, position.dy + 26);
-    tasselPath.lineTo(position.dx + 5, position.dy + 26);
+    tasselPath.moveTo(0, localPos.dy + 12);
+    tasselPath.lineTo(-5, localPos.dy + 26);
+    tasselPath.lineTo(5, localPos.dy + 26);
     tasselPath.close();
     canvas.drawPath(tasselPath, paint);
+
+    canvas.restore();
   }
 
   @override
-  bool shouldRepaint(IslamicPatternPainter old) => old.color != color;
+  bool shouldRepaint(IslamicPatternPainter old) => old.color != color || old.swingAngle != swingAngle;
 }
 
 class MandalaPainter extends CustomPainter {

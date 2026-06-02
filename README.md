@@ -38,10 +38,15 @@ Aplikasi Muslim companion yang komprehensif dan modern, dibangun dengan Flutter.
 - **Statistik Lengkap** — Total ayat sepanjang masa, rata-rata harian, streak terpanjang, dan sistem badge/achievement (Khatam Pertama 🏆, Streak 7 Hari 🔥, Baca 1000 Ayat ⭐, dll).
 
 ### 🏠 Widget & Pengaturan
-- **Widget Layar Utama** — 3 widget native Android: Jadwal Sholat & Countdown Real-time, Ayat Harian Acak, dan Bar Progress Tilawah.
+- **Widget Layar Utama** — 3 widget native Android (Jadwal Sholat, Ayat Harian, Progress Tilawah) dengan layout **Inner Card Margin 6dp** agar tidak terpotong oleh sistem launcher Android 12+, dihiasi watermark Mandala Islami detail (`vector_star.xml`), dan ornamen sudut klasik. Masing-masing dilengkapi ikon dan gambar preview kustom di menu widget picker.
 - **Tema Warna Kustom** — 4 palet warna premium: Emerald Green (default), Biru Safir, Ungu Amethyst, Coklat Tembaga. Disimpan permanen di database lokal dengan *Live Preview* interaktif.
 - **Optimasi Baterai & Notifikasi** — Panel status dan panduan khusus per merek HP (Xiaomi, Samsung, Oppo, Vivo) untuk memastikan adzan tidak ditunda oleh sistem Doze Mode saat standby.
 - **Mode Gelap / Terang** — Adaptif dengan preferensi tersimpan permanen.
+
+### 🎨 UI/UX & Animasi Premium
+- **Swaying Lanterns (Splash Screen)** — Animasi lentera gantung berayun yang dinamis dan halus menggunakan Custom Painter dan rotasi Canvas, dipadukan dengan pulsasi latar belakang berpola geometris.
+- **Independent Branding Footer** — Layout footer yang elegan di Splash Screen dengan tulisan *"Aplikasi Al-Qur'an Digital"* dan tagline *"Membaca • Menghafal • Mentadabburi"*, didukung animasi fade-in yang halus serta penanganan responsivitas layar pendek.
+- **Sentralisasi Konstanta** — Seluruh string visual, teks branding, dan referensi aset gambar widget (`AssetsImage`) dikelola secara terpusat di `lib/app/constants/R` untuk kemudahan pemeliharaan.
 
 ---
 

@@ -6,12 +6,36 @@
 
     <!-- Background Watermark Star Ornamen -->
     <ImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:layout_gravity="right|center_vertical"
         android:layout_marginRight="-35dp"
         android:scaleType="fitCenter"
         android:src="@drawable/vector_star" />
+
+    <!-- Corner Ornaments for Premium Islamic Aesthetics -->
+    <ImageView
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="left|top"
+        android:scaleType="fitXY"
+        android:src="@drawable/vector_corner_ornament" />
+
+    <ImageView
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="left|bottom"
+        android:scaleType="fitXY"
+        android:rotation="270"
+        android:src="@drawable/vector_corner_ornament" />
+
+    <ImageView
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="right|top"
+        android:scaleType="fitXY"
+        android:rotation="90"
+        android:src="@drawable/vector_corner_ornament" />
 
     <!-- Main Content Layout -->
     <LinearLayout

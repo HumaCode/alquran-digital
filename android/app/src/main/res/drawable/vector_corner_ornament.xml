@@ -1,0 +1,40 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="50dp"
+    android:height="50dp"
+    android:viewportWidth="50"
+    android:viewportHeight="50">
+    
+    <!-- Concentric corner arches -->
+    <path
+        android:strokeColor="#E6C485"
+        android:strokeWidth="0.8"
+        android:strokeAlpha="0.10"
+        android:fillColor="#00000000"
+        android:pathData="M0,8 A8,8 0 0,1 8,0" />
+        
+    <path
+        android:strokeColor="#E6C485"
+        android:strokeWidth="0.6"
+        android:strokeAlpha="0.07"
+        android:fillColor="#00000000"
+        android:pathData="M0,16 A16,16 0 0,1 16,0" />
+        
+    <path
+        android:strokeColor="#E6C485"
+        android:strokeWidth="0.5"
+        android:strokeAlpha="0.05"
+        android:fillColor="#00000000"
+        android:pathData="M0,24 A24,24 0 0,1 24,0" />
+
+    <!-- Corner motif diamond star -->
+    <path
+        android:fillColor="#E6C485"
+        android:fillAlpha="0.12"
+        android:pathData="M5,2 L7,4 L9,5 L7,6 L5,8 L3,6 L1,5 L3,4 Z" />
+        
+    <!-- Tiny outer dots -->
+    <path
+        android:fillColor="#E6C485"
+        android:fillAlpha="0.08"
+        android:pathData="M11,11 A1.5,1.5 0 1,1 11,14 A1.5,1.5 0 1,1 11,11 Z" />
+</vector>

@@ -3,29 +3,82 @@
     android:height="150dp"
     android:viewportWidth="100"
     android:viewportHeight="100">
-    <!-- Star Square 1 -->
+    
+    <!-- Outer concentric circle -->
+    <path
+        android:strokeColor="#E6C485"
+        android:strokeWidth="0.8"
+        android:strokeAlpha="0.08"
+        android:fillColor="#00000000"
+        android:pathData="M50,10 A40,40 0 1,1 50,90 A40,40 0 1,1 50,10 Z" />
+
+    <!-- Outer Octagram Star Square 1 -->
     <group android:pivotX="50" android:pivotY="50">
         <path
             android:strokeColor="#E6C485"
-            android:strokeWidth="1"
-            android:strokeAlpha="0.05"
+            android:strokeWidth="0.8"
+            android:strokeAlpha="0.09"
             android:fillColor="#00000000"
-            android:pathData="M30,30 H70 V70 H30 Z" />
+            android:pathData="M22,22 H78 V78 H22 Z" />
     </group>
-    <!-- Star Square 2 (Rotated 45 deg) -->
+    <!-- Outer Octagram Star Square 2 (Rotated 45 deg) -->
     <group android:pivotX="50" android:pivotY="50" android:rotation="45">
         <path
             android:strokeColor="#E6C485"
-            android:strokeWidth="1"
-            android:strokeAlpha="0.05"
+            android:strokeWidth="0.8"
+            android:strokeAlpha="0.09"
             android:fillColor="#00000000"
-            android:pathData="M30,30 H70 V70 H30 Z" />
+            android:pathData="M22,22 H78 V78 H22 Z" />
     </group>
+
+    <!-- Mid concentric circle -->
+    <path
+        android:strokeColor="#E6C485"
+        android:strokeWidth="0.6"
+        android:strokeAlpha="0.06"
+        android:fillColor="#00000000"
+        android:pathData="M50,20 A30,30 0 1,1 50,80 A30,30 0 1,1 50,20 Z" />
+
+    <!-- Inner Octagram Star Square 1 -->
+    <group android:pivotX="50" android:pivotY="50">
+        <path
+            android:strokeColor="#E6C485"
+            android:strokeWidth="0.8"
+            android:strokeAlpha="0.12"
+            android:fillColor="#00000000"
+            android:pathData="M32,32 H68 V68 H32 Z" />
+    </group>
+    <!-- Inner Octagram Star Square 2 (Rotated 45 deg) -->
+    <group android:pivotX="50" android:pivotY="50" android:rotation="45">
+        <path
+            android:strokeColor="#E6C485"
+            android:strokeWidth="0.8"
+            android:strokeAlpha="0.12"
+            android:fillColor="#00000000"
+            android:pathData="M32,32 H68 V68 H32 Z" />
+    </group>
+
     <!-- Center circle ornament -->
     <path
         android:strokeColor="#E6C485"
         android:strokeWidth="0.8"
-        android:strokeAlpha="0.04"
+        android:strokeAlpha="0.10"
         android:fillColor="#00000000"
-        android:pathData="M50,44 A6,6 0 1,1 50,56 A6,6 0 1,1 50,44 Z" />
+        android:pathData="M50,42 A8,8 0 1,1 50,58 A8,8 0 1,1 50,42 Z" />
+
+    <!-- Extra design rays -->
+    <group android:pivotX="50" android:pivotY="50">
+        <path
+            android:strokeColor="#E6C485"
+            android:strokeWidth="0.5"
+            android:strokeAlpha="0.05"
+            android:pathData="M50,10 V90 M10,50 H90" />
+    </group>
+    <group android:pivotX="50" android:pivotY="50" android:rotation="45">
+        <path
+            android:strokeColor="#E6C485"
+            android:strokeWidth="0.5"
+            android:strokeAlpha="0.05"
+            android:pathData="M50,10 V90 M10,50 H90" />
+    </group>
 </vector>

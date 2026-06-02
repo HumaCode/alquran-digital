@@ -71,6 +71,36 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
   int? _expandedCard;
   String _tanggal = '';
   String _hijri = '';
+  int _currentHadisIdx = 0;
+
+  // List Hadits & Ayat tentang Sholat/Ibadah harian yang interaktif
+  static const List<Map<String, String>> _haditsList = [
+    {
+      'arabic': 'إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَوْقُوتًا',
+      'translation': '"Sesungguhnya sholat itu adalah kewajiban yang ditentukan waktunya atas orang-orang yang beriman."',
+      'reference': '— QS. An-Nisa\' : 103'
+    },
+    {
+      'arabic': 'وَأَقِيمُوا الصَّلَاةَ وَآتُوا الزَّكَاةَ وَارْكَعُوا مَعَ الرَّاكِعِينَ',
+      'translation': '"Dan dirikanlah sholat, tunaikanlah zakat, dan ruku\'lah beserta orang-orang yang ruku\'."',
+      'reference': '— QS. Al-Baqarah : 43'
+    },
+    {
+      'arabic': 'أَقِمِ الصَّلَاةَ لِدُلُوكِ الشَّمْسِ إِلَىٰ غَسَقِ اللَّيْلِ',
+      'translation': '"Dirikanlah sholat dari sesudah matahari tergelincir sampai gelap malam..."',
+      'reference': '— QS. Al-Isra\' : 78'
+    },
+    {
+      'arabic': 'وَاسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ ۚ وَإِنَّهَا لَكَبِيرَةٌ إِلَّا عَلَى الْخَاشِعِينَ',
+      'translation': '"Jadikanlah sabar dan sholat sebagai penolongmu. Dan sesungguhnya yang demikian itu sungguh berat, kecuali bagi orang-orang yang khusyu\'."',
+      'reference': '— QS. Al-Baqarah : 45'
+    },
+    {
+      'arabic': 'اَلْعَهْدُ الَّذِيْ بَيْنَنَا وَبَيْنَهُمُ الصَّلَاةُ فَمَنْ تَرَكَهَا فَقَدْ كَفَرَ',
+      'translation': '"Perjanjian antara kita dengan mereka (orang kafir) adalah sholat. Barangsiapa meninggalkannya, maka ia telah kafir."',
+      'reference': '— HR. Ahmad, Tirmidzi, & An-Nasa\'i'
+    }
+  ];
 
   // Data statis jadwal sholat harian
   final List<WaktuSholat> _sholat = [
@@ -1458,6 +1488,14 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                       child: _JadwalSholatBottomRow(
                         ringCtrl: _ringCtrl,
                         compassCtrl: _compassCtrl,
+                        currentHadisIdx: _currentHadisIdx,
+                        onHadisTap: () {
+                          setState(() {
+                            _currentHadisIdx =
+                                (_currentHadisIdx + 1) % _haditsList.length;
+                          });
+                          HapticFeedback.lightImpact();
+                        },
                       ),
                     ),
                     const SliverToBoxAdapter(child: SizedBox(height: 32)),
@@ -2102,10 +2140,14 @@ class _SholatProgressBar extends StatelessWidget {
 class _JadwalSholatBottomRow extends StatelessWidget {
   final AnimationController ringCtrl;
   final AnimationController compassCtrl;
+  final int currentHadisIdx;
+  final VoidCallback onHadisTap;
 
   const _JadwalSholatBottomRow({
     required this.ringCtrl,
     required this.compassCtrl,
+    required this.currentHadisIdx,
+    required this.onHadisTap,
   });
 
   @override
@@ -2416,67 +2458,78 @@ class _JadwalSholatBottomRow extends StatelessWidget {
   }
 
   Widget _buildHadisCard() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        color: R.color.surfaceJadwal,
-        border: Border.all(color: R.color.goldDim.withValues(alpha: 0.12)),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: 0,
-            left: 0,
-            child: Text(
-              '❝',
-              style: TextStyle(
-                fontSize: 40,
-                color: R.color.goldDim.withValues(alpha: 0.15),
-                height: 0.8,
+    final currentHadis = _JadwalSholatViewState._haditsList[currentHadisIdx];
+    return GestureDetector(
+      onTap: onHadisTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          color: R.color.surfaceJadwal,
+          border: Border.all(color: R.color.goldDim.withValues(alpha: 0.12)),
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              left: 0,
+              child: Text(
+                '❝',
+                style: TextStyle(
+                  fontSize: 40,
+                  color: R.color.goldDim.withValues(alpha: 0.15),
+                  height: 0.8,
+                ),
               ),
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 4),
-              Text(
-                R.string.haditsArabic,
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontFamily: 'serif',
-                  fontSize: 15,
-                  color: R.color.goldLight,
-                  height: 1.8,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                R.string.haditsTranslation,
-                style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  fontSize: 12,
-                  color: R.color.textJadwal.withValues(alpha: 0.7),
-                  height: 1.6,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  R.string.haditsReference,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: R.color.textMutedJadwal,
-                    letterSpacing: 0.5,
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 350),
+              child: Column(
+                key: ValueKey<int>(currentHadisIdx),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 4),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      currentHadis['arabic']!,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        fontFamily: 'serif',
+                        fontSize: 15,
+                        color: R.color.goldLight,
+                        height: 1.8,
+                      ),
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Text(
+                    currentHadis['translation']!,
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontSize: 12,
+                      color: R.color.textJadwal.withValues(alpha: 0.7),
+                      height: 1.6,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      currentHadis['reference']!,
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: R.color.textMutedJadwal,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

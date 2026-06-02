@@ -7,6 +7,7 @@ import '../../../data/models/detail_surah_model.dart';
 import '../controllers/detail_surah_controller.dart';
 import 'package:alquran_digital/app/components/widgets/widgets.dart';
 import '../../../data/providers/theme_controller.dart';
+import 'package:alquran_digital/app/modules/splash/widgets/islamic_pattern_painter.dart';
 
 class DetailSurahView extends GetView<DetailSurahController> {
   const DetailSurahView({super.key});
@@ -156,10 +157,22 @@ class DetailSurahView extends GetView<DetailSurahController> {
 
           final detail = detailResponse.data;
 
-          return ListView(
-            controller: controller.scrollController,
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+          return Stack(
             children: [
+              // Beautiful Geometric Background Pattern
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: CustomPaint(
+                    painter: IslamicPatternPainter(
+                      color: _gold,
+                    ),
+                  ),
+                ),
+              ),
+              ListView(
+                controller: controller.scrollController,
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+                children: [
               // ── Surah Card Header ──────────────────────────────────────────
               ClipRRect(
                 borderRadius: BorderRadius.circular(20.r),
@@ -487,14 +500,28 @@ class DetailSurahView extends GetView<DetailSurahController> {
                       key: key,
                       padding: EdgeInsets.only(bottom: 24.h),
                       child: Container(
-                        padding: EdgeInsets.all(16.r),
+                        padding: EdgeInsets.all(18.r),
                         decoration: BoxDecoration(
-                          color: _bg2.withValues(alpha: 0.4),
+                          gradient: LinearGradient(
+                            colors: [
+                              _bg2.withValues(alpha: 0.65),
+                              _bg2.withValues(alpha: 0.35),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
                           borderRadius: BorderRadius.circular(16.r),
                           border: Border.all(
-                            color: _goldDim.withValues(alpha: 0.1),
+                            color: _goldDim.withValues(alpha: 0.18),
                             width: 1,
                           ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.12),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -506,8 +533,12 @@ class DetailSurahView extends GetView<DetailSurahController> {
                                 vertical: 8.h,
                               ),
                               decoration: BoxDecoration(
-                                color: _bg2.withValues(alpha: 0.6),
-                                borderRadius: BorderRadius.circular(10),
+                                color: _bg2.withValues(alpha: 0.75),
+                                borderRadius: BorderRadius.circular(12.r),
+                                border: Border.all(
+                                  color: _goldDim.withValues(alpha: 0.08),
+                                  width: 0.8,
+                                ),
                               ),
                               child: Row(
                                 children: [
@@ -978,7 +1009,9 @@ class DetailSurahView extends GetView<DetailSurahController> {
               ),
               const SizedBox(height: 48),
             ],
-          );
+          ),
+        ],
+      );
         }),
       );
     });

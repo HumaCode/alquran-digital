@@ -709,7 +709,7 @@ class _SplashViewState extends State<SplashView>
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Aplikasi Al-Qur\'an Digital',
+              R.string.splashFooterTitle,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: _goldLight.withValues(alpha: 0.45),
@@ -721,7 +721,7 @@ class _SplashViewState extends State<SplashView>
             ),
             SizedBox(height: 4.h),
             Text(
-              'Membaca • Menghafal • Mentadabburi',
+              R.string.splashFooterSubtitle,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: _textSoft.withValues(alpha: 0.35),

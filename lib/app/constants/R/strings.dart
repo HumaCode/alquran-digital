@@ -9,6 +9,8 @@ class Strings {
   final String appTitleArabic = 'القرآن';
   final String errorLoading = 'Gagal memuat data';
   final String tryAgain = 'Coba Lagi';
+  final String splashFooterTitle = 'Aplikasi Al-Qur\'an Digital';
+  final String splashFooterSubtitle = 'Membaca • Menghafal • Mentadabburi';
 
   // home
   final String homeSubtitle = '114 Surah • Terjemahan Indonesia';

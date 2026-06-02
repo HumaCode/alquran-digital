@@ -1047,13 +1047,13 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                   onPressed: () async {
                     HapticFeedback.mediumImpact();
                     await NotificationHelper.testNotification();
-                    Get.snackbar(
-                      'Uji Notifikasi',
-                      'Notifikasi percobaan akan berbunyi dalam 5 detik. Kunci layar HP Anda untuk mengujinya.',
-                      backgroundColor: R.color.surfaceJadwal.withValues(alpha: 0.9),
-                      colorText: R.color.goldLight,
-                      snackPosition: SnackPosition.BOTTOM,
-                    );
+                    if (context.mounted) {
+                      CustomToast.show(
+                        context,
+                        message: 'Notifikasi uji coba akan berbunyi dalam 5 detik. Kunci layar HP Anda.',
+                        type: ToastType.info,
+                      );
+                    }
                   },
                   icon: Icon(Icons.play_circle_fill_rounded, color: R.color.goldLight, size: 18),
                   label: Text(

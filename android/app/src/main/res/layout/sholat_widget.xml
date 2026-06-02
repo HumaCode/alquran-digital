@@ -321,5 +321,6 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </FrameLayout>
+    </LinearLayout>
+</FrameLayout>
 </FrameLayout>

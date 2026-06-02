@@ -10,6 +10,7 @@ import '../../../data/models/jadwal_sholat_model.dart';
 import 'package:alquran_digital/app/constants/r.dart';
 import 'package:alquran_digital/app/routes/app_pages.dart';
 import '../../../data/providers/widget_helper.dart';
+import '../../../data/providers/notification_helper.dart';
 import '../../home/controllers/home_controller.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -503,14 +504,28 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
 
     if (!isEnabled) return;
 
+    int prayerIdx = 1;
+    if (sholatNama == 'Subuh') {
+      prayerIdx = 1;
+    } else if (sholatNama == 'Dzuhur') {
+      prayerIdx = 2;
+    } else if (sholatNama == 'Ashar') {
+      prayerIdx = 3;
+    } else if (sholatNama == 'Maghrib') {
+      prayerIdx = 4;
+    } else if (sholatNama == 'Isya') {
+      prayerIdx = 5;
+    }
+    final notificationId = DateTime.now().day * 100 + prayerIdx;
+
     _playAdhan();
 
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async => false,
+        return PopScope(
+          canPop: false,
           child: AlertDialog(
             backgroundColor: R.color.surfaceJadwal,
             shape: RoundedRectangleBorder(
@@ -541,6 +556,7 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
               TextButton(
                 onPressed: () {
                   _audioPlayer.stop();
+                  NotificationHelper.cancelNotification(notificationId);
                   Navigator.pop(context);
                 },
                 child: Text(
@@ -993,6 +1009,34 @@ class _JadwalSholatViewState extends State<JadwalSholatView>
                   ),
                 );
               }),
+              const SizedBox(height: 12),
+              // Tombol Uji Notifikasi
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () async {
+                    HapticFeedback.mediumImpact();
+                    await NotificationHelper.testNotification();
+                    Get.snackbar(
+                      'Uji Notifikasi',
+                      'Notifikasi percobaan akan berbunyi dalam 5 detik. Kunci layar HP Anda untuk mengujinya.',
+                      backgroundColor: R.color.surfaceJadwal.withValues(alpha: 0.9),
+                      colorText: R.color.goldLight,
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
+                  },
+                  icon: Icon(Icons.play_circle_fill_rounded, color: R.color.goldLight, size: 18),
+                  label: Text(
+                    'Uji Coba Suara Notifikasi (5 Detik)',
+                    style: TextStyle(color: R.color.goldLight, fontWeight: FontWeight.bold, fontSize: 12),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: R.color.gold.withValues(alpha: 0.3)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                ),
+              ),
               const SizedBox(height: 24),
               Text(
                 'Mute / Aktifkan Adzan per Waktu Sholat',

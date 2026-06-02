@@ -56,7 +56,12 @@ class NotificationHelper {
     await _localNotifications.initialize(
       settings: initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        // Handle click if needed
+        if (response.actionId == 'mute_adzhan') {
+          if (response.id != null) {
+            _localNotifications.cancel(id: response.id!);
+            print('Adzan dimatikan di foreground untuk ID: ${response.id}');
+          }
+        }
       },
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
@@ -72,9 +77,9 @@ class NotificationHelper {
             AndroidFlutterLocalNotificationsPlugin>()
         ?.requestExactAlarmsPermission();
 
-    // Daftarkan saluran notifikasi adzan standar (v2) secara otomatis sejak aplikasi dibuka
+    // Daftarkan saluran notifikasi adzan standar (v3) secara otomatis sejak aplikasi dibuka
     const AndroidNotificationChannel adzanChannel = AndroidNotificationChannel(
-      'sholat_adzan_standard_v2',
+      'sholat_adzan_standard_v3',
       'Notifikasi Adzan',
       description: 'Mengumandangkan adzan ketika masuk waktu sholat',
       importance: Importance.max,
@@ -83,7 +88,7 @@ class NotificationHelper {
     );
 
     const AndroidNotificationChannel preReminderChannel = AndroidNotificationChannel(
-      'pre_sholat_reminder_channel',
+      'pre_sholat_reminder_channel_v2',
       'Pengingat Sebelum Adzan',
       description: 'Pengingat bersiap wudhu sebelum masuk waktu sholat',
       importance: Importance.high,
@@ -133,7 +138,7 @@ class NotificationHelper {
         ?.canScheduleExactNotifications() ?? false;
 
     final androidDetails = AndroidNotificationDetails(
-      'sholat_adzan_standard_v2', // Menggunakan tipe notifikasi standar v2 yang diizinkan Xiaomi/Poco
+      'sholat_adzan_standard_v3', // Menggunakan tipe notifikasi standar v3 agar Android meregistrasi ulang suara adzan
       'Notifikasi Adzan',
       channelDescription: 'Mengumandangkan adzan ketika masuk waktu sholat',
       importance: Importance.max,
@@ -154,7 +159,7 @@ class NotificationHelper {
     final notificationDetails = NotificationDetails(android: androidDetails);
 
     final reminderAndroidDetails = AndroidNotificationDetails(
-      'pre_sholat_reminder_channel',
+      'pre_sholat_reminder_channel_v2',
       'Pengingat Sebelum Adzan',
       channelDescription: 'Pengingat bersiap wudhu sebelum masuk waktu sholat',
       importance: Importance.high,
@@ -240,8 +245,8 @@ class NotificationHelper {
               final reminderId = 10000 + date.day * 100 + prayerIdx;
               await _localNotifications.zonedSchedule(
                 id: reminderId,
-                title: 'Persiapan Sholat $name',
-                body: '$preReminderMin menit lagi masuk waktu sholat $name. Mari bersiap mengambil air wudhu.',
+                title: 'Siap-siap Waktu Sholat $name',
+                body: 'Siap-siap, $preReminderMin menit lagi akan masuk waktu sholat $name.',
                 scheduledDate: tz.TZDateTime.from(reminderTime, tz.local),
                 notificationDetails: reminderDetails,
                 androidScheduleMode: canExact ? AndroidScheduleMode.exactAllowWhileIdle : AndroidScheduleMode.inexactAllowWhileIdle,
@@ -266,6 +271,74 @@ class NotificationHelper {
   static Future<void> cancelAll() async {
     await _localNotifications.cancelAll();
     print('Semua notifikasi waktu sholat dibatalkan.');
+  }
+
+  /// Membatalkan/mematikan notifikasi tertentu berdasarkan ID (untuk menghentikan suara adzan)
+  static Future<void> cancelNotification(int id) async {
+    await _localNotifications.cancel(id: id);
+    print('Notifikasi dengan ID $id berhasil dibatalkan/dimatikan.');
+  }
+
+  /// Mengirimkan notifikasi uji coba dalam 5 detik mendatang untuk mengetes suara & alarm
+  static Future<void> testNotification() async {
+    final now = DateTime.now();
+    final targetTime = now.add(const Duration(seconds: 5));
+    
+    final bool canExact = await _localNotifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.canScheduleExactNotifications() ?? false;
+
+    // 1. Uji Notifikasi Adzan (Suara Adzan kustom)
+    final androidAdzanDetails = AndroidNotificationDetails(
+      'sholat_adzan_standard_v3',
+      'Notifikasi Adzan',
+      channelDescription: 'Mengumandangkan adzan ketika masuk waktu sholat',
+      importance: Importance.max,
+      priority: Priority.high,
+      sound: const RawResourceAndroidNotificationSound('adzhan'),
+      playSound: true,
+      enableVibration: true,
+      visibility: NotificationVisibility.public,
+      actions: <AndroidNotificationAction>[
+        const AndroidNotificationAction(
+          'mute_adzhan',
+          'Matikan Adzan',
+          showsUserInterface: false,
+        ),
+      ],
+    );
+
+    await _localNotifications.zonedSchedule(
+      id: 99999,
+      title: 'Uji Coba Adzan Dzuhur',
+      body: 'Waktu sholat Dzuhur telah tiba. Mengumandangkan adzan...',
+      scheduledDate: tz.TZDateTime.from(targetTime, tz.local),
+      notificationDetails: NotificationDetails(android: androidAdzanDetails),
+      androidScheduleMode: canExact ? AndroidScheduleMode.exactAllowWhileIdle : AndroidScheduleMode.inexactAllowWhileIdle,
+    );
+
+    // 2. Uji Notifikasi Pengingat 5 Menit Sebelum Adzan (Suara Default)
+    final androidReminderDetails = AndroidNotificationDetails(
+      'pre_sholat_reminder_channel_v2',
+      'Pengingat Sebelum Adzan',
+      channelDescription: 'Pengingat bersiap wudhu sebelum masuk waktu sholat',
+      importance: Importance.high,
+      priority: Priority.high,
+      playSound: true,
+      enableVibration: true,
+    );
+
+    await _localNotifications.zonedSchedule(
+      id: 99998,
+      title: 'Siap-siap Waktu Sholat Dzuhur',
+      body: 'Siap-siap, 5 menit lagi akan masuk waktu sholat Dzuhur.',
+      scheduledDate: tz.TZDateTime.from(targetTime, tz.local),
+      notificationDetails: NotificationDetails(android: androidReminderDetails),
+      androidScheduleMode: canExact ? AndroidScheduleMode.exactAllowWhileIdle : AndroidScheduleMode.inexactAllowWhileIdle,
+    );
+
+    print('Notifikasi uji coba dijadwalkan dalam 5 detik.');
   }
 
   /// ID tetap untuk notifikasi tilawah reminder

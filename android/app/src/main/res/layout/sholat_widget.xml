@@ -1,47 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/widget_background">
+    android:layout_height="match_parent">
 
-    <!-- Background Watermark Star Ornamen -->
-    <ImageView
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:layout_gravity="right|center_vertical"
-        android:layout_marginRight="-35dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/vector_star" />
-
-    <!-- Corner Ornaments for Premium Islamic Aesthetics -->
-    <ImageView
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_gravity="left|top"
-        android:scaleType="fitXY"
-        android:src="@drawable/vector_corner_ornament" />
-
-    <ImageView
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_gravity="left|bottom"
-        android:scaleType="fitXY"
-        android:rotation="270"
-        android:src="@drawable/vector_corner_ornament" />
-
-    <ImageView
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_gravity="right|top"
-        android:scaleType="fitXY"
-        android:rotation="90"
-        android:src="@drawable/vector_corner_ornament" />
-
-    <!-- Main Content Layout -->
-    <LinearLayout
+    <!-- Inner Card Container with Margin to prevent system clipping of rounded corners -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_margin="6dp"
+        android:background="@drawable/widget_background">
+
+        <!-- Background Watermark Star Ornamen -->
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="-30dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/vector_star" />
+
+        <!-- Corner Ornaments inside the border stroke -->
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="left|top"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/vector_corner_ornament" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="left|bottom"
+            android:layout_marginLeft="2dp"
+            android:layout_marginBottom="2dp"
+            android:scaleType="fitXY"
+            android:rotation="270"
+            android:src="@drawable/vector_corner_ornament" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="right|top"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="2dp"
+            android:scaleType="fitXY"
+            android:rotation="90"
+            android:src="@drawable/vector_corner_ornament" />
+
+        <!-- Main Content Layout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
         <!-- Actual Padding Container -->
         <LinearLayout
@@ -309,5 +321,5 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </FrameLayout>
 </FrameLayout>

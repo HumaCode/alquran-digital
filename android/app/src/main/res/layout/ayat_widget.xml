@@ -1,104 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/widget_background">
+    android:layout_height="match_parent">
 
-    <!-- Background Watermark Star Ornamen -->
-    <ImageView
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:layout_gravity="right|center_vertical"
-        android:layout_marginRight="-30dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/vector_star" />
-
-    <!-- Corner Ornaments for Premium Islamic Aesthetics -->
-    <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="left|top"
-        android:scaleType="fitXY"
-        android:src="@drawable/vector_corner_ornament" />
-
-    <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="left|bottom"
-        android:scaleType="fitXY"
-        android:rotation="270"
-        android:src="@drawable/vector_corner_ornament" />
-
-    <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="right|top"
-        android:scaleType="fitXY"
-        android:rotation="90"
-        android:src="@drawable/vector_corner_ornament" />
-
-    <!-- Main Content Layout -->
-    <LinearLayout
+    <!-- Inner Card Container with Margin to prevent system clipping of rounded corners -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_margin="6dp"
+        android:background="@drawable/widget_background">
 
-        <!-- Header Row -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/widget_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ayat Harian"
-                android:textColor="#E6C485"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/widget_ayat_ref"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="QS. Al-Baqarah: 183"
-                android:textColor="#8DA09C"
-                android:textSize="11sp" />
-        </RelativeLayout>
+        <!-- Background Watermark Star Ornamen -->
+        <ImageView
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="-30dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/vector_star" />
 
-        <!-- Main Content -->
+        <!-- Corner Ornaments inside the border stroke -->
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="left|top"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/vector_corner_ornament" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="left|bottom"
+            android:layout_marginLeft="2dp"
+            android:layout_marginBottom="2dp"
+            android:scaleType="fitXY"
+            android:rotation="270"
+            android:src="@drawable/vector_corner_ornament" />
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="right|top"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="2dp"
+            android:scaleType="fitXY"
+            android:rotation="90"
+            android:src="@drawable/vector_corner_ornament" />
+
+        <!-- Main Content Layout -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:gravity="center_vertical"
-            android:layout_marginTop="8dp">
+            android:padding="16dp">
 
-            <!-- Teks Arab -->
-            <TextView
-                android:id="@+id/widget_ayat_arab"
+            <!-- Header Row -->
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="كُتِبَ عَلَيْكُمُ الصِّيَامُ"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:gravity="right"
-                android:maxLines="2"
-                android:ellipsize="end"
-                android:layout_marginBottom="4dp" />
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/widget_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ayat Harian"
+                    android:textColor="#E6C485"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/widget_ayat_ref"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="QS. Al-Baqarah: 183"
+                    android:textColor="#8DA09C"
+                    android:textSize="11sp" />
+            </RelativeLayout>
 
-            <!-- Teks Terjemahan -->
-            <TextView
-                android:id="@+id/widget_ayat_indo"
+            <!-- Main Content -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Diwajibkan atas kamu berpuasa..."
-                android:textColor="#8DA09C"
-                android:textSize="11sp"
-                android:gravity="left"
-                android:maxLines="2"
-                android:ellipsize="end" />
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp">
+
+                <!-- Teks Arab -->
+                <TextView
+                    android:id="@+id/widget_ayat_arab"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="كُتِبَ عَلَيْكُمُ الصِّيَامُ"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:gravity="right"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:layout_marginBottom="4dp" />
+
+                <!-- Teks Terjemahan -->
+                <TextView
+                    android:id="@+id/widget_ayat_indo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Diwajibkan atas kamu berpuasa..."
+                    android:textColor="#8DA09C"
+                    android:textSize="11sp"
+                    android:gravity="left"
+                    android:maxLines="2"
+                    android:ellipsize="end" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </FrameLayout>
 </FrameLayout>

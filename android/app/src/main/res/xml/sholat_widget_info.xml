@@ -5,5 +5,6 @@
     android:updatePeriodMillis="86400000"
     android:initialLayout="@layout/sholat_widget"
     android:resizeMode="horizontal|vertical"
-    android:widgetCategory="home_screen">
+    android:widgetCategory="home_screen"
+    android:previewImage="@drawable/jdwl_sholat">
 </appwidget-provider>

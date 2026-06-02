@@ -67,7 +67,7 @@
         </receiver>
 
         <!-- Home Screen Widget Receiver -->
-        <receiver android:name=".SholatWidgetProvider" android:exported="true">
+        <receiver android:name=".SholatWidgetProvider" android:exported="true" android:icon="@drawable/jdwl_sholat">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -77,7 +77,7 @@
         </receiver>
 
         <!-- Ayat Harian Widget Receiver -->
-        <receiver android:name=".AyatWidgetProvider" android:exported="true">
+        <receiver android:name=".AyatWidgetProvider" android:exported="true" android:icon="@drawable/ayat_harian">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -87,7 +87,7 @@
         </receiver>
 
         <!-- Progress Tilawah Widget Receiver -->
-        <receiver android:name=".ProgressWidgetProvider" android:exported="true">
+        <receiver android:name=".ProgressWidgetProvider" android:exported="true" android:icon="@drawable/tilawah">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

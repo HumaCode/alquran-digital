@@ -75,6 +75,7 @@ flutter:
 
   assets:
     - assets/notif/adzhan.mp3
+    - assets/image/
 
   fonts:
     - family: Poppins
